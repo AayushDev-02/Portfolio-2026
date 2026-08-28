@@ -32,7 +32,10 @@ export function BracketButton({
   disabled,
 }: Props) {
   const classes = cn(
-    "inline-flex items-center gap-2 transition-colors duration-150",
+    // min-h-11 is the 44px touch target. On the bare variant the extra height
+    // is invisible — it is padding around text with no box — so the reference's
+    // look survives while the tap area reaches the accessible minimum.
+    "inline-flex min-h-11 items-center gap-2 transition-colors duration-150",
     "disabled:pointer-events-none disabled:opacity-40",
     variants[variant],
     className,

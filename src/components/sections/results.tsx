@@ -37,7 +37,7 @@ export function ResultsSection() {
           <BracketButton>{results.ctaLabel}</BracketButton>
           <Link
             href={results.deleteLinkHref}
-            className="font-sans text-label text-prose underline underline-offset-4 transition-colors duration-150 hover:text-accent"
+            className="inline-flex min-h-11 items-center font-sans text-label text-prose underline underline-offset-4 transition-colors duration-150 hover:text-accent"
           >
             {results.deleteLinkLabel}
           </Link>

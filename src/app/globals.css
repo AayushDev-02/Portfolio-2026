@@ -50,8 +50,13 @@
   --text-index-lg: 3rem; /* 48px */
   --text-head: 2.25rem; /* 36px → sm: --text-head-lg — section heading */
   --text-head-lg: 3.75rem; /* 60px */
-  --text-hero: 3rem; /* 48px → sm: --text-hero-lg — hero wordmark */
-  --text-hero-lg: 4.5rem; /* 72px */
+  /* The wordmark is one long unbreakable-looking string in a pixel face, so
+     it is the first thing to overflow a narrow phone. Fluid rather than fixed:
+     at a 360px viewport a flat 48px pushed the document 25px wider than the
+     screen. The two steps stay continuous — both resolve to 48px at the sm
+     boundary — so the breakpoint is not a visible jump. */
+  --text-hero: clamp(1.75rem, 8.5vw, 3rem); /* 28 → 48px */
+  --text-hero-lg: clamp(3rem, 7.5vw, 4.5rem); /* 48 → 72px */
 
   --tracking-label: 0.2em;
 
