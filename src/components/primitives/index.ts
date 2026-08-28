@@ -2,6 +2,7 @@ export { AccordionGroup, AccordionRow } from "./accordion-row";
 export { BracketButton } from "./bracket-button";
 export { CheckItem, CheckList } from "./check-item";
 export { CornerMarks } from "./corner-marks";
+export { HeroBackdrop } from "./hero-backdrop";
 export { Counter, Eyebrow, MicroLabel, Sigil } from "./labels";
 export { NumberedItem, NumberedList } from "./numbered-item";
 export { PullQuote } from "./pull-quote";

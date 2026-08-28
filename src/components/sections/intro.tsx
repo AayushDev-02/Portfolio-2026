@@ -1,4 +1,4 @@
-import { SectionShell, TerminalHero } from "@/components/primitives";
+import { HeroBackdrop, SectionShell, TerminalHero } from "@/components/primitives";
 import { intro } from "@/content/reference";
 
 export function IntroSection() {
@@ -11,6 +11,8 @@ export function IntroSection() {
       id="intro"
       caption={intro.caption}
       sigil={intro.sigil}
+      tone="ink"
+      backdrop={<HeroBackdrop />}
     >
       <TerminalHero
         status={intro.status}

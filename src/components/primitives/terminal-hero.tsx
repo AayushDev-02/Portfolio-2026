@@ -1,66 +1,33 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { TerminalPrompt } from "./terminal-prompt";
 
 type Props = {
-  /** The wordmark, rendered in the pixel display face. */
+  /** The wordmark, rendered in the pixel display face over the photo. */
   title: string;
-  /** Small status line above the title, e.g. "SYSTEM READY". */
+  /** Micro status line inside the terminal panel, e.g. "SYSTEM READY". */
   status?: string;
   /** Lines typed one after another at the ">" prompt. */
   lines: string[];
-  /** Milliseconds per character. */
-  speed?: number;
 };
 
 /**
- * The terminal hero: a wordmark plus a prompt that types itself out.
+ * The hero: a red pixel wordmark over the backdrop photograph, and below it
+ * the single dark terminal panel — the only dark box on the site.
  *
- * Respects prefers-reduced-motion by rendering the final line immediately —
- * a typewriter is exactly the kind of motion that setting exists to stop.
+ * Server component. Only the typewriter itself is a client leaf.
  */
-export function TerminalHero({ title, status, lines, speed = 45 }: Props) {
-  const full = lines[0] ?? "";
-  const [typed, setTyped] = useState("");
-
-  useEffect(() => {
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (reduced) {
-      setTyped(full);
-      return;
-    }
-
-    setTyped("");
-    let i = 0;
-    const id = window.setInterval(() => {
-      i += 1;
-      setTyped(full.slice(0, i));
-      if (i >= full.length) window.clearInterval(id);
-    }, speed);
-
-    return () => window.clearInterval(id);
-  }, [full, speed]);
-
+export function TerminalHero({ title, status, lines }: Props) {
   return (
-    <div className="flex flex-col gap-8">
-      {status ? <p className="label text-accent">{status}</p> : null}
-
-      <h2 className="font-display text-display leading-none tracking-display text-balance">
+    <div className="relative flex flex-col items-center gap-8">
+      <h1 className="font-display text-hero sm:text-hero-lg font-bold uppercase leading-none tracking-tight text-accent text-balance text-center">
         {title}
-      </h2>
+      </h1>
 
-      <p className="flex gap-3 text-body text-dim">
-        <span aria-hidden="true" className="shrink-0 select-none text-accent">
-          &gt;
-        </span>
-        <span aria-hidden="true" className="caret">
-          {typed}
-        </span>
-        <span className="sr-only">{full}</span>
-      </p>
+      <div className="w-full max-w-xl bg-terminal-bg px-6 py-5 text-terminal-fg">
+        {status ? (
+          <p className="text-micro tracking-label text-accent/80">{status}</p>
+        ) : null}
+        <TerminalPrompt lines={lines} />
+      </div>
     </div>
   );
 }

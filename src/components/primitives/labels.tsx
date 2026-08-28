@@ -1,24 +1,41 @@
 import { cn, pad } from "@/lib/utils";
 
+type Tone = "accent" | "ink";
+
+const tones: Record<Tone, string> = {
+  accent: "text-accent",
+  ink: "text-ink",
+};
+
 /** Section eyebrow, e.g. "00 — INTRO". */
 export function Eyebrow({
   index,
+  tone = "accent",
   children,
 }: {
   index: number;
+  tone?: Tone;
   children: React.ReactNode;
 }) {
   return (
-    <span className="label text-dim">
+    <span className={cn("label", tones[tone])}>
       {pad(index)} — {children}
     </span>
   );
 }
 
 /** Section counter, e.g. "01 / 06". */
-export function Counter({ current, total }: { current: number; total: number }) {
+export function Counter({
+  current,
+  total,
+  tone = "accent",
+}: {
+  current: number;
+  total: number;
+  tone?: Tone;
+}) {
   return (
-    <span className="label tabular-nums text-dim">
+    <span className={cn("label tabular-nums", tones[tone])}>
       {pad(current)} / {pad(total)}
     </span>
   );
@@ -33,7 +50,7 @@ export function MicroLabel({
   className?: string;
 }) {
   return (
-    <span className={cn("text-micro tracking-label uppercase text-faint", className)}>
+    <span className={cn("text-micro tracking-label uppercase text-prose", className)}>
       {children}
     </span>
   );
@@ -41,5 +58,5 @@ export function MicroLabel({
 
 /** The 2–3 letter sigil pinned to the bottom-right of every section. */
 export function Sigil({ children }: { children: React.ReactNode }) {
-  return <span className="label text-faint">{children}</span>;
+  return <span className="label text-prose">{children}</span>;
 }

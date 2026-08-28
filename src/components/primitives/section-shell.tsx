@@ -15,6 +15,10 @@ type SectionShellProps = {
   caption?: string;
   /** 2–3 letter sigil shown bottom-right. */
   sigil: string;
+  /** Eyebrow/counter colour. Accent everywhere except the intro. */
+  tone?: "accent" | "ink";
+  /** Full-bleed layer behind the content — the hero photograph. */
+  backdrop?: React.ReactNode;
   children: React.ReactNode;
 };
 
@@ -32,6 +36,8 @@ export function SectionShell({
   id,
   caption,
   sigil,
+  tone = "accent",
+  backdrop,
   children,
 }: SectionShellProps) {
   return (
@@ -40,18 +46,21 @@ export function SectionShell({
       aria-labelledby={`${id}-eyebrow`}
       className="relative flex min-h-dvh w-full flex-col border-b border-rule px-gutter py-10 sm:px-gutter-lg sm:py-14"
     >
+      {backdrop}
       <CornerMarks />
 
-      <header className="flex shrink-0 items-baseline justify-between gap-4">
+      <header className="relative flex shrink-0 items-baseline justify-between gap-4">
         <span id={`${id}-eyebrow`}>
-          <Eyebrow index={index}>{eyebrow}</Eyebrow>
+          <Eyebrow index={index} tone={tone}>
+            {eyebrow}
+          </Eyebrow>
         </span>
-        <Counter current={position} total={total} />
+        <Counter current={position} total={total} tone={tone} />
       </header>
 
-      <div className="flex flex-1 flex-col justify-center py-12">{children}</div>
+      <div className="relative flex flex-1 flex-col justify-center py-12">{children}</div>
 
-      <footer className="flex shrink-0 items-baseline justify-between gap-4">
+      <footer className="relative flex shrink-0 items-baseline justify-between gap-4">
         <MicroLabel>{caption ?? ""}</MicroLabel>
         <Sigil>{sigil}</Sigil>
       </footer>
