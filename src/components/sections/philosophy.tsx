@@ -3,6 +3,7 @@ import {
   AccordionRow,
   CheckItem,
   CheckList,
+  SectionHead,
   SectionShell,
 } from "@/components/primitives";
 import { philosophy } from "@/content/reference";
@@ -19,12 +20,7 @@ export function PhilosophySection() {
       sigil={philosophy.sigil}
     >
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-display leading-none tracking-display text-balance">
-            {philosophy.heading}
-          </h2>
-          <p className="max-w-prose text-body text-dim">{philosophy.lead}</p>
-        </div>
+        <SectionHead heading={philosophy.heading} lede={philosophy.lead} />
 
         <AccordionGroup>
           {philosophy.questions.map((q) => (

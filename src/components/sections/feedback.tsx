@@ -4,6 +4,7 @@ import {
   NumberedItem,
   NumberedList,
   PullQuote,
+  SectionHead,
   SectionShell,
 } from "@/components/primitives";
 import { feedback } from "@/content/reference";
@@ -20,18 +21,15 @@ export function FeedbackSection() {
       sigil={feedback.sigil}
     >
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-display leading-none tracking-display text-balance">
-            {feedback.heading}
-          </h2>
-          <p className="max-w-prose text-body text-dim">{feedback.lead}</p>
-        </div>
+        <SectionHead heading={feedback.heading} lede={feedback.lead} />
 
         <AccordionGroup>
           {feedback.themes.map((theme) => (
             <AccordionRow key={theme.title} title={theme.title}>
               <div className="flex flex-col gap-4">
-                <p className="max-w-prose text-body text-dim">{theme.body}</p>
+                <p className="max-w-xl font-sans text-ui leading-6 text-prose">
+                  {theme.body}
+                </p>
                 {theme.quote ? <PullQuote>{theme.quote}</PullQuote> : null}
               </div>
             </AccordionRow>

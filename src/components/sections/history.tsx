@@ -1,4 +1,4 @@
-import { RankBar, RankList, SectionShell } from "@/components/primitives";
+import { RankBar, RankList, SectionHead, SectionShell } from "@/components/primitives";
 import { history, privacyRound } from "@/content/reference";
 
 export function HistorySection() {
@@ -13,16 +13,11 @@ export function HistorySection() {
       sigil={history.sigil}
     >
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-display leading-none tracking-display text-balance">
-            {history.heading}
-          </h2>
-          <p className="max-w-prose text-body text-dim">{history.lead}</p>
-        </div>
+        <SectionHead heading={history.heading} lede={history.lead} />
 
-        <div className="flex flex-col gap-2">
-          <p className="label text-dim">{privacyRound.label}</p>
-          <p className="text-body tabular-nums text-dim">{privacyRound.stats}</p>
+        <div className="flex flex-col items-center gap-1">
+          <p className="label text-accent">{privacyRound.label}</p>
+          <p className="text-ui tabular-nums text-prose">{privacyRound.stats}</p>
         </div>
 
         <RankList>

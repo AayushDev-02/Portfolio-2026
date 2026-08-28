@@ -1,5 +1,6 @@
 import {
   CheckItem,
+  SectionHead,
   SectionShell,
   TimelineCard,
   TimelineGrid,
@@ -18,12 +19,7 @@ export function StatusSection() {
       sigil={status.sigil}
     >
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-3">
-          <h2 className="font-display text-display leading-none tracking-display text-balance">
-            {status.heading}
-          </h2>
-          <p className="max-w-prose text-body text-dim">{status.lead}</p>
-        </div>
+        <SectionHead heading={status.heading} lede={status.lead} />
 
         <TimelineGrid>
           {status.entries.map((entry, i) => (
