@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS
+   Ground truth: docs/DESIGN-SPEC.md
+   Every colour, font and rhythm value in the project lives here.
+   No component may hard-code a colour or a font size.
+   ============================================================ */
+
+@theme {
+  /* --- colour: eight tokens, no more --- */
+  --color-bg: #0a0a0a;
+  --color-surface: #000000;
+  --color-fg: #ededed;
+  --color-dim: #8d8d8d;
+  --color-faint: #5c5c5c;
+  --color-rule: rgba(140, 140, 140, 0.2);
+  --color-rule-strong: rgba(140, 140, 140, 0.4);
+  --color-accent: #e5484d;
+
+  /* --- type families ---
+     --font-pixel and --font-geist-mono are injected by next/font (see lib/fonts.ts).
+     --font-jp is a system stack: zero bytes, renders natively on Japanese machines.
+     See docs/DECISIONS.md for why we do not ship a webfont for CJK. */
+  --font-mono:
+    var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: var(--font-pixel), var(--font-geist-mono), ui-monospace, monospace;
+  --font-jp:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP",
+    sans-serif;
+
+  /* --- type scale (from the reference teardown) --- */
+  --text-micro: 0.625rem; /* 10px  — footer sigils */
+  --text-label: 0.75rem; /* 12px  — eyebrow, counter, corner marks */
+  --text-body: 1rem; /* 16px  — body, accordion rows */
+  --text-display: 3rem; /* 48px  — section display heading */
+
+  --tracking-label: 0.14em;
+  --tracking-display: -0.025em;
+
+  /* --- rhythm --- */
+  --spacing-gutter: 1.5rem; /* 24px — corner mark inset, section px on mobile */
+  --spacing-gutter-lg: 3rem; /* 48px — section px from sm up */
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Natural document scroll only. No scroll-jacking — see DECISIONS.md. */
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Japanese needs its own metrics: no negative tracking, more leading,
+     and normal word-breaking. Applied via the lang attribute so it works
+     the moment stage 4 turns on the /ja route. */
+  :lang(ja) {
+    font-family: var(--font-jp);
+    line-height: 1.85;
+    letter-spacing: normal;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    line-break: strict;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+}
+
+@layer utilities {
+  /* The uppercase micro-label used for eyebrows, counters and sigils. */
+  .label {
+    font-size: var(--text-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  /* Blinking terminal caret. */
+  .caret::after {
+    content: "_";
+    color: var(--color-accent);
+    animation: caret-blink 1.06s step-end infinite;
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   MOTION
+   Every animation in the project must be disabled here.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .caret::after {
+    animation: none;
+    opacity: 1;
+  }
+}
