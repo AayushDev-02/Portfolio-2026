@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
-  colorScheme: "dark",
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -29,11 +29,13 @@ export default function RootLayout({
       <body className="antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:border focus:border-accent focus:bg-bg focus:px-4 focus:py-2"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:border focus:border-accent focus:bg-bg focus:px-4 focus:py-2 focus:text-ink"
         >
           Skip to content
         </a>
-        <main id="main">{children}</main>
+        <main id="main" className="bg-bg">
+          {children}
+        </main>
       </body>
     </html>
   );
