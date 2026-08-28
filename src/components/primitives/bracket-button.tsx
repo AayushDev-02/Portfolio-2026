@@ -6,34 +6,38 @@ type Props = {
   href?: string;
   onClick?: () => void;
   type?: "button" | "submit";
-  tone?: "default" | "accent";
+  /** The reference's section CTA is bare text. `boxed` is for form controls. */
+  variant?: "bare" | "boxed";
   className?: string;
   disabled?: boolean;
 };
 
-const base =
-  "inline-flex items-center gap-2 border border-rule-strong px-5 py-3 text-body " +
-  "transition-colors duration-150 disabled:opacity-40 disabled:pointer-events-none " +
-  "hover:bg-fg hover:text-bg";
-
-const tones = {
-  default: "text-fg",
-  accent: "border-accent text-accent hover:bg-accent hover:text-bg",
+const variants = {
+  bare: "text-label font-bold tracking-label uppercase text-accent hover:text-ink",
+  boxed:
+    "border border-rule px-5 py-3 text-label font-bold tracking-label uppercase text-accent hover:bg-accent hover:text-bg",
 } as const;
 
 /**
- * Text-only bracketed control: "[ GET IN TOUCH → ]".
- * No fill, no radius, no shadow. Hover inverts ground and ink.
+ * Bracketed control: "[ GET NOTIFIED → ]".
+ * No fill, no radius, no shadow.
  */
 export function BracketButton({
   children,
   href,
   onClick,
   type = "button",
-  tone = "default",
+  variant = "bare",
   className,
   disabled,
 }: Props) {
+  const classes = cn(
+    "inline-flex items-center gap-2 transition-colors duration-150",
+    "disabled:pointer-events-none disabled:opacity-40",
+    variants[variant],
+    className,
+  );
+
   const content = (
     <>
       <span aria-hidden="true">[</span>
@@ -44,19 +48,14 @@ export function BracketButton({
 
   if (href) {
     return (
-      <Link href={href} className={cn(base, tones[tone], className)}>
+      <Link href={href} className={classes}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(base, tones[tone], className)}
-    >
+    <button type={type} onClick={onClick} disabled={disabled} className={classes}>
       {content}
     </button>
   );

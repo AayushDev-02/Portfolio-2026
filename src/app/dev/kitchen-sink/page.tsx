@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 function Bay({ name, children }: { name: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-6 border-b border-rule py-14">
+    <section className="flex flex-col items-start gap-6 border-b border-rule py-14">
       <h2 className="label text-accent">{name}</h2>
       {children}
     </section>
@@ -38,46 +38,51 @@ function Bay({ name, children }: { name: string; children: React.ReactNode }) {
 export default function KitchenSink() {
   return (
     <div className="mx-auto max-w-5xl px-gutter py-16 sm:px-gutter-lg">
-      <header className="flex flex-col gap-3 border-b border-rule-strong pb-8">
-        <span className="label text-dim">DEV — not indexed</span>
-        <h1 className="font-display text-display leading-none tracking-display">
+      <header className="flex flex-col gap-3 border-b border-rule pb-8">
+        <span className="label text-accent">DEV — not indexed</span>
+        <h1 className="font-display text-head sm:text-head-lg font-bold uppercase leading-none tracking-tight text-ink">
           Kitchen Sink
         </h1>
-        <p className="text-body text-dim">
+        <p className="max-w-xl font-sans text-lede leading-6 text-prose">
           Every primitive, every state. Token changes must propagate here with no
           component edits.
         </p>
       </header>
 
       <Bay name="Typography">
-        <p className="font-display text-display leading-none tracking-display">
-          Display 48px
+        <p className="font-display text-hero sm:text-hero-lg font-bold uppercase leading-none tracking-tight text-accent">
+          Hero 48/72
         </p>
-        <p className="text-body">
-          Body 16px — the quick brown fox jumps over the lazy dog.
+        <p className="font-display text-head sm:text-head-lg font-bold uppercase leading-none tracking-tight text-ink">
+          Head 36/60
         </p>
-        <p className="text-body" lang="ja">
+        <p className="max-w-xl font-sans text-lede sm:text-lede-lg leading-6 text-prose">
+          Lede 16/18 sans — the quick brown fox jumps over the lazy dog.
+        </p>
+        <p className="max-w-xl font-sans text-lede leading-6 text-prose" lang="ja">
           本文 16px — 日本語のテキストはこのように表示されます。行間と字間が変わります。
         </p>
-        <p className="label text-dim">Label 12px uppercase</p>
-        <p className="text-micro tracking-label uppercase text-faint">Micro 10px</p>
+        <p className="text-ui text-ink">UI 14px mono — accordion titles</p>
+        <p className="label text-accent">Eyebrow 11px · 0.2em</p>
+        <p className="text-micro tracking-label uppercase text-prose">Micro 10px</p>
+        <p className="text-badge font-bold tracking-label text-ink-deep">Badge 9px</p>
       </Bay>
 
       <Bay name="Colour tokens">
         <div className="grid grid-cols-2 gap-px bg-rule sm:grid-cols-4">
           {[
             ["bg", "bg-bg"],
-            ["surface", "bg-surface"],
-            ["fg", "bg-fg"],
-            ["dim", "bg-dim"],
-            ["faint", "bg-faint"],
-            ["rule", "bg-rule"],
-            ["rule-strong", "bg-rule-strong"],
+            ["ink", "bg-ink"],
+            ["ink-deep", "bg-ink-deep"],
+            ["prose", "bg-prose"],
             ["accent", "bg-accent"],
+            ["rule", "bg-rule"],
+            ["terminal-bg", "bg-terminal-bg"],
+            ["terminal-fg", "bg-terminal-fg"],
           ].map(([name, cls]) => (
             <div key={name} className="bg-bg p-3">
               <div className={`${cls} mb-2 h-10 w-full border border-rule`} />
-              <span className="text-micro tracking-label uppercase text-faint">
+              <span className="text-micro tracking-label uppercase text-prose">
                 {name}
               </span>
             </div>
@@ -86,17 +91,19 @@ export default function KitchenSink() {
       </Bay>
 
       <Bay name="Terminal hero">
-        <TerminalHero
-          status="System ready"
-          title="Wordmark"
-          lines={["A line that types itself out at the prompt"]}
-        />
+        <div className="w-full">
+          <TerminalHero
+            status="System ready"
+            title="Wordmark"
+            lines={["A line that types itself out at the prompt"]}
+          />
+        </div>
       </Bay>
 
       <Bay name="Bracket buttons">
-        <div className="flex flex-wrap gap-4">
-          <BracketButton>Default</BracketButton>
-          <BracketButton tone="accent">Accent →</BracketButton>
+        <div className="flex flex-wrap items-center gap-6">
+          <BracketButton>Bare →</BracketButton>
+          <BracketButton variant="boxed">Boxed</BracketButton>
           <BracketButton disabled>Disabled</BracketButton>
           <BracketButton href="/">As link</BracketButton>
         </div>
@@ -121,7 +128,7 @@ export default function KitchenSink() {
       <Bay name="Accordion">
         <AccordionGroup>
           <AccordionRow title="First row, open by default" defaultOpen>
-            <CheckList>
+            <CheckList columns={2}>
               <CheckItem>Reveals a checklist</CheckItem>
               <CheckItem>Keyboard operable</CheckItem>
               <CheckItem>aria-expanded wired up</CheckItem>
@@ -169,7 +176,7 @@ export default function KitchenSink() {
           className="border border-rule"
           fallback={
             <div className="flex h-full w-full items-center justify-center">
-              <span className="label text-faint">
+              <span className="label text-prose">
                 Static poster — 3D lands at stage 10
               </span>
             </div>

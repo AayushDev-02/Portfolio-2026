@@ -33,11 +33,11 @@ export function ResultsSection() {
           ))}
         </RankList>
 
-        <div className="flex flex-wrap items-center gap-6">
-          <BracketButton tone="accent">{results.ctaLabel}</BracketButton>
+        <div className="flex flex-col items-center gap-4">
+          <BracketButton>{results.ctaLabel}</BracketButton>
           <Link
             href={results.deleteLinkHref}
-            className="text-body text-dim underline decoration-rule-strong underline-offset-4 transition-colors duration-150 hover:text-accent"
+            className="font-sans text-label text-prose underline underline-offset-4 transition-colors duration-150 hover:text-accent"
           >
             {results.deleteLinkLabel}
           </Link>
