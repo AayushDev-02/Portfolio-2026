@@ -25,7 +25,7 @@ export function PhilosophySection() {
         <AccordionGroup>
           {philosophy.questions.map((q) => (
             <AccordionRow key={q.question} title={q.question}>
-              <CheckList>
+              <CheckList columns={2}>
                 {q.items.map((item) => (
                   <CheckItem key={item}>{item}</CheckItem>
                 ))}
