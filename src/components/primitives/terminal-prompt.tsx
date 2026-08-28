@@ -11,7 +11,13 @@ import { useEffect, useState } from "react";
  * The visible span is aria-hidden and a sr-only sibling carries the full line,
  * so assistive tech reads the sentence once rather than character by character.
  */
-export function TerminalPrompt({ lines, speed = 45 }: { lines: string[]; speed?: number }) {
+export function TerminalPrompt({
+  lines,
+  speed = 45,
+}: {
+  lines: string[];
+  speed?: number;
+}) {
   const full = lines[0] ?? "";
   const [typed, setTyped] = useState("");
 

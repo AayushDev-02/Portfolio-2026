@@ -1,4 +1,4 @@
-import { pad } from "@/lib/utils";
+import { cn, pad } from "@/lib/utils";
 
 /** A plain ranked line: "01. label" — no fill bar, unlike RankBar. */
 export function NumberedItem({
@@ -9,14 +9,20 @@ export function NumberedItem({
   children: React.ReactNode;
 }) {
   return (
-    <li className="flex gap-3 text-body">
-      <span className="shrink-0 tabular-nums text-faint">{pad(index)}.</span>
-      <span className="text-fg">{children}</span>
+    <li className="flex gap-3 text-label sm:text-ui">
+      <span className="shrink-0 tabular-nums text-accent">{pad(index)}.</span>
+      <span className="text-ink">{children}</span>
     </li>
   );
 }
 
 /** Wrapper that lays out a group of NumberedItems. */
-export function NumberedList({ children }: { children: React.ReactNode }) {
-  return <ol className="flex flex-col gap-2">{children}</ol>;
+export function NumberedList({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return <ol className={cn("flex w-full flex-col gap-2", className)}>{children}</ol>;
 }

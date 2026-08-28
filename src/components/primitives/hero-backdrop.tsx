@@ -10,7 +10,10 @@ import { heroImage } from "@/lib/images";
  */
 export function HeroBackdrop() {
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
       <Image
         src={heroImage.mobile.src}
         alt={heroImage.alt}

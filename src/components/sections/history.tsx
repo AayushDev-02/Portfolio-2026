@@ -12,7 +12,7 @@ export function HistorySection() {
       caption={history.caption}
       sigil={history.sigil}
     >
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col items-center gap-10">
         <SectionHead heading={history.heading} lede={history.lead} />
 
         <div className="flex flex-col items-center gap-1">

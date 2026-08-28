@@ -20,7 +20,7 @@ export function FeedbackSection() {
       caption={feedback.caption}
       sigil={feedback.sigil}
     >
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col items-center gap-10">
         <SectionHead heading={feedback.heading} lede={feedback.lead} />
 
         <AccordionGroup>
@@ -36,7 +36,7 @@ export function FeedbackSection() {
           ))}
         </AccordionGroup>
 
-        <NumberedList>
+        <NumberedList className="max-w-xl">
           {feedback.takeaways.map((item, i) => (
             <NumberedItem key={item} index={i + 1}>
               {item}

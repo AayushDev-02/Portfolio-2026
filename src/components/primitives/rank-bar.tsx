@@ -15,11 +15,11 @@ export function RankBar({ rank, label, value }: Props) {
   return (
     <li className="flex flex-col gap-2">
       <div className="flex items-baseline justify-between gap-4">
-        <span className="text-body">
-          <span className="text-faint tabular-nums">{pad(rank)}.</span>{" "}
-          <span className="text-fg">{label}</span>
+        <span className="text-label sm:text-ui">
+          <span className="tabular-nums text-prose">{pad(rank)}.</span>{" "}
+          <span className="text-ink">{label}</span>
         </span>
-        <span className="text-body tabular-nums text-accent">{clamped}%</span>
+        <span className="text-label sm:text-ui tabular-nums text-accent">{clamped}%</span>
       </div>
 
       {/* biome-ignore lint/a11y/useSemanticElements: native <meter> can't be styled to match the reference's hairline fill bar */}
@@ -38,5 +38,5 @@ export function RankBar({ rank, label, value }: Props) {
 }
 
 export function RankList({ children }: { children: React.ReactNode }) {
-  return <ul className="flex flex-col gap-6">{children}</ul>;
+  return <ul className="flex w-full max-w-xl flex-col gap-6">{children}</ul>;
 }
