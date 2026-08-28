@@ -23,8 +23,8 @@ export function PhilosophySection() {
         <SectionHead heading={philosophy.heading} lede={philosophy.lead} />
 
         <AccordionGroup>
-          {philosophy.questions.map((q) => (
-            <AccordionRow key={q.question} title={q.question}>
+          {philosophy.questions.map((q, i) => (
+            <AccordionRow key={q.question} title={q.question} defaultOpen={i === 0}>
               <CheckList columns={2}>
                 {q.items.map((item) => (
                   <CheckItem key={item}>{item}</CheckItem>

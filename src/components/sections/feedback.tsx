@@ -24,8 +24,8 @@ export function FeedbackSection() {
         <SectionHead heading={feedback.heading} lede={feedback.lead} />
 
         <AccordionGroup>
-          {feedback.themes.map((theme) => (
-            <AccordionRow key={theme.title} title={theme.title}>
+          {feedback.themes.map((theme, i) => (
+            <AccordionRow key={theme.title} title={theme.title} defaultOpen={i === 0}>
               <div className="flex flex-col gap-4">
                 <p className="max-w-xl font-sans text-ui leading-6 text-prose">
                   {theme.body}
