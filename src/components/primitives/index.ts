@@ -3,6 +3,8 @@ export { BracketButton } from "./bracket-button";
 export { CheckItem, CheckList } from "./check-item";
 export { CornerMarks } from "./corner-marks";
 export { Counter, Eyebrow, MicroLabel, Sigil } from "./labels";
+export { NumberedItem, NumberedList } from "./numbered-item";
+export { PullQuote } from "./pull-quote";
 export { RankBar, RankList } from "./rank-bar";
 export { SectionShell } from "./section-shell";
 export { type Status, StatusBadge } from "./status-badge";

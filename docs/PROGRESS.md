@@ -3,8 +3,8 @@
 **Read this first at the start of every session.**
 Update it before the end of every session. This file is the project's memory.
 
-- **Current stage:** Stage 0 done. Starting Stage 1's one remaining item: visual verification in a browser.
-- **Next action:** open the live `/dev/kitchen-sink` URL, confirm every primitive renders, the pixel font shows on headings, and the JA sample line uses a different, looser-leading face. Then confirm a token edit in `globals.css` propagates with no component changes — that closes Stage 1 and Stage 2 (pixel-perfect clone) starts.
+- **Current stage:** Stage 2 — all six sections built and wired with the reference's real copy. Stage 1's visual sign-off is still open too (never explicitly confirmed).
+- **Next action:** side-by-side comparison at 1440 / 768 / 390 against https://www.project-uncensored.site/ — this is Stage 2's actual DoD and only a human can call it. While there, also do Stage 1's leftover check (kitchen-sink primitives, pixel font, JA typography, token propagation).
 - **Live URL:** https://aayush-yadav-portfolio-nine.vercel.app
 - **Repo:** https://github.com/AayushDev-02/Portfolio-2026
 - **Last updated:** 2026-08-29
@@ -38,14 +38,14 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped (log why 
 **DoD:** all primitives render; token change propagates with no component edits — [ ]
 
 ## Stage 2 — Pixel-perfect clone ★ MAIN GOAL
-- [ ] Section 00 INTRO — terminal hero, typewriter, caret
-- [ ] Section 01 PHILOSOPHY — accordion + checklists
-- [ ] Section 02 STATUS — 001–006 timeline cards
-- [ ] Section 03 RESULTS — rank bars + CTA
-- [ ] Section 04 FEEDBACK — accordion + pull quotes + numbered list
-- [ ] Section 05 HISTORY — decision log
-- [ ] Corner marks / eyebrows / counters / footer sigils on all 6
-- [ ] Side-by-side comparison at 1440 / 768 / 390
+- [x] Section 00 INTRO — terminal hero, typewriter, caret
+- [x] Section 01 PHILOSOPHY — accordion + checklists
+- [x] Section 02 STATUS — 001–006 timeline cards
+- [x] Section 03 RESULTS — rank bars + CTA
+- [x] Section 04 FEEDBACK — accordion + pull quotes + numbered list — **judgment call, see DECISIONS.md**: rendered as accordion rows since text-only extraction couldn't confirm the reference actually collapses these
+- [x] Section 05 HISTORY — decision log
+- [x] Corner marks / eyebrows / counters / footer sigils on all 6 — free, comes from `SectionShell`
+- [ ] Side-by-side comparison at 1440 / 768 / 390  ← **you need to do this** — open both the reference and http://localhost:3000 (or the Vercel deploy once pushed) at each width and compare
 **DoD:** visually indistinguishable from reference at all three widths — [ ]
 
 ## Stage 3 — Responsive & interaction polish
@@ -124,3 +124,4 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped (log why 
 | 2026-08-29 | 0 | Installed pnpm 9.12.0 (npm global, corepack lacked write access to Program Files), `pnpm install` clean. `pnpm check` surfaced real issues, all fixed: biome.json missing `css.parser.tailwindDirectives` for Tailwind v4 `@theme` syntax; `role="region"` in AccordionRow swapped for `<section aria-labelledby>`; `role="meter"` in RankBar kept with a biome-ignore (native `<meter>` can't render the custom hairline fill bar) rather than switched; `aria-label` on a `<p>` in TerminalHero replaced with a `.sr-only` span (aria-label isn't valid on paragraph role). Ran `biome migrate --write` for the schema-version warning — it wrote `"preset": "none"`, which silently disables all lint rules; corrected to `"preset": "recommended"` by hand. `pnpm dev` verified clean: both `/` and `/dev/kitchen-sink` return 200 with no compile/runtime errors. `git init` + first commit done locally (31a1316), second commit for this log (f065efb). User created public repo AayushDev-02/Portfolio-2026 on github.com; pushed via `git push -u origin main` — first attempt hung 2min behind a Git Credential Manager browser sign-in prompt (not visible to the assistant), user completed sign-in, retry showed "Everything up-to-date" confirming the first attempt had actually already gone through server-side before the local process was killed on timeout. Remote `main` verified at f065efb via `git ls-remote`. |
 | 2026-08-29 | 0 | User imported the repo to Vercel; first build failed: `Failed to collect page data for /_not-found` / `TypeError: Invalid URL`, input `''`. Root cause: `src/app/layout.tsx` built `metadataBase` as `new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000")` — `??` only falls back on null/undefined, not on an empty string, and `NEXT_PUBLIC_SITE_URL` was present but blank in the Vercel env (SETUP.md had said to leave env vars empty for now). Reproduced locally by building with `NEXT_PUBLIC_SITE_URL=""`, confirmed it crashes the same way. Fixed by switching to `\|\|`. Verified the reproduction build succeeds with the fix, then `pnpm check` was clean except for a newly-surfaced unrelated issue: `next-env.d.ts` (generated, CRLF, gitignored) was failing biome's formatter because it wasn't excluded from biome's file scan the way `.next`/`node_modules`/`public` are — added `"!next-env.d.ts"` to `biome.json`'s `files.includes`. Committed (ec2013e) and pushed, which should trigger a Vercel auto-redeploy. Not yet confirmed green — check Vercel and paste the `.vercel.app` URL into this file's header once it deploys. |
 | 2026-08-29 | 0 | Redeploy went green. Live at https://aayush-yadav-portfolio-nine.vercel.app — confirmed `/` and `/dev/kitchen-sink` both return 200. **Stage 0 complete.** Only remaining Stage 1 item is human visual verification (pixel font, JA typography, token-propagation check) — not something the assistant can confirm from an HTTP response. |
+| 2026-08-29 | 2 | Fetched and transcribed the reference site's actual copy for all six sections (see DESIGN-SPEC.md §6 mapping) into `src/content/reference.ts`, typed. Built `IntroSection`/`PhilosophySection`/`StatusSection`/`ResultsSection`/`FeedbackSection`/`HistorySection` in `src/components/sections/`, each reading only from that content file and rendering existing primitives, per the project rule. Added two primitives not in the original stage-1 inventory — `PullQuote` and `NumberedItem`/`NumberedList` — needed for FEEDBACK's quotes and plain ranked takeaways; reasoning logged in DECISIONS.md, including the judgment call to render FEEDBACK's five themes as accordions (text-only site extraction couldn't confirm the reference's actual disclosure behavior there). `page.tsx` now composes all six in order. `pnpm check` clean, `pnpm build` succeeds (107kB first-load JS — over the stage-7 90KB budget, but that's stage 7's problem, not stage 2's). Hit one operational snag verifying in dev: ran `pnpm build` while `pnpm dev` was still running in the background, and both processes fighting over `.next/` corrupted the dev server's manifest (ENOENT errors, 500s) — not a code bug. Fixed by stopping the dev task, deleting `.next`, restarting; confirmed clean afterward. Grepped the rendered homepage for content markers from every section — all present. **Not yet committed or pushed** — that's next, then the real DoD (side-by-side visual comparison at 1440/768/390 against the live reference) is on the user. |
