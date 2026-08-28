@@ -1,4 +1,4 @@
-import { pad } from "@/lib/utils";
+import { cn, pad } from "@/lib/utils";
 import { CheckList } from "./check-item";
 import { type Status, StatusBadge } from "./status-badge";
 
@@ -14,23 +14,39 @@ type Props = {
 
 /** A numbered milestone card: "001  [DONE]  IDEA VALIDATED". */
 export function TimelineCard({ index, status, title, period, children }: Props) {
+  const active = status === "current";
+
   return (
-    <article className="flex flex-col gap-4 border border-rule p-gutter">
+    <article className="flex flex-col gap-4 bg-bg p-gutter">
       <header className="flex items-baseline justify-between gap-4">
-        <span className="label tabular-nums text-faint">{pad(index, 3)}</span>
+        <span
+          className={cn(
+            "font-display text-index sm:text-index-lg font-bold tabular-nums",
+            active ? "text-accent" : "text-ink-deep",
+          )}
+        >
+          {pad(index, 3)}
+        </span>
         <StatusBadge status={status} />
       </header>
 
-      <h3 className="label text-fg">{title}</h3>
+      <h3 className="text-ui font-bold text-ink">{title}</h3>
 
       {children ? <CheckList>{children}</CheckList> : null}
 
-      <p className="label mt-auto pt-2 text-faint">{period}</p>
+      <p className="mt-auto pt-2 text-micro tracking-label text-prose">{period}</p>
     </article>
   );
 }
 
-/** Responsive grid the timeline cards sit in. */
+/**
+ * The cards are not individually bordered — this grid's own background shows
+ * through its 1px gaps, so neighbours share one hairline instead of doubling.
+ */
 export function TimelineGrid({ children }: { children: React.ReactNode }) {
-  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>;
+  return (
+    <div className="grid w-full grid-cols-1 gap-px border-x border-rule bg-rule sm:grid-cols-3">
+      {children}
+    </div>
+  );
 }

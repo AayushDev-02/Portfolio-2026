@@ -13,9 +13,8 @@ export function StatusBadge({ status }: { status: Status }) {
   return (
     <span
       className={cn(
-        "label whitespace-nowrap",
-        status === "current" ? "text-accent" : "text-dim",
-        status === "upcoming" && "text-faint",
+        "whitespace-nowrap text-badge sm:text-micro font-bold tracking-label",
+        status === "current" ? "text-accent" : "text-ink-deep",
       )}
     >
       [{LABEL[status]}]
