@@ -1,4 +1,5 @@
 import type { Status } from "@/components/primitives";
+import type { ContactErrorCode } from "@/lib/contact-contract";
 
 /**
  * The shape every locale's content file must satisfy.
@@ -51,6 +52,34 @@ export type ContactLink = {
 export type DocumentLink = {
   label: string;
   href: string;
+};
+
+/**
+ * Every string the contact form can show, including one per failure mode.
+ *
+ * This lives in the content layer rather than the next-intl catalogue because
+ * `errors` is keyed by `ContactErrorCode`: adding a code in `lib/contact-contract.ts`
+ * without writing both translations is then a compile error, which is the same
+ * guarantee `SiteContent` gives the rest of the page. See docs/DECISIONS.md.
+ */
+export type ContactFormCopy = {
+  /** Heading above the form itself, below the details list. */
+  heading: string;
+  intro: string;
+  nameLabel: string;
+  emailLabel: string;
+  messageLabel: string;
+  /** Hint under the message field: the 20-character minimum. */
+  messageHint: string;
+  submit: string;
+  submitting: string;
+  successTitle: string;
+  successBody: string;
+  /** Screen-reader-only label on the honeypot. Humans never read it. */
+  honeypotLabel: string;
+  /** Where the message goes and what is stored. Sits under the button. */
+  privacyNote: string;
+  errors: Record<ContactErrorCode, string>;
 };
 
 export type SiteContent = {
@@ -109,6 +138,7 @@ export type SiteContent = {
     documents: DocumentLink[];
     /** Covers the 履歴書, and stands alone while `documents` is empty. */
     documentsNote: string;
+    form: ContactFormCopy;
     caption: string;
     sigil: string;
   };

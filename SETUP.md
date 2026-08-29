@@ -43,7 +43,8 @@ git push -u origin main
 3. Copy the `.vercel.app` URL into `docs/PROGRESS.md`.
 
 Leave environment variables empty for now — nothing needs them until stage 6.
-`.env.example` lists what will be needed then.
+`.env.example` lists what will be needed then, and `SETUP-STAGE6.md` walks
+through creating the three accounts when you get there.
 
 ## 4. Tick it off
 

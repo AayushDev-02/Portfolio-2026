@@ -1,6 +1,7 @@
 export { AccordionGroup, AccordionRow } from "./accordion-row";
 export { BracketButton } from "./bracket-button";
 export { CheckItem, CheckList } from "./check-item";
+export { ContactForm } from "./contact-form";
 export { CornerMarks } from "./corner-marks";
 export { HairlineGrid } from "./hairline-grid";
 export { HeroBackdrop } from "./hero-backdrop";

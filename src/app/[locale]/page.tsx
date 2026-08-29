@@ -30,7 +30,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <ExperienceSection content={content} />
       <SkillsSection content={content} />
       <ProjectsSection content={content} />
-      <ContactSection content={content} />
+      <ContactSection content={content} locale={locale} />
     </>
   );
 }

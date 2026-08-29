@@ -3,8 +3,8 @@
 **Read this first at the start of every session.**
 Update it before the end of every session. This file is the project's memory.
 
-- **Current stage:** Stage 5 built — real content in both locales, live. Not marked done: the DoD needs Aayush to read the Japanese, and `public/documents/` is deliberately unbuilt pending manual redaction.
-- **Next action:** two Stage 5 items only you can close (read the Japanese; hand-redact the two PDFs — see the handoff note under Stage 5), then Stage 6 (contact system). Plus three checks that have queued up behind the automated work:
+- **Current stage:** Stage 6 built — the contact system is written, tested and passing, but **unconfigured**, so no form renders yet. Stage 5 is still open on two human items.
+- **Next action:** **`SETUP-STAGE6.md`** — create the Supabase, Resend and Upstash accounts and set the seven environment variables. The form appears the moment all seven exist; nothing else is needed from me. Then the Stage 5 items you alone can close (read the Japanese; hand-redact the two PDFs). Plus three checks that have queued up behind the automated work:
   1. **Stage 2R's side-by-side** against https://www.project-uncensored.site/ at 1440 / 768 / 390. Still not done, and it is the exact check whose absence let a fully inverted palette pass review — do not let measurements stand in for it again.
   2. **Stage 3 on a real phone.** Emulation misses iOS Safari's toolbar (the reason for `min-h-dvh`), real touch, and font fallback.
   3. **Read the Japanese.** It typechecks and fits the layout; whether it reads naturally is not something I can verify.
@@ -118,15 +118,33 @@ Section 03's rank bars do not survive the swap — percentages are honest for po
 results and dishonest for self-rated skills. Replaced with a categorised grid.
 This is where the build stops matching the reference. See brief §4.
 
-## Stage 6 — Contact system
-- [ ] Supabase project + `contact_submissions` table + RLS
-- [ ] Zod schema shared client/server, localised errors
-- [ ] Server action: validate → ratelimit → honeypot → insert → send
-- [ ] Upstash rate limit (3/hour/IP)
-- [ ] Resend + React Email template
-- [ ] UI states idle/submitting/success/error in-style
-- [ ] Secrets in Vercel env vars only
-**DoD:** real submission lands in DB + inbox; 4th in an hour rejected — [ ]
+## Stage 6 — Contact system ★ CURRENT
+Setup guide: `SETUP-STAGE6.md`. Migration: `supabase/migrations/0001_*.sql`.
+
+- [~] Supabase project + `contact_submissions` table + RLS — **migration written, not run.** RLS on with *no policies*: the anon key can neither read nor write, the service role bypasses. Creating the project is yours
+- [x] Zod schema, localised errors — **server-side only**, and the client never imports it; see DECISIONS.md. Errors are codes, translated from `content/*.ts`, so a new code without both translations is a compile error
+- [x] Server action: validate → ratelimit → honeypot → insert → send — honeypot moved *ahead* of the rate limiter (DECISIONS.md). Insert before send, so a Resend outage never loses an enquiry
+- [x] Upstash rate limit (3/hour/IP) — sliding window, on an HMAC of the IP rather than the address. **Fails closed**: an Upstash outage rejects rather than letting messages through
+- [x] Resend + email template — hand-authored HTML + plain-text sibling, no React Email. `replyTo` is the sender, so Reply answers the person
+- [x] UI states idle/submitting/success/error in-style — `[ SENDING... ]`, `[ MESSAGE RECEIVED ]`, `[ TRANSMISSION FAILED ]`. Works with JavaScript off
+- [x] Secrets in Vercel env vars only — nothing hard-coded; `server-only` makes a client import of the service-role key a build failure. Verified: no secret and no server library appears in `.next/static/`
+- [ ] **Create the three accounts and set the seven env vars** ← `SETUP-STAGE6.md`
+- [ ] **Run the migration** in the Supabase SQL editor
+- [ ] Real submission verified in production (inbox + table; 4th in an hour rejected)
+**DoD:** real submission lands in DB + inbox; 4th in an hour rejected — [ ] *(code complete and tested against the local server; the DoD is a production round-trip, which needs the accounts)*
+
+Automated acceptance, 12/12 passing against a running server (headless Chrome
+over CDP, Node built-ins, no dependency added), plus the no-JS path driven by
+raw form POSTs: empty submit flags all three fields with localised strings, not
+codes · a rejected submit keeps what was typed · sub-2s submit rejected as too
+fast · honeypot returns a fake success and stores nothing · an unreachable rate
+limiter fails **closed** · JA renders Japanese errors · no horizontal scroll at
+360/390/768 with the form present · every control ≥ 44px.
+
+**The form does not render until all seven env vars are set.** That is
+deliberate: a form that renders and cannot deliver is worse than no form.
+Unconfigured, CONTACT falls back to the mailto link and the documents note —
+verified in the production build.
 
 ## Stage 7 — Performance
 - [ ] `"use client"` audit
@@ -202,6 +220,7 @@ themes, and Motion to exist first.
 
 | Date | Stage | What happened |
 |---|---|---|
+| 2026-08-29 | 6 | Contact system built end to end; five dependencies added with a DECISIONS.md line each, and **two the plan specified were dropped**. `react-hook-form` went because React 19's `useActionState` already gives the pending flag, the result and progressive enhancement, and ~9KB gz was not defensible on a budget already 25KB over stage 7's target. `@react-email/components` went because the site's monospace-on-hairlines idiom maps to hand-written HTML almost literally, and a plain-text sibling helps deliverability. **Zod is server-side only and the client never imports it** — the first cut had the form importing `CONTACT_LIMITS` from `lib/schemas.ts`, which calls `z.object()` at module scope and so put Zod in the client graph, left to tree-shaking to maybe remove; split into `lib/contact-contract.ts` (no byte-costing imports, both sides) and `lib/schemas.ts` (Zod, server only). That split was forced anyway: a `"use server"` module may only export async functions, which the build caught. Form copy went into `SiteContent.contact.form` rather than the next-intl catalogue, because errors typed `Record<ContactErrorCode, string>` make a missing translation a compile error where flat JSON gives a runtime fallback — and it keeps CLAUDE.md rule 2 intact. **Honeypot moved ahead of the rate limiter**: a honeypot hit already returns a fake success, so rate-limiting it changes nothing for the bot and spends a Redis command per hit out of a free tier. The two bot checks deliberately differ — filled honeypot returns a fake success (telling a bot it was caught only teaches it), too-fast returns a real error (a person pasting a prepared message genuinely can be quick, and silently dropping that is the exact failure this section guards against). Timing stamp written in an effect, not during render, since `Date.now()` in the render body is a hydration mismatch; an absent stamp means no JS and skips the check rather than failing it. IP stored as HMAC-SHA256 keyed on the service-role key — a bare hash of an IP is not anonymisation, and the service-role key avoids an eighth env var. Verified against a running server: 12/12 CDP checks, and the no-JS path driven by raw multipart POSTs (one `aria-invalid` and the right server-rendered error for a bad address; TRANSMISSION FAILED and no success panel for a valid one against fake credentials; success panel and no form for a filled honeypot). Confirmed no secret and no server library reaches `.next/static/`, and that the unconfigured production build renders no form at all. Cost: 113 → 115kB first-load JS. **Nothing is configured** — `SETUP-STAGE6.md` written for the three accounts. Also repaired `docs/PROGRESS.md`, whose working copy had been overwritten with a pre-stage-5 snapshot: every stage 5 item back to unchecked and its session-log entry deleted, while stage 5 is committed at 757cd45. |
 | 2026-08-29 | 5 | Aayush supplied his EN resume, 職務経歴書 and 履歴書. Saved to `docs/source/` (to be gitignored). `docs/CONTENT-STAGE5.md` written: section-by-section content mapping, JA sourcing rule (lift from the 職務経歴書, don't translate the English), and a publish/don't-publish table — the 履歴書 carries a home address, phone, DOB, gender and nationality and must never reach `public/`. Identified the first real design divergence: SKILLS cannot use the reference's percentage rank bars. |
 | 2026-08-28 | — | Reference site torn down, stack chosen, plan written. Nothing built yet. |
 | 2026-08-29 | 2R | v3 teardown done by actually viewing the reference. Found the site is WHITE with a photographic hero — v1/v2 specs were inverted. DESIGN-SPEC.md and FIXES-STAGE2.md rewritten. Dark mode (11) and Motion (12) added to the plan. Placeholder hero image generated. |

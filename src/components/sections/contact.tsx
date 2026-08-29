@@ -1,5 +1,12 @@
-import { BracketButton, SectionHead, SectionShell } from "@/components/primitives";
+import {
+  BracketButton,
+  ContactForm,
+  SectionHead,
+  SectionShell,
+} from "@/components/primitives";
 import type { SiteContent } from "@/content";
+import type { Locale } from "@/i18n/routing";
+import { isContactConfigured } from "@/lib/contact-env";
 
 /** A label/value row in the details list. */
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
@@ -11,8 +18,19 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-export function ContactSection({ content }: { content: SiteContent }) {
+export function ContactSection({
+  content,
+  locale,
+}: {
+  content: SiteContent;
+  locale: Locale;
+}) {
   const { contact } = content;
+
+  // No form unless Resend, Supabase and Upstash are all configured. A form that
+  // renders and then drops the message is worse than no form on a page whose
+  // whole job is getting someone hired — the mailto above always works.
+  const showForm = isContactConfigured();
 
   return (
     <SectionShell
@@ -73,12 +91,7 @@ export function ContactSection({ content }: { content: SiteContent }) {
           </DetailRow>
         </dl>
 
-        {/*
-          STAGE 6 SLOT — the contact form mounts here.
-          Server action: validate -> rate limit -> honeypot -> insert -> send.
-          Left as markup only on purpose; a form that silently drops messages is
-          worse than no form on a page whose whole job is getting someone hired.
-        */}
+        {showForm ? <ContactForm copy={contact.form} locale={locale} /> : null}
       </div>
     </SectionShell>
   );

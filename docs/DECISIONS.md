@@ -169,3 +169,93 @@ grouped. Rendered as `AccordionRow`s to match PHILOSOPHY's pattern (same
 both sections) and because five expanded theme blocks would be a lot of
 vertical scroll on mobile either way. Revisit once the reference is visually
 compared to this section, not just its text.
+
+### 2026-08-29 — Stage 6 dependencies: five added, two from the plan dropped
+Rule 8 requires a line per dependency. Added, all committed to in PLAN.md §1:
+`zod` (validation), `@supabase/supabase-js` (submission storage), `resend`
+(delivery), `@upstash/ratelimit` + `@upstash/redis` (rate limiting). Only the
+first has any chance of reaching the browser, and it does not — see below.
+
+Also added `server-only` (0.0.1, zero runtime bytes). It is a build-time poison
+pill: importing it into anything reachable from a client component fails the
+build. `lib/supabase.ts` holds the service-role key, which bypasses row-level
+security, so "do not import this from the client" is worth making a compile
+error rather than a convention.
+
+**Dropped: `react-hook-form`.** PLAN.md §1 specified it with Zod, sharing one
+schema across the boundary. React 19's `useActionState` already supplies the
+pending flag, the result and the progressive-enhancement path, which is all
+this three-field form needed from a form library. Native `required` and
+`type="email"` cover instant feedback. Adding ~9KB gzipped to a first-load
+budget that is already 25KB over stage 7's target, for a form most visitors
+never submit, was not defensible.
+
+**Dropped: `@react-email/components`.** The plan wanted it so the notification
+was not "a plaintext blob". The notification is hand-authored HTML with a
+plain-text sibling instead — the site's idiom is monospace text on hairlines,
+which maps to a table-free email almost literally, and sending both parts helps
+deliverability. `lib/contact-email.ts` is 90 lines and escapes every
+interpolation. Revisit only if the email grows past one screen.
+
+### 2026-08-29 — Zod validates on the server only, and the client never imports it
+The first cut had the client form importing `CONTACT_LIMITS` from
+`lib/schemas.ts`. That file calls `z.object()` at module scope, so the import
+put Zod in the client graph and left it to tree-shaking to remove — which it
+may or may not do, silently, differently per bundler version.
+
+Split into two files instead. `lib/contact-contract.ts` holds the limits, field
+names, error codes and the action's state type, and imports nothing that costs
+bytes; both sides import it. `lib/schemas.ts` imports Zod, builds the schema,
+and is imported by the server action alone. Verified against the built output:
+no Zod, Supabase or Upstash identifier appears in `.next/static/chunks/`, and
+the whole form costs about 2KB of first-load JS (113 → 115KB).
+
+This split was forced anyway — a `"use server"` module may only export async
+functions, so the constants could not have stayed beside the action.
+
+### 2026-08-29 — Contact form copy lives in content/*.ts, not the message catalogue
+The stage 4 rule was: next-intl carries UI chrome, `content/*.ts` carries
+section copy. A form's labels look like chrome, but its *error strings* are
+typed `Record<ContactErrorCode, string>`, so adding a code in
+`contact-contract.ts` without writing both translations is a compile error.
+A flat JSON catalogue gives a runtime fallback string instead. The whole form's
+copy therefore sits under `contact.form` in `SiteContent`, which also keeps
+CLAUDE.md rule 2 intact: the section still reads from `content/*` and nothing
+else, and hands the client leaf a plain serialisable object.
+
+### 2026-08-29 — The form does not render unless all seven env vars are set
+`isContactConfigured()` gates it. A form that renders and then cannot deliver is
+worse than no form on a page whose only job is getting someone hired — and the
+mailto link above it always works. Blank counts as unset, which is the same trap
+that broke the stage 0 Vercel build (`??` does not fall back on `""`).
+
+Rate limiting is required rather than optional: a half-configured environment
+yields no form rather than an unprotected one. The action still re-checks and
+returns `unavailable`, because a server action is a public endpoint and can be
+POSTed to whatever the page chose to render.
+
+### 2026-08-29 — Honeypot before the rate limiter, and the two bot checks differ
+PLAN.md §3 sketched validate → rate limit → honeypot. The honeypot runs first
+instead: a honeypot hit already returns a fake success, so rate-limiting it
+changes nothing for the bot and spends a Redis command per hit out of a free
+tier. Everything with an external quota now sits behind every check that is free.
+
+The two bot checks deliberately behave differently. A filled honeypot returns a
+**fake success** — telling a bot it was caught only teaches it to try again, and
+no human can fill an off-screen field. A too-fast submission returns a **real
+error** asking the sender to retry, because a person pasting a prepared message
+genuinely can be quick, and silently discarding that message is the exact
+failure this section has been guarding against since stage 5.
+
+The timing stamp is written by an effect after mount, not during render —
+`Date.now()` in the render body differs between server and client and would be a
+hydration mismatch. An absent stamp means no JavaScript, which skips the timing
+check rather than failing it: a visitor without JS is a person.
+
+### 2026-08-29 — IP is stored as an HMAC, keyed on the service-role key
+The rate-limit key and the stored row both use `HMAC-SHA256(ip, service_role_key)`
+rather than the address. A bare SHA-256 of an IP is not anonymisation — the IPv4
+space is small enough to enumerate in seconds — so it needs a key, and the
+service-role key is a secret necessarily present wherever this code runs, which
+avoids an eighth environment variable. The table is a job-search side effect,
+not a log; it should not accumulate personal data it has no use for.

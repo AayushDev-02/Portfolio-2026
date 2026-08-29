@@ -296,6 +296,38 @@ const contact = {
   documents: [],
   documentsNote:
     "Resume and 職務経歴書 available on request, along with a 履歴書 if your process needs one.",
+  form: {
+    heading: "Send a message",
+    intro:
+      "For a role, a contract, or a question about anything above. I read every message and reply in English or Japanese.",
+    nameLabel: "Name",
+    emailLabel: "Email",
+    messageLabel: "Message",
+    messageHint: "At least 20 characters.",
+    submit: "SEND MESSAGE",
+    submitting: "SENDING...",
+    successTitle: "MESSAGE RECEIVED",
+    successBody:
+      "Thank you — it is in my inbox. I usually reply within two working days.",
+    honeypotLabel: "Leave this field empty",
+    privacyNote:
+      "Your name, address and message are stored so nothing gets lost, and sent to me by email. Nothing else is collected and nothing is shared.",
+    errors: {
+      name_required: "Please enter your name.",
+      name_too_long: "That name is longer than 80 characters.",
+      email_invalid: "That does not look like an email address.",
+      email_too_long: "That address is longer than 160 characters.",
+      message_too_short: "Please write at least 20 characters.",
+      message_too_long: "That message is longer than 2,000 characters — please trim it.",
+      locale_invalid: "Something went wrong. Please reload the page and try again.",
+      rate_limited:
+        "Three messages an hour is the limit. Please try again later, or email me directly.",
+      too_fast: "That was submitted unusually fast. Please try once more.",
+      unavailable:
+        "The form is not accepting messages right now. Please email me directly.",
+      failed: "TRANSMISSION FAILED — please retry, or email me directly.",
+    },
+  },
   caption: "CURRENTLY IN JAPAN ON A VALID WORK VISA",
   sigil: "END",
 };
