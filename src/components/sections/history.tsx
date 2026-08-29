@@ -1,7 +1,8 @@
 import { RankBar, RankList, SectionHead, SectionShell } from "@/components/primitives";
-import { history, privacyRound } from "@/content/reference";
+import type { SiteContent } from "@/content";
 
-export function HistorySection() {
+export function HistorySection({ content }: { content: SiteContent }) {
+  const { history, privacyRound } = content;
   return (
     <SectionShell
       index={5}

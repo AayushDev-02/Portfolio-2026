@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "title": "ヤダヴ・アーユシュ — ソフトウェアエンジニア",
+    "titleTemplate": "%s — ヤダヴ・アーユシュ",
+    "description": "日本を拠点とするフルスタック／応用AIエンジニア。ポートフォリオ、プロジェクト、お問い合わせ。"
+  },
+  "nav": {
+    "skipToContent": "本文へスキップ",
+    "switchLanguage": "言語",
+    "english": "EN",
+    "japanese": "JA"
+  }
+}

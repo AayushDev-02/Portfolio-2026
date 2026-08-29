@@ -89,6 +89,25 @@ enough detail at the time. Both follow the existing `CheckItem`/`RankBar`
 shape — a `<li>` primitive plus a list wrapper — rather than one-off markup
 inside the section component.
 
+### 2026-08-29 — next-intl 4.14.1 added (stage 4)
+The one new dependency in stage 4, committed to in PLAN.md §1 from the start.
+Chosen over hand-rolled routing because locale detection, the `[locale]`
+segment, `hreflang` alternates and server-side message loading are each easy to
+get subtly wrong, and next-intl does them without shipping a translation runtime
+to the client — messages resolve in RSC, so the client bundle is unchanged.
+Rejected: `next-i18next` (Pages-router era), and rolling our own (the
+`Accept-Language` negotiation and cookie-override precedence is the fiddly part,
+and it is exactly what the library already handles).
+
+### 2026-08-29 — Section content stays typed TS, not next-intl message JSON
+next-intl carries UI chrome — the switcher, the skip link, anything that is a
+label rather than content. The six sections' actual copy stays in
+`src/content/*.ts` behind one shared type, per PLAN.md §2. Two reasons: a
+missing Japanese key becomes a compile error rather than a runtime fallback
+string, and the content shape is nested and typed (arrays of timeline entries,
+ranked results) in a way flat message catalogues model badly. This also keeps
+CLAUDE.md rule 2 intact — sections read from `content/*` and nothing else.
+
 ### 2026-08-29 — FEEDBACK's five themes rendered as accordion rows
 The text-only extraction of the reference site couldn't confirm whether the
 five FEEDBACK themes are actually collapsible in the live DOM or just visually

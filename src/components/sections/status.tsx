@@ -5,9 +5,10 @@ import {
   TimelineCard,
   TimelineGrid,
 } from "@/components/primitives";
-import { status } from "@/content/reference";
+import type { SiteContent } from "@/content";
 
-export function StatusSection() {
+export function StatusSection({ content }: { content: SiteContent }) {
+  const { status } = content;
   return (
     <SectionShell
       index={2}

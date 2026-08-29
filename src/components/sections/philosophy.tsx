@@ -6,9 +6,10 @@ import {
   SectionHead,
   SectionShell,
 } from "@/components/primitives";
-import { philosophy } from "@/content/reference";
+import type { SiteContent } from "@/content";
 
-export function PhilosophySection() {
+export function PhilosophySection({ content }: { content: SiteContent }) {
+  const { philosophy } = content;
   return (
     <SectionShell
       index={1}

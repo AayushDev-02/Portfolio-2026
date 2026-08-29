@@ -1,15 +1,21 @@
 /**
- * Stage 2 content: the reference site's own copy, hardcoded verbatim.
+ * English content: the reference site's own copy, hardcoded verbatim.
  *
- * Geometry is the point of stage 2, not content correctness — this file gets
- * replaced wholesale in stage 5 with the portfolio's own bilingual content
- * behind a shared type. Source: https://www.project-uncensored.site/,
- * transcribed 2026-08-29. See docs/DESIGN-SPEC.md §6 for the section mapping.
+ * Geometry was the point of stage 2, not content correctness — this file gets
+ * replaced wholesale in stage 5 with the portfolio's own copy. Source:
+ * https://www.project-uncensored.site/, transcribed 2026-08-29. See
+ * docs/DESIGN-SPEC.md §7 for the section mapping.
  */
 
-import type { Status } from "@/components/primitives";
+import type {
+  FeedbackTheme,
+  PhilosophyQuestion,
+  RankResult,
+  SiteContent,
+  TimelineEntry,
+} from "./types";
 
-export const intro = {
+const intro = {
   eyebrow: "INTRO",
   title: "Project Uncensored",
   status: "System ready — uncensored mode",
@@ -18,12 +24,7 @@ export const intro = {
   sigil: "V0",
 };
 
-type PhilosophyQuestion = {
-  question: string;
-  items: string[];
-};
-
-export const philosophy = {
+const philosophy = {
   eyebrow: "PHILOSOPHY",
   heading: "Why this project",
   lead: "Uncensored and privacy-first aren't slogans. Here's what they actually mean in practice.",
@@ -89,17 +90,10 @@ export const philosophy = {
   sigil: "WHY",
 };
 
-type TimelineEntry = {
-  status: Status;
-  title: string;
-  period: string;
-  items?: { label: string; checked: boolean }[];
-};
-
 const checked = (label: string) => ({ label, checked: true });
 const unchecked = (label: string) => ({ label, checked: false });
 
-export const status = {
+const status = {
   eyebrow: "STATUS",
   heading: "Current phase",
   lead: "Here's where the project stands right now. The results on the next card are part of this journey.",
@@ -153,13 +147,8 @@ export const status = {
   sigil: "PH",
 };
 
-type RankResult = {
-  label: string;
-  value: number;
-};
-
 /** The one closed round so far. Reused verbatim by RESULTS and HISTORY. */
-export const privacyRound = {
+const privacyRound = {
   label: "[Privacy round — closed]",
   stats: "77/135 confirmed (57%)",
   ranking: [
@@ -170,7 +159,7 @@ export const privacyRound = {
   ] satisfies RankResult[],
 };
 
-export const results = {
+const results = {
   eyebrow: "RESULTS",
   heading: "Results",
   lead: "You told us what matters most in private AI. Here's the ranking.",
@@ -181,13 +170,7 @@ export const results = {
   sigil: "DONE",
 };
 
-type FeedbackTheme = {
-  title: string;
-  body: string;
-  quote?: string;
-};
-
-export const feedback = {
+const feedback = {
   eyebrow: "FEEDBACK",
   heading: "What you told me",
   lead: "The first round of feedback from Instagram, grouped into five themes already shaping the roadmap.",
@@ -226,10 +209,22 @@ export const feedback = {
   sigil: "IG",
 };
 
-export const history = {
+const history = {
   eyebrow: "HISTORY",
   heading: "Community decisions",
   lead: "A permanent record of how the community has shaped the project.",
   caption: "1 DECISION RECORDED",
   sigil: "LOG",
 };
+
+export const en: SiteContent = {
+  intro,
+  philosophy,
+  status,
+  privacyRound,
+  results,
+  feedback,
+  history,
+};
+
+export default en;

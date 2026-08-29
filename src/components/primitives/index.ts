@@ -4,6 +4,7 @@ export { CheckItem, CheckList } from "./check-item";
 export { CornerMarks } from "./corner-marks";
 export { HeroBackdrop } from "./hero-backdrop";
 export { Counter, Eyebrow, MicroLabel, Sigil } from "./labels";
+export { LocaleSwitcher } from "./locale-switcher";
 export { NumberedItem, NumberedList } from "./numbered-item";
 export { PullQuote } from "./pull-quote";
 export { RankBar, RankList } from "./rank-bar";

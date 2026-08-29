@@ -7,9 +7,10 @@ import {
   SectionHead,
   SectionShell,
 } from "@/components/primitives";
-import { feedback } from "@/content/reference";
+import type { SiteContent } from "@/content";
 
-export function FeedbackSection() {
+export function FeedbackSection({ content }: { content: SiteContent }) {
+  const { feedback } = content;
   return (
     <SectionShell
       index={4}

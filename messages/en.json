@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "title": "Aayush Yadav — Software Engineer",
+    "titleTemplate": "%s — Aayush Yadav",
+    "description": "Full-stack and applied-AI engineer based in Japan. Portfolio, projects and contact."
+  },
+  "nav": {
+    "skipToContent": "Skip to content",
+    "switchLanguage": "Language",
+    "english": "EN",
+    "japanese": "JA"
+  }
+}

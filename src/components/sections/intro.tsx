@@ -1,7 +1,8 @@
 import { HeroBackdrop, SectionShell, TerminalHero } from "@/components/primitives";
-import { intro } from "@/content/reference";
+import type { SiteContent } from "@/content";
 
-export function IntroSection() {
+export function IntroSection({ content }: { content: SiteContent }) {
+  const { intro } = content;
   return (
     <SectionShell
       index={0}

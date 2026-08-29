@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   BracketButton,
   RankBar,
@@ -6,9 +5,11 @@ import {
   SectionHead,
   SectionShell,
 } from "@/components/primitives";
-import { privacyRound, results } from "@/content/reference";
+import type { SiteContent } from "@/content";
+import { Link } from "@/i18n/navigation";
 
-export function ResultsSection() {
+export function ResultsSection({ content }: { content: SiteContent }) {
+  const { privacyRound, results } = content;
   return (
     <SectionShell
       index={3}

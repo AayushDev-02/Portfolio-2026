@@ -26,15 +26,22 @@
      --font-pixel and --font-geist-mono are injected by next/font (see lib/fonts.ts).
      --font-sans and --font-jp are system stacks: zero bytes, no next/font entry.
      See docs/DECISIONS.md for why we do not ship a webfont for CJK. */
-  --font-mono:
-    var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  --font-display: var(--font-pixel), var(--font-geist-mono), ui-monospace, monospace;
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    sans-serif;
+  /* --font-jp is appended to every stack rather than swapped in by :lang(ja).
+     Font fallback is per-glyph: Silkscreen and Geist Mono have no CJK, so a
+     Japanese character falls through to the gothic stack while Latin in the
+     same string still renders in the intended face. A :lang() swap could not
+     do that — it would replace the face for the whole element. */
   --font-jp:
     "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP",
     sans-serif;
+  --font-mono:
+    var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas,
+    var(--font-jp), monospace;
+  --font-display:
+    var(--font-pixel), var(--font-geist-mono), ui-monospace, var(--font-jp), monospace;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    var(--font-jp), sans-serif;
 
   /* --- type scale — one token per role, not per component.
      Nine distinct roles from 9px to 72px; see DESIGN-SPEC.md §4. A "-lg"
@@ -84,18 +91,6 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Japanese needs its own metrics: no negative tracking, more leading,
-     and normal word-breaking. Applied via the lang attribute so it works
-     the moment stage 4 turns on the /ja route. */
-  :lang(ja) {
-    font-family: var(--font-jp);
-    line-height: 1.85;
-    letter-spacing: normal;
-    word-break: normal;
-    overflow-wrap: anywhere;
-    line-break: strict;
-  }
-
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
@@ -122,6 +117,34 @@
     color: var(--color-terminal-fg);
     animation: caret-blink 1.06s step-end infinite;
   }
+}
+
+/* ============================================================
+   JAPANESE TYPOGRAPHY
+   Deliberately UNLAYERED. Cascade layers beat specificity, so this block
+   sitting in @layer base lost to every Tailwind utility in @layer utilities —
+   `tracking-tight` on a heading kept its negative tracking in Japanese, which
+   is the one thing CLAUDE.md rule 6 forbids. Unlayered rules outrank all
+   layered ones, so these win over the utilities without !important and
+   without touching a single component.
+   ============================================================ */
+
+:lang(ja) {
+  /* Negative tracking crushes kana and makes kanji ambiguous. */
+  letter-spacing: normal;
+  /* JA needs more leading than Latin at the same size. */
+  line-height: 1.85;
+  /* Japanese has no spaces; the default would break mid-word on Latin runs. */
+  word-break: normal;
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+/* The display face has no CJK, so a Japanese heading is already falling back
+   to the gothic stack. Its optical weight there is heavier than Silkscreen's,
+   and normal leading would collide with the taller line boxes above. */
+:lang(ja) :is(h1, h2, h3) {
+  line-height: 1.35;
 }
 
 @keyframes caret-blink {
