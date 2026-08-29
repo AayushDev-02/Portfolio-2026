@@ -7,23 +7,24 @@ import {
 } from "@/components/primitives";
 import type { SiteContent } from "@/content";
 
-export function StatusSection({ content }: { content: SiteContent }) {
-  const { status } = content;
+export function ExperienceSection({ content }: { content: SiteContent }) {
+  const { experience } = content;
+
   return (
     <SectionShell
       index={2}
-      eyebrow={status.eyebrow}
+      eyebrow={experience.eyebrow}
       position={3}
       total={6}
-      id="status"
-      caption={status.caption}
-      sigil={status.sigil}
+      id="experience"
+      caption={experience.caption}
+      sigil={experience.sigil}
     >
       <div className="flex flex-col items-center gap-10">
-        <SectionHead heading={status.heading} lede={status.lead} />
+        <SectionHead heading={experience.heading} lede={experience.lead} />
 
         <TimelineGrid>
-          {status.entries.map((entry, i) => (
+          {experience.entries.map((entry, i) => (
             <TimelineCard
               key={entry.title}
               index={i + 1}

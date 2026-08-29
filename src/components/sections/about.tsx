@@ -8,26 +8,27 @@ import {
 } from "@/components/primitives";
 import type { SiteContent } from "@/content";
 
-export function PhilosophySection({ content }: { content: SiteContent }) {
-  const { philosophy } = content;
+export function AboutSection({ content }: { content: SiteContent }) {
+  const { about } = content;
+
   return (
     <SectionShell
       index={1}
-      eyebrow={philosophy.eyebrow}
+      eyebrow={about.eyebrow}
       position={2}
       total={6}
-      id="philosophy"
-      caption={philosophy.caption}
-      sigil={philosophy.sigil}
+      id="about"
+      caption={about.caption}
+      sigil={about.sigil}
     >
       <div className="flex flex-col items-center gap-10">
-        <SectionHead heading={philosophy.heading} lede={philosophy.lead} />
+        <SectionHead heading={about.heading} lede={about.lead} />
 
         <AccordionGroup>
-          {philosophy.questions.map((q, i) => (
-            <AccordionRow key={q.question} title={q.question} defaultOpen={i === 0}>
+          {about.rows.map((row, i) => (
+            <AccordionRow key={row.question} title={row.question} defaultOpen={i === 0}>
               <CheckList columns={2}>
-                {q.items.map((item) => (
+                {row.items.map((item) => (
                   <CheckItem key={item}>{item}</CheckItem>
                 ))}
               </CheckList>

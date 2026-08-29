@@ -1,5 +1,6 @@
 import { cn, pad } from "@/lib/utils";
 import { CheckList } from "./check-item";
+import { HairlineGrid } from "./hairline-grid";
 import { type Status, StatusBadge } from "./status-badge";
 
 type Props = {
@@ -39,14 +40,7 @@ export function TimelineCard({ index, status, title, period, children }: Props) 
   );
 }
 
-/**
- * The cards are not individually bordered — this grid's own background shows
- * through its 1px gaps, so neighbours share one hairline instead of doubling.
- */
+/** Kept as a named alias so EXPERIENCE reads in its own vocabulary. */
 export function TimelineGrid({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="grid w-full grid-cols-1 gap-px border-x border-rule bg-rule sm:grid-cols-3">
-      {children}
-    </div>
-  );
+  return <HairlineGrid>{children}</HairlineGrid>;
 }

@@ -3,8 +3,8 @@
 **Read this first at the start of every session.**
 Update it before the end of every session. This file is the project's memory.
 
-- **Current stage:** Stage 4 done (i18n live at `/en` and `/ja`). Stage 5 — content remap — is next.
-- **Next action:** Stage 5, plus three human checks that have queued up behind the automated work:
+- **Current stage:** Stage 5 — content remap. Real content now available: Aayush's EN resume, 職務経歴書 and 履歴書 are in `docs/source/` (gitignored). Brief written in `docs/CONTENT-STAGE5.md`.
+- **Next action:** Stage 5 per `docs/CONTENT-STAGE5.md`. **Read its §1 first — the 履歴書 must never be published**; it carries a home address, phone, DOB, gender and nationality. Plus three human checks that have queued up behind the automated work:
   1. **Stage 2R's side-by-side** against https://www.project-uncensored.site/ at 1440 / 768 / 390. Still not done, and it is the exact check whose absence let a fully inverted palette pass review — do not let measurements stand in for it again.
   2. **Stage 3 on a real phone.** Emulation misses iOS Safari's toolbar (the reason for `min-h-dvh`), real touch, and font fallback.
   3. **Read the Japanese.** It typechecks and fits the layout; whether it reads naturally is not something I can verify.
@@ -90,13 +90,26 @@ loosest fit, ~130px over. No horizontal scroll (scrollWidth 1265 < 1280).
 - [ ] Human read-through of the Japanese  ← **you should do this** — the JA copy is my translation of the reference; it typechecks and fits the layout, but I can't judge whether it *reads* naturally to a Japanese recruiter
 **DoD:** both locales render cleanly, no clipped text — [x] *(automated; the copy quality itself is unreviewed)*
 
-## Stage 5 — Content remap
-- [ ] Section mapping applied (INTRO/ABOUT/EXPERIENCE/SKILLS/PROJECTS/CONTACT)
-- [ ] `content/en.ts` placeholders
-- [ ] `content/ja.ts` placeholders
-- [ ] Shared content type enforced
-- [ ] AI-generated images optimised (AVIF/WebP, <200KB)
-**DoD:** both locales complete with plausible placeholders — [ ]
+## Stage 5 — Content remap ★ CURRENT
+Brief: `docs/CONTENT-STAGE5.md`. Sources: `docs/source/*.pdf` (gitignored).
+
+- [ ] `docs/source/` added to `.gitignore` — **do this before the first commit of this stage**
+- [ ] Section mapping applied (INTRO / ABOUT / EXPERIENCE / SKILLS / PROJECTS / CONTACT)
+- [ ] `content/en.ts` — real content, no placeholders
+- [ ] `content/ja.ts` — phrasing **lifted from the 職務経歴書**, not translated from the English
+- [ ] Shared content type enforced (a missing JA key is a compile error)
+- [ ] SKILLS: `RankBar` replaced with a categorised hairline grid — see brief §4
+- [ ] `public/documents/` — redacted EN resume + redacted 職務経歴書 only
+- [ ] 履歴書 offered on request in copy; **no file, no link, not in `public/`**
+- [ ] Phone number stripped from both published PDFs; "Prodapt" out of every filename
+- [ ] Download buttons in CONTACT, both locales
+- [ ] Hero image optimised (AVIF/WebP, <200KB) — currently a multi-MB PNG
+**DoD:** both locales complete with real content; nothing in `public/` carries a home address or phone number — [ ]
+
+### First design divergence logged here
+Section 03's rank bars do not survive the swap — percentages are honest for poll
+results and dishonest for self-rated skills. Replaced with a categorised grid.
+This is where the build stops matching the reference. See brief §4.
 
 ## Stage 6 — Contact system
 - [ ] Supabase project + `contact_submissions` table + RLS
@@ -164,6 +177,7 @@ loosest fit, ~130px over. No horizontal scroll (scrollWidth 1265 < 1280).
 
 | Date | Stage | What happened |
 |---|---|---|
+| 2026-08-29 | 5 | Aayush supplied his EN resume, 職務経歴書 and 履歴書. Saved to `docs/source/` (to be gitignored). `docs/CONTENT-STAGE5.md` written: section-by-section content mapping, JA sourcing rule (lift from the 職務経歴書, don't translate the English), and a publish/don't-publish table — the 履歴書 carries a home address, phone, DOB, gender and nationality and must never reach `public/`. Identified the first real design divergence: SKILLS cannot use the reference's percentage rank bars. |
 | 2026-08-28 | — | Reference site torn down, stack chosen, plan written. Nothing built yet. |
 | 2026-08-29 | 2R | v3 teardown done by actually viewing the reference. Found the site is WHITE with a photographic hero — v1/v2 specs were inverted. DESIGN-SPEC.md and FIXES-STAGE2.md rewritten. Dark mode (11) and Motion (12) added to the plan. Placeholder hero image generated. |
 | 2026-08-28 | 0–1 | Full project source written: configs, design tokens, 11 primitives, CanvasSlot, kitchen sink. NOT installed or run — no npm access in the scaffolding environment. See SETUP.md. |

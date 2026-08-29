@@ -1,6 +1,6 @@
-export { FeedbackSection } from "./feedback";
-export { HistorySection } from "./history";
+export { AboutSection } from "./about";
+export { ContactSection } from "./contact";
+export { ExperienceSection } from "./experience";
 export { IntroSection } from "./intro";
-export { PhilosophySection } from "./philosophy";
-export { ResultsSection } from "./results";
-export { StatusSection } from "./status";
+export { ProjectsSection } from "./projects";
+export { SkillsSection } from "./skills";

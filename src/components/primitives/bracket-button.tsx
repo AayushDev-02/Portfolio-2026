@@ -8,6 +8,15 @@ type Props = {
   type?: "button" | "submit";
   /** The reference's section CTA is bare text. `boxed` is for form controls. */
   variant?: "bare" | "boxed";
+  /**
+   * Renders a plain <a> instead of the locale-aware Link. Required for
+   * anything that is not an app route — mailto:, external profiles, and static
+   * files under public/, all of which the i18n Link would wrongly prefix with
+   * the active locale.
+   */
+  external?: boolean;
+  /** Suggests a download rather than navigation. Only meaningful with external. */
+  download?: boolean;
   className?: string;
   disabled?: boolean;
 };
@@ -28,6 +37,8 @@ export function BracketButton({
   onClick,
   type = "button",
   variant = "bare",
+  external = false,
+  download = false,
   className,
   disabled,
 }: Props) {
@@ -48,6 +59,21 @@ export function BracketButton({
       <span aria-hidden="true">]</span>
     </>
   );
+
+  if (href && external) {
+    const offsite = href.startsWith("http");
+    return (
+      <a
+        href={href}
+        className={classes}
+        download={download || undefined}
+        target={offsite ? "_blank" : undefined}
+        rel={offsite ? "noopener noreferrer" : undefined}
+      >
+        {content}
+      </a>
+    );
+  }
 
   if (href) {
     return (

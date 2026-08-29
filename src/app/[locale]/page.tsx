@@ -2,12 +2,12 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import {
-  FeedbackSection,
-  HistorySection,
+  AboutSection,
+  ContactSection,
+  ExperienceSection,
   IntroSection,
-  PhilosophySection,
-  ResultsSection,
-  StatusSection,
+  ProjectsSection,
+  SkillsSection,
 } from "@/components/sections";
 import { getContent } from "@/content";
 import { routing } from "@/i18n/routing";
@@ -26,11 +26,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       <IntroSection content={content} />
-      <PhilosophySection content={content} />
-      <StatusSection content={content} />
-      <ResultsSection content={content} />
-      <FeedbackSection content={content} />
-      <HistorySection content={content} />
+      <AboutSection content={content} />
+      <ExperienceSection content={content} />
+      <SkillsSection content={content} />
+      <ProjectsSection content={content} />
+      <ContactSection content={content} />
     </>
   );
 }

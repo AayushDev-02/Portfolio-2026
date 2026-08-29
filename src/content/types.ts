@@ -3,15 +3,17 @@ import type { Status } from "@/components/primitives";
 /**
  * The shape every locale's content file must satisfy.
  *
- * This is the guarantee that stage 4 rests on: a missing or renamed Japanese
- * key is a compile error, not a blank section discovered in production.
+ * This is the guarantee stage 4 rests on: a key that exists in English and not
+ * in Japanese is a compile error, not a blank section found in production.
  */
 
-export type PhilosophyQuestion = {
+/** One "[+] question" row that expands to a checklist. ABOUT. */
+export type AccordionRowContent = {
   question: string;
   items: string[];
 };
 
+/** One numbered milestone card. EXPERIENCE. */
 export type TimelineEntry = {
   status: Status;
   title: string;
@@ -19,15 +21,36 @@ export type TimelineEntry = {
   items?: { label: string; checked: boolean }[];
 };
 
-export type RankResult = {
-  label: string;
-  value: number;
+/** One category in the skills grid. SKILLS. */
+export type SkillGroup = {
+  name: string;
+  items: string[];
 };
 
-export type FeedbackTheme = {
+/** One project write-up. PROJECTS. */
+export type ProjectEntry = {
   title: string;
   body: string;
+  /** Optional pull quote — the detail worth remembering. */
   quote?: string;
+};
+
+/** An external profile or mail link. CONTACT. */
+export type ContactLink = {
+  label: string;
+  href: string;
+  /** What the user sees, e.g. "github.com/AayushDev-02". */
+  display: string;
+};
+
+/**
+ * A downloadable document. Only ever redacted, web-safe copies.
+ * The 履歴書 is deliberately NOT representable here — it is offered as prose,
+ * with no file behind it. See docs/CONTENT-STAGE5.md §1.
+ */
+export type DocumentLink = {
+  label: string;
+  href: string;
 };
 
 export type SiteContent = {
@@ -39,15 +62,15 @@ export type SiteContent = {
     caption: string;
     sigil: string;
   };
-  philosophy: {
+  about: {
     eyebrow: string;
     heading: string;
     lead: string;
-    questions: PhilosophyQuestion[];
+    rows: AccordionRowContent[];
     caption: string;
     sigil: string;
   };
-  status: {
+  experience: {
     eyebrow: string;
     heading: string;
     lead: string;
@@ -55,34 +78,37 @@ export type SiteContent = {
     caption: string;
     sigil: string;
   };
-  privacyRound: {
-    label: string;
-    stats: string;
-    ranking: RankResult[];
-  };
-  results: {
+  skills: {
     eyebrow: string;
     heading: string;
     lead: string;
-    ctaLabel: string;
-    deleteLinkLabel: string;
-    deleteLinkHref: string;
+    groups: SkillGroup[];
     caption: string;
     sigil: string;
   };
-  feedback: {
+  projects: {
     eyebrow: string;
     heading: string;
     lead: string;
-    themes: FeedbackTheme[];
-    takeaways: string[];
+    items: ProjectEntry[];
     caption: string;
     sigil: string;
   };
-  history: {
+  contact: {
     eyebrow: string;
     heading: string;
     lead: string;
+    email: string;
+    links: ContactLink[];
+    locationLabel: string;
+    location: string;
+    availabilityLabel: string;
+    availability: string;
+    documentsLabel: string;
+    /** Empty until redacted copies exist. The section renders the note instead. */
+    documents: DocumentLink[];
+    /** Covers the 履歴書, and stands alone while `documents` is empty. */
+    documentsNote: string;
     caption: string;
     sigil: string;
   };

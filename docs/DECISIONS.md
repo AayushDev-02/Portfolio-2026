@@ -89,6 +89,59 @@ enough detail at the time. Both follow the existing `CheckItem`/`RankBar`
 shape — a `<li>` primitive plus a list wrapper — rather than one-off markup
 inside the section component.
 
+### 2026-08-29 — SKILLS drops RankBar for a categorised hairline grid (stage 5)
+**The first place the design deliberately stops matching the reference.** The
+reference uses rank bars for poll results, where the percentage is a real
+measured number with a stated sample size (77/135). Applied to skills the same
+bar becomes a self-rating — "Python 88%" — which any engineer reading the page
+discounts immediately, and which is one of the most common ways a junior
+portfolio undercuts itself. It also invites the question "measured how?", which
+has no good answer.
+
+SKILLS now renders nine categories in the same `gap-px` hairline grid the
+timeline uses, each card a `CheckList`. The category is the claim; PROJECTS,
+with its 1,400 hours and two-month release window, is the evidence.
+
+`RankBar` and `RankList` stay in the codebase and in the kitchen sink. They are
+correct components — they were simply pointed at the wrong kind of data. When
+there are real measured numbers to show, they are already built.
+
+Minor deviation from the brief's own wording: the brief suggested `CheckList` in
+two-column mode inside the grid. The grid is already 2–3 columns of categories,
+so a two-column list inside each card left roughly 15 characters per line.
+Categories go multi-column; the lists inside them stay single-column.
+
+### 2026-08-29 — Hero PNGs replaced with AVIF, using the sharp already installed
+The hero is the LCP element and was a 1.77MB PNG plus a 558KB mobile crop —
+about 9x the 200KB budget. Converted to AVIF (184KB / 80KB) with WebP siblings
+(197KB / 72KB), and the PNGs deleted: 2.3MB out of the repository.
+
+No dependency was added. `sharp@0.35.4` is already present as a Next.js
+transitive dependency; pnpm does not hoist it, so the conversion script resolved
+it by path from `node_modules/.pnpm`. `next/image` reads the AVIF and still
+negotiates the delivered format per request, so older browsers are unaffected.
+The `.webp` files are kept as a decode fallback for tooling that cannot read
+AVIF — stage 8's OG image generation is the near-term consumer.
+
+### 2026-08-29 — public/documents/ NOT created; redaction handed back
+Stage 5's brief required redacted, phone-stripped copies of the resume and
+職務経歴書, and instructed that if the phone could not be reliably stripped
+without a new dependency, to stop rather than publish an unredacted file.
+
+There is no PDF tooling on this machine — no qpdf, mutool, pdftk, ghostscript or
+poppler, and no Python PDF library. A stdlib-only probe found the phone number
+as contiguous text in `resume-en.pdf`, so a byte-level edit is *technically*
+reachable, but it would mean hand-patching stream lengths and xref offsets with
+no library, where a mistake yields either a corrupt file or a partial redaction
+that still renders. In `shokumu-keirekisho-ja.pdf` the Japanese text is in
+subsetted CID-encoded fonts, so a plaintext search cannot even confirm whether a
+phone number is present — absence of a match proves nothing there.
+
+Publishing a personal phone number to a public URL is irreversible. Stopped and
+handed back for manual redaction, as the brief pre-authorised. CONTACT renders
+its "available on request" note, and `contact.documents` is an empty array that
+grows buttons the moment redacted files exist.
+
 ### 2026-08-29 — next-intl 4.14.1 added (stage 4)
 The one new dependency in stage 4, committed to in PLAN.md §1 from the start.
 Chosen over hand-rolled routing because locale detection, the `[locale]`
