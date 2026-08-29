@@ -180,6 +180,24 @@ This is where the build stops matching the reference. See brief §4.
 
 ---
 
+## Stage 13 — Design enhancement
+Brief: `docs/STAGE13-DESIGN.md`. Runs after 10/11/12 — needs real content, both
+themes, and Motion to exist first.
+
+- [ ] Mock the four changed sections as artboards on a design canvas
+- [ ] **A** — break the rhythm: dense/wide EXPERIENCE, asymmetric PROJECTS, calm INTRO + CONTACT bookends
+- [ ] Re-measure after A — B and C may be all that remains worth doing
+- [ ] **B** — evidence on every project: screenshot, or a real architecture diagram as inline SVG
+- [ ] **C** — the four numbers pulled out as large display figures
+- [ ] **D** — one signature interaction, from his own subject matter
+- [ ] **E** — depth: pinned headers / cursor-reactive grid / hero parallax only
+- [ ] **F** — Japanese as design: vertical rails or paired EN/JA headings
+- [ ] Re-check: both themes, both locales at 360 and 768, reduced motion
+- [ ] Stage 7 budgets re-run and still passing
+**DoD:** sections read as composed not uniformly framed; every project shows evidence; the numbers land in a 15-second skim; budgets hold — [ ]
+
+---
+
 ## Session log
 
 | Date | Stage | What happened |

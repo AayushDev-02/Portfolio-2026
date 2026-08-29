@@ -56,6 +56,7 @@ Japanese.
 |---|---|---|
 | 3D | **react-three-fiber + drei + three** | Every 3D piece lives behind `next/dynamic(..., { ssr: false })` inside a `<CanvasSlot>` wrapper that renders a static poster image as fallback. Nothing in the layout depends on the canvas existing. |
 | Dark mode | **CSS custom properties + `next-themes`** | Tokens must be **semantic** (`--color-bg`, `--color-ink`) not literal (`--color-white`), and defined once per theme in `:root` / `:root[data-theme="dark"]`. Do this during the stage-2 re-base or dark mode becomes a second re-base later. |
+| Design polish | **Claude Design canvas + inline SVG** | Stage 13. Sections get mocked as artboards before any component is written; evidence diagrams are hand-authored inline SVG in the existing hairline idiom, never an imported charting library. |
 | Animation | **Motion** (`motion/react`, the Framer Motion successor) | Loaded only in the leaf components that animate. CSS handles everything it can first; Motion is for orchestration CSS genuinely can't express. |
 
 ### Explicitly rejected
@@ -391,6 +392,57 @@ motion disabled.
 
 ---
 
+### Stage 13 — Design enhancement
+*Estimate: 3–4 sessions. Brief: `docs/STAGE13-DESIGN.md`*
+
+Runs last, because it needs everything else to exist: you cannot polish content
+you do not have, every addition has to survive both themes, and several use
+Motion from stage 12.
+
+The site currently reads flat, and the reason is structural rather than
+decorative. It is a clone, so every decision in it was fitted to someone else's
+argument; the reference rests on one strong gesture that works for a manifesto
+and goes hollow under dense factual content; six identically-framed viewport
+sections produce monotony; and there is not one image or diagram on a portfolio
+belonging to someone who builds map applications and retrieval systems.
+
+Six directions, in priority order — full detail in the brief:
+
+- **A. Break the rhythm.** Vary density between sections deliberately. Dense and
+  wide for EXPERIENCE, asymmetric for PROJECTS, calm bookends at INTRO and
+  CONTACT. Contrast between sections, not effects added to all of them.
+- **B. Show the work.** Every project gets a visual — a screenshot, or where
+  client work forbids it, a real architecture diagram as inline SVG in the
+  hairline-and-mono idiom. Highest-value item on the list.
+- **C. Make the numbers the hero.** 1,400 hours/year, two months to production,
+  days to under an hour, 40% perceived latency. Currently buried in accordion
+  body text; they belong in the pixel display face.
+- **D. One signature interaction.** Exactly one, drawn from his own subject
+  matter — a hero query box that answers questions about his experience, or a
+  scroll-driven map reveal. Two signatures is the same as none.
+- **E. Depth without breaking the flat plane.** Sticky pinned headers, a
+  cursor-reactive hairline grid, slow parallax on the hero photograph only.
+- **F. Japanese as a design element.** Vertical `writing-mode` section rails or
+  paired EN/JA headings. The item most likely to make a Japanese hiring manager
+  remember the site, and true to him rather than borrowed.
+
+Guardrails, all inherited and none negotiable: stage 7's budget still binds
+(diagrams are inline SVG, not a charting library); every addition checked in
+light, dark and system, and in both locales at 360 and 768; everything in D and
+E disables under reduced motion; new components read tokens and introduce no
+hard-coded colours; diagrams carry real `<title>`/`<desc>`.
+
+Mock the four changed sections on a design canvas before writing component code.
+Build A first and re-measure — if breaking the rhythm alone fixes the complaint,
+B and C may be all that is left worth doing. One direction per commit so any of
+them can be reverted alone.
+
+**DoD:** the four changed sections read as composed rather than uniformly
+framed; every project shows evidence; the four numbers land in a fifteen-second
+skim; stage 7's budgets still pass in both themes and both locales.
+
+---
+
 ## 4. Working rhythm
 
 1. Start each session by reading `docs/PROGRESS.md`.
@@ -413,3 +465,5 @@ Never leave a session without updating `PROGRESS.md`. That file is the memory.
 | A spec written from measurements rather than from looking | This already happened once — it cost stage 2. Every visual DoD from here is confirmed by viewing both pages, not by diffing numbers |
 | Dark mode turning into a second re-base | Tokens go semantic during stage 2R, before any more components are written |
 | Motion bloating the bundle after stage 7 passed | Stage 12 re-runs the budget; `LazyMotion`, leaf-only imports, CSS first |
+| Stage 13 turning into decoration for its own sake | Its brief diagnoses *why* the page reads flat and prescribes against that. Build direction A first and re-measure before doing the rest |
+| Client work making project screenshots impossible | Architecture diagrams instead — they say more about engineering level than a screenshot anyway |
