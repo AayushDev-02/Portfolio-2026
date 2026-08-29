@@ -1,103 +1,117 @@
-# DESIGN SPEC — Reference Teardown
+# DESIGN SPEC — Reference Teardown (v3)
 
-> Source: https://www.project-uncensored.site/ — inspected 2026-08-28.
-> This file is the ground truth for the visual clone. Update it only when the
-> reference is re-inspected, never to describe what we built.
+> Source: https://www.project-uncensored.site/ — re-inspected 2026-08-28,
+> **this time by actually looking at the rendered page**, not only by reading
+> computed styles.
+>
+> v1 and v2 were both wrong about the most basic fact on the page. See
+> `FIXES-STAGE2.md` § "Why this happened". v3 supersedes both.
 
-## 1. Detected stack (reference)
+## 0. The headline correction
 
-| Layer | Finding |
-|---|---|
-| Framework | Next.js (App Router, Turbopack build — `/_next/static/immutable/chunks/*`) |
-| Styling | Tailwind CSS v4 (utility classes + `oklab()` / `lab()` computed colors) |
-| Fonts | `Geist Mono` (body/UI) + `minecraft` pixel display face (headings) |
-| Motion | No Framer Motion global; CSS transitions + scroll-driven state |
-| Canvas / WebGL | None (0 `<canvas>` elements) |
-| i18n | None — single-language `<html lang="en">` |
-| Page shape | 6 × full-viewport `<section>` elements, one document, natural scroll |
+**The reference is a WHITE site.** `<main class="bg-white">`.
 
-## 2. Color tokens
+v1 and v2 recorded `body { background-color: #0a0a0a }` and built an entire
+dark design system on it. That rule is real, but `<main>` paints white over it,
+so the black is never visible except through one element: the terminal panel in
+the hero. Everything downstream — "eight tokens", "ghost type", `--color-fg:
+#ededed` — was an inversion of the actual design.
 
-Converted from computed values. Use these as CSS custom properties.
+## 1. Stack
 
-| Token | Value | Usage |
+Next.js App Router (Turbopack) · Tailwind CSS v4 · Geist Mono + a pixel face
+("minecraft") · **one raster hero image**, no WebGL · no i18n ·
+6 × `min-h-screen` sections, natural scroll.
+
+## 2. Colour
+
+| Token | Value | Used for |
 |---|---|---|
-| `--bg` | `#0a0a0a` | Page background |
-| `--fg` | `#ededed` | Primary text |
-| `--fg-dim` | `rgb(115 115 115)` (neutral-500) | Secondary/meta text |
-| `--fg-faint` | `neutral-500 / 60%` | Corner marks, hairline labels |
-| `--accent` | `#e5484d`-class red (`lab(48.4 77.4 61.5)`) | Status, active state, CTA |
-| `--accent-soft` | `oklab(0.577 0.218 0.112 / 0.8)` | Accent on dark fills |
-| `--rule` | `neutral-500 / 20%` | All borders and dividers |
-| `--surface` | `#000000` | Inset panels, code blocks |
+| `--color-bg` | `#ffffff` | The page. `<main class="bg-white">` |
+| `--color-ink` | `gray-800` `#1f2937` | Section headings, primary dark text |
+| `--color-ink-deep` | `gray-900` / `#000` | Timeline indices, status badges |
+| `--color-prose` | `gray-600` `#4b5563` | Lede paragraphs |
+| `--color-accent` | `red-600` `#dc2626` | Eyebrows, counters, accordion titles, `[x]` marks, active timeline index, rank bars, CTA |
+| `--color-rule` | `gray-500 / 20%` | Every hairline |
+| `--color-terminal-bg` | `#0a0a0a` | **Only** the hero terminal panel |
+| `--color-terminal-fg` | `#ededed` | Text inside that panel |
 
-Rule: **only these eight.** The reference gets its polish from restraint, not
-from a palette.
+Red is not a small accent here — it carries the eyebrows, every accordion title,
+every checkmark, the rank bars and the CTA. Dark ink is for headings and body.
 
-## 3. Typography
+## 3. The hero (section 00)
 
-| Role | Face | Size | Tracking | Notes |
-|---|---|---|---|---|
-| Display heading | pixel face | 48px desktop | `-1.2px` | line-height 1.0 (48px) |
-| Section eyebrow | mono | 12px | `+0.1em` | uppercase, e.g. `00 — INTRO` |
-| Counter | mono | 12px | `+0.1em` | `01 / 06`, right-aligned |
-| Body | mono | 16px | normal | max-width ~65ch |
-| Row label | mono | 16px | normal | inside `[+] / [-]` toggles |
-| Micro-label | mono | 10–12px | `+0.12em` | uppercase footers |
+This is the piece the clone is missing entirely:
 
-Everything is monospace except the pixel display face. No serif, no sans.
+- **Full-bleed background image** — a blurred, grainy monochrome portrait.
+  `/images/bg.png` desktop, `/images/bg-mobile.png` mobile, served through
+  `next/image`, `object-cover`, `scale-110 sm:scale-100`.
+- A gradient over the lower third: `bg-linear-to-b from-transparent to-white`,
+  fading the photo into the white page.
+- The **red pixel wordmark** sits over the photo, `text-5xl sm:text-7xl`,
+  bold, uppercase.
+- Below it, a **solid `#0a0a0a` terminal panel** — the only dark box on the
+  site — containing the red micro status line and the `>` prompt with caret.
 
-## 4. Layout system
+You will need to generate an equivalent portrait/abstract image with
+OpenAI or Gemini. Blurred, high-grain, monochrome, high contrast.
+
+## 4. Typography
+
+| Role | Face | Size (→ sm) | Weight | Tracking | Colour | Align |
+|---|---|---|---|---|---|---|
+| Hero wordmark | pixel | 48 → **72px** | 700 | tight | **red-600** | over photo |
+| Section heading | pixel | 36 → **60px** | 700 | tight | gray-800 | **centred** |
+| Lede paragraph | **sans** | 16 → 18px | 400 | normal | gray-600, `leading-6`, **`max-w-xl`**, `text-balance` | **centred** |
+| Eyebrow / counter | mono | **11px** | 400 | **0.2em** | red-600 (intro: gray-800) | — |
+| Accordion title | mono | **14px** | **700** | normal | **red-600** | left |
+| Checklist `[x]` + label | mono | 12 → 14px | 400 | normal | mark red-600, label gray-800 | left |
+| Timeline index `001` | pixel | 36 → 48px | 700 | — | black; **red-600 when active** | left |
+| Status badge `[DONE]` | mono | 9 → 10px | 700 | `tracking-widest` | gray-900; red when in progress | — |
+| Micro / status line | mono | 10px | 400 | `tracking-widest` | red-600 / 80% | — |
+| CTA `[ Get notified → ]` | mono | 12px | 700 | `tracking-widest` | red-600, **no box** | centred |
+
+There is **no single body size.** Nine distinct roles, 9px to 72px.
+
+## 5. Layout
 
 ```
-<section class="relative flex min-h-screen w-full flex-col
-                border-b border-[--rule]
-                px-6 py-10 sm:px-12 sm:py-14">
+section: relative flex min-h-screen w-full flex-col border-b
+         px-6 py-10  sm:px-12 sm:py-14
 ```
 
-- **Section**: `min-h-screen`, flex column, bottom hairline border.
-- **Padding**: 24px / 40px mobile → 48px / 56px from `sm`.
-- **Corner marks**: four absolutely-positioned `+` glyphs at 12px,
-  inset 24px from each corner, colored `--fg-faint`. Present on every section.
-- **Header row**: eyebrow left (`00 — INTRO`), counter right (`01 / 06`).
-- **Footer row**: a short uppercase caption + a 2–3 letter section sigil
-  (`WHY`, `PH`, `DONE`, `IG`, `LOG`) pinned bottom-right.
-- **Corners**: `border-radius: 0` everywhere. No shadows. No gradients.
+- **Corner marks**: four `+`, 12px, inset 24px.
+- **Section head/foot**: eyebrow left + counter right; caption left + sigil right.
+- **Headings and ledes are centred**; the content blocks below them are not.
+- **Timeline cards**: `grid grid-cols-1 gap-px border-x border-gray-500/20
+  bg-gray-500/20 sm:grid-cols-3` — the grid's own background shows through the
+  1px gaps as shared hairlines. Cards are *not* individually bordered.
+- **Accordion button**: `px-6 py-9 sm:px-12 sm:py-11`.
+- **Accordion panel**: `grid grid-cols-1 gap-x-8 gap-y-4 px-6 pb-10 pl-15
+  sm:grid-cols-2` — two-column checklist at `sm`.
+- **Accordion animation**: `grid-rows-[0fr]` → `grid-rows-[1fr]` + opacity,
+  `transition-all duration-300 ease-in-out`.
+- **CTA**: bare text, no border, no padding.
+- Zero border-radius, no shadows.
 
-## 5. Component inventory (what we must build)
+## 6. Measured geometry @ 1280×800
 
-| Component | Behaviour |
-|---|---|
-| `SectionShell` | min-h-screen frame + corner marks + eyebrow + counter + footer slot |
-| `CornerMarks` | 4 × `+`, decorative, `aria-hidden` |
-| `Eyebrow` / `Counter` | mono micro-labels |
-| `AccordionRow` | `[+]` / `[-]` prefix, 36px/24px padding, expands to a checklist |
-| `CheckItem` | `[x]` / `[ ]` prefix + label |
-| `StatusBadge` | `[DONE]` / `[IN PROGRESS]` / `[UPCOMING]` |
-| `TimelineCard` | `001` index + status + title + checklist + date range |
-| `RankBar` | `01. label` + right-aligned `%` + hairline fill bar |
-| `TerminalHero` | `>` prompt with typewriter text, blinking caret |
-| `BracketButton` | `[ GET NOTIFIED → ]` — text-only, no fill, hover inverts |
+Document 5955px · sections **800 · 1292 · 1004 · 826 · 1232 · 800**
 
-## 6. Section-by-section map (reference → portfolio)
+## 7. Section map (reference → portfolio)
 
-| # | Reference | Our portfolio | Content shape reused |
-|---|---|---|---|
-| 00 | INTRO | INTRO | Terminal hero, typewriter tagline, status line |
-| 01 | PHILOSOPHY | ABOUT | Accordion rows → who I am / how I work / what I'm looking for |
-| 02 | STATUS | EXPERIENCE | Timeline cards `001…00n` with `[DONE]` / `[CURRENT]` roles |
-| 03 | RESULTS | SKILLS | Rank bars → proficiency by stack, with honest percentages |
-| 04 | FEEDBACK | PROJECTS | Accordion rows → project write-ups + pull-quote + numbered takeaways |
-| 05 | HISTORY | CONTACT | Decision log → contact form + links + availability |
+| # | Reference | Ours |
+|---|---|---|
+| 00 | INTRO | INTRO |
+| 01 | PHILOSOPHY | ABOUT |
+| 02 | STATUS | EXPERIENCE |
+| 03 | RESULTS | SKILLS |
+| 04 | FEEDBACK | PROJECTS |
+| 05 | HISTORY | CONTACT |
 
-## 7. Things to improve over the reference
+## 8. Deliberate deviations
 
-The clone is the baseline, not the ceiling. These are deliberate deviations:
-
-1. **Two languages** — the reference is English-only. Our type scale must
-   survive Japanese (no letter-spacing on JA text, different line-height).
-2. **Accessibility** — reference accordions are `<button>`s but the checklist
-   semantics are weak. We ship real `aria-expanded`, focus rings, skip link.
-3. **Reduced motion** — typewriter and scroll effects must respect
-   `prefers-reduced-motion`.
-4. **Working contact** — the reference's CTA is a stub. Ours actually sends.
+Two languages · real disclosure semantics · reduced-motion support ·
+a contact form that sends. **Dark mode is now a deviation, not the base** —
+if you want the dark look, it is a second theme layered on this one, not the
+default.

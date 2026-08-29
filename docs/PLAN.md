@@ -55,6 +55,8 @@ Japanese.
 | Concern | Choice | Seam |
 |---|---|---|
 | 3D | **react-three-fiber + drei + three** | Every 3D piece lives behind `next/dynamic(..., { ssr: false })` inside a `<CanvasSlot>` wrapper that renders a static poster image as fallback. Nothing in the layout depends on the canvas existing. |
+| Dark mode | **CSS custom properties + `next-themes`** | Tokens must be **semantic** (`--color-bg`, `--color-ink`) not literal (`--color-white`), and defined once per theme in `:root` / `:root[data-theme="dark"]`. Do this during the stage-2 re-base or dark mode becomes a second re-base later. |
+| Animation | **Motion** (`motion/react`, the Framer Motion successor) | Loaded only in the leaf components that animate. CSS handles everything it can first; Motion is for orchestration CSS genuinely can't express. |
 
 ### Explicitly rejected
 
@@ -151,7 +153,7 @@ and a Vercel preview deploy.
 
 ---
 
-### Stage 2 — Pixel-perfect clone ★ current main goal
+### Stage 2 — Pixel-perfect clone *(built against a wrong spec — see Stage 2R)*
 *Estimate: 3–4 sessions*
 
 - Build all six `SectionShell` sections with the **reference's own copy**,
@@ -166,6 +168,29 @@ and a Vercel preview deploy.
 
 **DoD:** side-by-side screenshots at 1440px, 768px and 390px are visually
 indistinguishable from the reference in layout, type scale, spacing and colour.
+
+---
+
+### Stage 2R — Re-base after the v3 teardown ★ current main goal
+*Estimate: 1–2 sessions*
+
+The v1/v2 `DESIGN-SPEC.md` was wrong: it described a dark site. The reference is
+white (`<main class="bg-white">`), with a photographic hero and one dark
+terminal panel. Stage 2 was built faithfully to a wrong spec. See
+`docs/FIXES-STAGE2.md` for the full account and the ordered fix list.
+
+- Invert the token layer to the real palette, **and make the tokens semantic
+  while you are in there** — `--color-bg` / `--color-ink` / `--color-accent`,
+  never `--color-white`. Stage 11 depends entirely on this.
+- Build the photographic hero: background image, gradient fade to page colour,
+  red pixel wordmark over it, dark terminal panel beneath.
+- Centre headings and ledes; prose to `font-sans`, `max-w-xl`.
+- Accordion: 14px bold red titles, two-column panel, animated disclosure.
+- Timeline: `gap-px` hairline grid, not individually bordered cards.
+- `BracketButton`: bare text CTA, no box.
+
+**DoD:** side-by-side at 1440 / 768 / 390 is indistinguishable from the
+reference — **verified by looking at both, not by comparing numbers.**
 
 ---
 
@@ -311,6 +336,61 @@ console errors.
 
 ---
 
+### Stage 11 — Dark mode
+*Estimate: 1 session — if stage 2R did the tokens properly*
+
+The reference has no dark mode; this is ours. It is also the single cheapest
+feature on this list, provided stage 2R left semantic tokens behind.
+
+- `next-themes` with `attribute="class"` or `data-theme`, `defaultTheme="system"`,
+  `disableTransitionOnChange` so switching doesn't animate every colour at once.
+- Define the dark palette as a **token override block only** — one
+  `:root[data-theme="dark"] { ... }` redefining the same names. No component
+  changes. If a component needs editing to support dark mode, its colour was
+  hard-coded and that is the bug.
+- Three states, not two: an explicit choice sets the attribute; the default
+  "system" sets nothing and is resolved by `prefers-color-scheme`. Handle the
+  un-stamped case or the page renders one theme's text on the other's ground.
+- Suppress the flash of wrong theme with the blocking inline script
+  `next-themes` provides.
+- The hero image needs a dark treatment — either a second asset or a
+  `mix-blend-mode` / brightness filter. Check it in both themes.
+- Toggle in the section header, in-style: `[ ☀ / ☾ ]` as a bracket control.
+- Re-run the contrast audit from stage 8 in **both** themes.
+
+**DoD:** every section legible in light, dark and system; no flash on load;
+zero component-level colour edits were needed.
+
+---
+
+### Stage 12 — Motion
+*Estimate: 1–2 sessions*
+
+**Library: Motion** (`pnpm add motion`, imported as `motion/react`). It is the
+current name for Framer Motion, has by far the largest presence in Claude
+Code's training data, and its API is stable. Everything below is achievable
+with it; most of it should not use it.
+
+- **CSS first.** The reference's own accordion animates with a
+  `grid-rows-[0fr] → [1fr]` transition and no JS at all. Anything CSS can
+  express stays CSS — it costs zero bytes and never blocks hydration.
+- Reserve Motion for what CSS can't: staggered section reveals on scroll
+  (`useInView` + `staggerChildren`), the timeline cards dealing in sequence,
+  layout transitions when a filter changes.
+- Every animated component is a leaf client component. Motion must never be
+  imported into a file that also renders a whole section, or the section
+  stops being a Server Component.
+- `<LazyMotion features={domAnimation} strict>` to load the smaller feature
+  bundle (~5KB) instead of the full one.
+- **Everything respects `prefers-reduced-motion`** — `useReducedMotion()` for
+  JS-driven work, plus the existing global CSS block.
+- Re-run the stage 7 budget. Motion's cost counts against the 90KB.
+
+**DoD:** stage 7 budgets still met; the whole page is usable and complete with
+motion disabled.
+
+---
+
 ## 4. Working rhythm
 
 1. Start each session by reading `docs/PROGRESS.md`.
@@ -330,3 +410,6 @@ Never leave a session without updating `PROGRESS.md`. That file is the memory.
 | Cloning too literally reads as derivative to a hiring manager | Stage 5 remaps content and stage 3/4/6 add real substance the reference lacks |
 | Free-tier limits (Resend 100/day, Supabase pause on inactivity) | Rate limiting from day one; a monthly ping keeps Supabase awake |
 | Scope creep into Three.js before the site ships | Stage 10 is last, and gated on the performance budget |
+| A spec written from measurements rather than from looking | This already happened once — it cost stage 2. Every visual DoD from here is confirmed by viewing both pages, not by diffing numbers |
+| Dark mode turning into a second re-base | Tokens go semantic during stage 2R, before any more components are written |
+| Motion bloating the bundle after stage 7 passed | Stage 12 re-runs the budget; `LazyMotion`, leaf-only imports, CSS first |
