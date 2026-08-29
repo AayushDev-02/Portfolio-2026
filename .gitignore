@@ -13,3 +13,10 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Personal-data source documents. NEVER commit these.
+# The 履歴書 in particular carries a home address, phone number, date of
+# birth, gender and nationality. Committing one means rewriting history to
+# remove it, and it is public the moment it is pushed.
+docs/source/
+
