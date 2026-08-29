@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { type HeroImage, heroImage } from "@/lib/images";
+import { heroImage } from "@/lib/images";
 
 /**
  * Full-bleed hero photograph with a gradient fading its lower third into the
@@ -8,23 +8,23 @@ import { type HeroImage, heroImage } from "@/lib/images";
  * Two crops rather than one responsive source — the desktop frame is
  * landscape, the mobile one portrait, so `sizes` alone can't do it.
  */
-export function HeroBackdrop({ image = heroImage }: { image?: HeroImage }) {
+export function HeroBackdrop() {
   return (
     <div
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 overflow-hidden"
     >
       <Image
-        src={image.mobile.src}
-        alt={image.alt}
+        src={heroImage.mobile.src}
+        alt={heroImage.alt}
         fill
         priority
         sizes="100vw"
         className="object-cover sm:hidden"
       />
       <Image
-        src={image.desktop.src}
-        alt={image.alt}
+        src={heroImage.desktop.src}
+        alt={heroImage.alt}
         fill
         priority
         sizes="100vw"
