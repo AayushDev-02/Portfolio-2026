@@ -24,15 +24,10 @@ export const heroCandidates = {
     mobile: { src: "/images/hero-bg-mobile.png", width: 828, height: 1100 },
     alt: "",
   },
-  /**
-   * Portrait candidate. No separate mobile crop exists yet, so both breakpoints
-   * point at the same file — object-cover frames it rather than distorting it.
-   * Dimensions are unknown until the file lands; next/image is given `fill`, so
-   * it never reads them from here.
-   */
+  /** Portrait candidate. Same 1600x1000 + 828x1100 pair as the abstract one. */
   face: {
-    desktop: { src: "/images/hero-face.png", width: 0, height: 0 },
-    mobile: { src: "/images/hero-face.png", width: 0, height: 0 },
+    desktop: { src: "/images/hero-face.png", width: 1600, height: 1000 },
+    mobile: { src: "/images/hero-face-mobile.png", width: 828, height: 1100 },
     alt: "",
   },
 } as const satisfies Record<string, HeroImage>;

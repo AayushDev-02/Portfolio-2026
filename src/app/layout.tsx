@@ -26,7 +26,13 @@ export default function RootLayout({
   return (
     // Stage 4 replaces this with the [locale] segment and next-intl.
     <html lang="en" className={fontVariables}>
-      <body className="antialiased">
+      {/* suppressHydrationWarning covers only this element's own attributes,
+          not its subtree — a real mismatch inside the app still reports.
+          Browser extensions (password managers, ColorZilla's
+          cz-shortcut-listen, Grammarly) stamp attributes onto <body> before
+          React hydrates, which React counts as a server/client mismatch even
+          though nothing in this codebase differs. */}
+      <body className="antialiased" suppressHydrationWarning>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:border focus:border-accent focus:bg-bg focus:px-4 focus:py-2 focus:text-ink"
