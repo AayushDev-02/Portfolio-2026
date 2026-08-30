@@ -274,11 +274,24 @@ Budgets (enforced, not aspirational):
 
 | Metric | Target |
 |---|---|
-| LCP (mobile, 4G) | < 1.5s |
+| LCP (mobile, Slow 4G, 4x CPU) | < 1.5s |
 | CLS | < 0.05 |
 | INP | < 200ms |
-| Client JS (first load) | < 90KB gzipped |
+| **App code** (first load, gzipped) | **< 15KB** |
+| Total first-load JS (gzipped) | < 120KB |
 | Lighthouse Performance | ≥ 95 mobile |
+
+**Why the JS budget is split.** The original single figure was 90KB, which is
+below the floor: an empty page in this stack (`/_next-found`) already ships
+~104KB of React 19 and Next 15 App Router runtime, and nothing short of leaving
+the framework changes that. A budget that can never pass is not enforcement, it
+is noise — CI would fail on every commit for a reason no commit caused.
+
+So the number that binds is **our own code**, currently ~7KB, capped at 15KB.
+That catches the regression the budget exists to catch — a careless dependency,
+an accidental `"use client"` — while the framework baseline is recorded as a
+constant rather than pretended away. The total is kept as a secondary ceiling
+so the two together still describe the real page weight.
 
 - Audit which components actually need `"use client"` — every one that doesn't
   is free speed. Push interactivity to the smallest possible leaf.

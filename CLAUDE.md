@@ -63,8 +63,9 @@ pnpm build      # production build
 
 ## Performance budgets (enforced from stage 7)
 
-LCP < 1.5s mobile · CLS < 0.05 · INP < 200ms · first-load JS < 90KB gz ·
-Lighthouse perf >= 95 mobile.
+LCP < 1.5s mobile · CLS < 0.05 · INP < 200ms · Lighthouse perf >= 95 mobile ·
+**app code < 15KB gz** (total first-load < 120KB; ~104KB of it is the React 19 /
+Next 15 floor, so the app-code figure is the one that binds — see PLAN.md §7).
 
 ## Session rhythm
 
