@@ -64,7 +64,15 @@ pnpm dev
 The form appears at the bottom of the CONTACT section once all seven are set.
 
 Then the same seven in **Vercel → Settings → Environment Variables**, for
-Production *and* Preview. Redeploy.
+Production *and* Preview.
+
+> **You must redeploy afterwards, and setting the variables does not do it.**
+> The page is statically prerendered, so `isContactConfigured()` runs at build
+> time and the form's presence is baked into the HTML. Env vars added after a
+> build have no effect on it until the next one.
+>
+> **Vercel → Deployments → ⋯ on the latest → Redeploy**, and leave "Use existing
+> Build Cache" unticked. Pushing any commit works too.
 
 ## 5. Verify in production — this is stage 6's Definition of Done
 
