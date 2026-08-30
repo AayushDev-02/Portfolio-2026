@@ -327,3 +327,33 @@ while kana in the same string fall to the gothic stack.
 
 `geist` removed from package.json; nothing else imported it. The
 `--font-geist-mono` CSS variable name is unchanged, so globals.css is untouched.
+
+### 2026-08-30 — Hero re-encoded from the recovered PNG originals (stage 7)
+With the `<picture>` fix in, the hero was still the LCP element and still 79.6KB
+on mobile. Re-encoded rather than nudged, because the stage 5 PNGs were
+recoverable from git history at `757cd45^` — re-compressing the existing AVIF
+would have stacked generation loss on top of the first encode.
+
+Quality was chosen by measurement, not by eye. Each candidate is compared to
+the original with a mean-absolute-error check per channel; under ~2/255 is
+imperceptible for photographic content.
+
+| file | before | after | encode | err/255 |
+|---|---|---|---|---|
+| hero-bg-mobile.avif | 79.6KB | 45.9KB | q50 | 1.23 |
+| hero-bg-mobile.webp | 72.2KB | 40.6KB | q60 | 1.72 |
+| hero-bg.avif | 184.4KB | 96.8KB | q40 | 1.36 |
+| hero-bg.webp | 197.1KB | 118.2KB | q26 | 1.96 |
+
+Two things the sweep taught, worth keeping. The size/quality curve for this
+art is not smooth: desktop AVIF falls from 96.8KB at q40 to 14.1KB at q35 while
+mean error moves only 1.36 → 1.81. **That cliff was not taken.** A collapse
+that large across a gradient-heavy image is banding, and banding is exactly the
+artefact a mean-error metric understates — the number would have endorsed a
+visibly worse image. And WebP is far less efficient than AVIF here: matching
+AVIF's q40 quality took until q26, and even then costs 118KB against 96.8KB.
+It only serves browsers with WebP but not AVIF, a small and shrinking set, so
+it is tuned for size rather than fidelity.
+
+The art is still placeholder. These settings are the starting point when real
+photography lands, not a result to copy blindly — re-run the sweep.
