@@ -1,6 +1,7 @@
 import { cn, pad } from "@/lib/utils";
 import { CheckList } from "./check-item";
 import { HairlineGrid } from "./hairline-grid";
+import { Reveal } from "./reveal";
 import { type Status, StatusBadge } from "./status-badge";
 
 type Props = {
@@ -42,5 +43,12 @@ export function TimelineCard({ index, status, title, period, children }: Props) 
 
 /** Kept as a named alias so EXPERIENCE reads in its own vocabulary. */
 export function TimelineGrid({ children }: { children: React.ReactNode }) {
-  return <HairlineGrid>{children}</HairlineGrid>;
+  // `stagger` animates the cards themselves rather than a wrapper, so the grid
+  // keeps its gap-px hairlines. A per-card wrapper would sit between the grid
+  // and its items and collapse the shared borders.
+  return (
+    <Reveal stagger>
+      <HairlineGrid>{children}</HairlineGrid>
+    </Reveal>
+  );
 }

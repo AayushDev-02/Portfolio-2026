@@ -612,3 +612,61 @@ missing `<title>` and missing `lang` — plausible-looking violations that have
 nothing to do with the page. The harness now randomises the port and profile per
 run and refuses to report a result at all if `<main>` and a title are not
 present.
+
+### 2026-08-30 — Motion was measured and rejected; reveals are 0.3KB of our own
+PLAN.md §12 committed to the `motion` library with `LazyMotion` +
+`domAnimation` + `strict`. That prescription was built and measured rather than
+assumed, and it costs **38.3KB gzipped** — app code went 11.4KB → 49.7KB against
+a 15KB budget. Two and a half times the entire budget, for two effects.
+
+`useInView` alone is only 0.6KB, which would have fit. It was still rejected:
+keeping a 38KB dependency to use 1.5% of it leaves a loaded footgun, because the
+next person to reach for `m.div` adds the other 38KB and finds out from CI
+rather than from the code.
+
+What replaced it is 0.3KB — app code 11.4KB → 11.7KB — and does everything §12
+asked for:
+
+- `Reveal` is a thin client wrapper holding an IntersectionObserver and one
+  boolean. `children` arrive as a prop, so everything inside stays server-rendered.
+- The animation is entirely CSS. The component flips a data attribute; globals.css
+  owns distance, duration, easing and stagger as tokens, so the motion can be
+  retuned without touching a component — the separation the colours already have.
+- Stagger is `:nth-child` delays, enumerated to ten because CSS cannot compute a
+  delay from an index.
+- Only `opacity` and `transform` animate. Both are compositor-only, so nothing
+  here touches layout or the INP budget.
+
+Reveals are one-way. Re-hiding on scroll-up makes a page feel unstable, and a
+visitor scrolling back is usually looking for something they already read.
+
+### 2026-08-30 — The reveal's hidden state is scoped to [data-js]
+The failure mode this guards against is total: if the hidden state applied
+unconditionally and JavaScript never ran, every revealed element on the page
+would stay at `opacity: 0` — a blank site, on a page whose only job is being
+read. Anyone with a blocked bundle or a failed script would see nothing.
+
+So `[data-reveal="pending"]` is hidden only under `[data-js]`, an attribute set
+by a blocking inline script in `<head>` — the same technique, for the same
+reason, as next-themes' anti-flash script. No script, no attribute, no hidden
+state; the page renders complete. Verified against the served HTML: it contains
+`data-reveal="pending"` and no `data-js`, so the rule cannot match until the
+script runs.
+
+`prefers-reduced-motion` forces the shown state outright rather than shortening
+the transition. The global block collapses durations to 0.01ms, which would
+still start these elements invisible and flick them in — a flash, not a
+reveal, and the opposite of what reduced motion is asking for.
+
+### 2026-08-30 — `pkill` does not stop Node on this machine; use PowerShell
+Third time lost to this. `pkill -f next-server` from Git Bash reports success
+and leaves the process running, so a new `pnpm start` fails to bind, exits
+silently, and every subsequent request goes to the **old** server — which serves
+HTML referencing a stylesheet hash that no longer exists on disk. The page then
+renders with no CSS, and any layout or overflow audit produces confident
+nonsense.
+
+Use `Get-Process -Name node | Stop-Process -Force` via PowerShell, and start
+each verification server on a fresh port. Every measurement harness in
+`scratchpad` now asserts the CSS actually applied before reporting anything,
+which is what caught this rather than another wrong conclusion.

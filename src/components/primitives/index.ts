@@ -10,6 +10,7 @@ export { LocaleSwitcher } from "./locale-switcher";
 export { NumberedItem, NumberedList } from "./numbered-item";
 export { PullQuote } from "./pull-quote";
 export { RankBar, RankList } from "./rank-bar";
+export { Reveal } from "./reveal";
 export { SectionHead } from "./section-head";
 export { SectionShell } from "./section-shell";
 export { SkillCard } from "./skill-card";

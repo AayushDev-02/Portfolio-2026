@@ -71,6 +71,25 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={fontVariables} suppressHydrationWarning>
+      <head>
+        {/*
+          Marks that JavaScript is running, before first paint.
+
+          The scroll-reveal hidden state in globals.css is scoped to [data-js],
+          so a visitor without JavaScript never gets it and reads a complete
+          page. Inline and blocking on purpose: deferring it would let one frame
+          paint with content already hidden and nothing able to reveal it.
+
+          Same technique next-themes uses for the theme attribute, and it must
+          run for the same reason.
+        */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: a blocking inline script has no other insertion point; the content is a fixed literal with no interpolation.
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.setAttribute('data-js','')`,
+          }}
+        />
+      </head>
       {/* suppressHydrationWarning is required by next-themes as well as for the
           reason below: its blocking script stamps data-theme on <html> before
           React hydrates, which React would otherwise report as a mismatch.

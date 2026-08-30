@@ -77,6 +77,14 @@
   --spacing-gutter: 1.5rem; /* 24px — corner mark inset, section px on mobile */
   --spacing-gutter-lg: 3rem; /* 48px — section px from sm up */
 
+  /* --- motion (stage 12) ---
+     One place to retune every reveal. Components flip a data attribute and
+     own none of these values, the same separation the colour tokens have. */
+  --reveal-distance: 0.75rem;
+  --reveal-duration: 520ms;
+  --reveal-stagger: 70ms;
+  --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
   /* --- the hero photograph's treatment ---
      A token rather than a value in the component, so dark mode can dim the
      photograph without HeroBackdrop knowing a theme exists. */
@@ -192,6 +200,117 @@
    rule is inert there and HeroBackdrop needs no knowledge of the theme. */
 .hero-image {
   filter: var(--hero-image-filter);
+}
+
+/* ============================================================
+   SCROLL REVEALS (stage 12)
+
+   The whole effect, in CSS. `Reveal` sets data-reveal and nothing else.
+
+   Scoped to [data-js] on purpose. Without JavaScript nothing ever flips the
+   attribute, so an unscoped hidden state would leave the entire page blank —
+   the single worst failure available to a site whose job is being read. No
+   script, no data-js, no hidden state, page renders complete.
+
+   Unlayered, like the dark-mode and :lang(ja) blocks above: cascade layers beat
+   specificity, and inside @layer these would lose to Tailwind's own utilities.
+   ============================================================ */
+
+[data-js] [data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+}
+
+[data-js] [data-reveal] {
+  transition:
+    opacity var(--reveal-duration) var(--reveal-ease),
+    transform var(--reveal-duration) var(--reveal-ease);
+  /* Staggered groups pass --reveal-index; everything else resolves to 0. */
+  transition-delay: calc(var(--reveal-index, 0) * var(--reveal-stagger));
+  /* Only these two properties are animated, and both are compositor-friendly:
+     no layout is triggered, which is what keeps this off the INP budget. */
+  will-change: opacity, transform;
+}
+
+[data-js] [data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  /* Dropped once the element has arrived — a permanent will-change holds a
+     compositor layer for every revealed element, for no further benefit. */
+  will-change: auto;
+}
+
+/* The staggered variant animates the ITEMS of the single layout element it
+   wraps — `> * > *`, not `> *`. The wrapper cannot be the grid itself:
+   HairlineGrid builds its shared hairlines from `gap-px` and forwards no ref,
+   so the observer needs a div of its own outside it. Animating the wrapper's
+   direct child would fade the whole grid as one block and lose the sequence.
+
+   Delays are enumerated because CSS cannot compute one from nth-child. Ten
+   covers every group on the page with room to spare, and an eleventh item
+   simply arrives with the tenth rather than breaking. */
+[data-js] [data-reveal-stagger="pending"] > * > * {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+}
+
+[data-js] [data-reveal-stagger] > * > * {
+  transition:
+    opacity var(--reveal-duration) var(--reveal-ease),
+    transform var(--reveal-duration) var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+[data-js] [data-reveal-stagger="shown"] > * > * {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+[data-js] [data-reveal-stagger] > * > *:nth-child(1) {
+  transition-delay: calc(0 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(2) {
+  transition-delay: calc(1 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(3) {
+  transition-delay: calc(2 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(4) {
+  transition-delay: calc(3 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(5) {
+  transition-delay: calc(4 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(6) {
+  transition-delay: calc(5 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(7) {
+  transition-delay: calc(6 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(8) {
+  transition-delay: calc(7 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(9) {
+  transition-delay: calc(8 * var(--reveal-stagger));
+}
+[data-js] [data-reveal-stagger] > * > *:nth-child(10) {
+  transition-delay: calc(9 * var(--reveal-stagger));
+}
+
+/* Reduced motion: shown outright, not revealed quickly. The global block below
+   collapses durations to 0.01ms, which would still start these elements
+   invisible and flick them in — a flash rather than a transition. */
+@media (prefers-reduced-motion: reduce) {
+  [data-js] [data-reveal],
+  [data-js] [data-reveal="pending"],
+  [data-js] [data-reveal-stagger] > * > *,
+  [data-js] [data-reveal-stagger="pending"] > * > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
 }
 
 /* ============================================================
