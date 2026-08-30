@@ -29,7 +29,7 @@ const TTF_USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36";
  * nothing about the network. Failing fast into the Latin-only fallback is
  * always better than a deploy that hangs.
  */
-const FETCH_TIMEOUT_MS = 5000;
+const FETCH_TIMEOUT_MS = 10000;
 
 export type OgFont = {
   name: string;

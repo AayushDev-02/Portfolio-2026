@@ -546,3 +546,69 @@ this file are not optional.
 Recorded twice now at cost. A local `next start` serves Next's built-in error
 page for unmatched paths in this app; Vercel serves `app/not-found.tsx`. Every
 conclusion drawn from the local server about the 404 has been wrong.
+
+### 2026-08-30 — Dark mode is a token-override block, as stage 2R intended
+The prerequisite held. An audit of every colour utility in `src/` found all of
+them naming a semantic token — `bg-bg`, `text-ink`, `border-rule` — and not one
+literal. The only hard-coded colours in the repo are the favicon and the OG
+image, where satori cannot read CSS variables and the values are documented as
+needing to track `@theme` by hand.
+
+So dark mode is one block in globals.css and no component edit that touches
+colour. Two components changed, neither for a colour: `HeroBackdrop` gained a
+`hero-image` class that applies `--hero-image-filter` (`none` in light), and
+`LocaleSwitcher` stopped positioning itself now that a shared header holds it
+beside the theme toggle.
+
+**The palette was measured, not eyeballed.** Every pair clears AA:
+ink 14.87:1, ink-deep 17.40:1, prose 6.86:1, accent 4.62:1. gray-500 for prose
+measures 4.10:1 and was rejected; red-600 — the light theme's accent — is 3.4:1
+on this ground and was replaced with red-500. The accent is the tightest pair in
+either theme, so treat 4.62:1 as the number to protect if the palette moves.
+
+**The page lifts to #1a1a1a rather than the panel dropping.** The terminal panel
+is the darkest element in light mode, and keeping that relationship is the
+point: a panel at #171717 on a #0a0a0a page separates by 1.10:1 and effectively
+disappears, which would delete the one dark element the whole design rests on.
+Page #1a1a1a against panel #0a0a0a separates by 1.14:1 — subtle, but a surface
+step rather than a text pair, and visible.
+
+Three states, not two. `data-theme` is stamped for an explicit choice; the
+`prefers-color-scheme` block is guarded with `:not([data-theme="light"])` so an
+explicit light choice beats a dark OS, and it also covers a visitor with
+JavaScript off. Verified: OS-dark renders dark, choosing light wins over it and
+survives a reload, and ten background samples taken from the first frames after
+navigation are all `rgb(26,26,26)` — no flash.
+
+axe re-run after the change: 0 violations across 26 WCAG 2.1 A/AA rules in
+**all four** combinations — light/en, light/ja, dark/en, dark/ja.
+
+### 2026-08-30 — The theme toggle is `[ LT / DK ]`, not PLAN's `[ ☀ / ☾ ]`
+Geist Mono has no moon glyph, and at the 11px eyebrow size the fallback crescent
+renders as something indistinguishable from a capital C. That was caught by
+looking at a screenshot; a coverage probe via `measureText` disagreed with what
+the browser actually painted, so the screenshot is the evidence.
+
+`LT / DK` always renders, matches `[ EN / JA ]` beside it in form and width, and
+suits a design whose vocabulary is already `[+]`, `[-]` and `>`. The full words
+reach screen readers through the hidden span and sighted visitors through
+`title`.
+
+### 2026-08-30 — Two measurement traps that wasted time here, both self-inflicted
+Recording these because both produced confident, wrong numbers.
+
+**A stale `next start` against a rebuilt `.next`.** The served HTML referenced a
+stylesheet hash that no longer existed, so the page rendered with no CSS at all
+— and an overflow audit duly reported the hero image blowing past the viewport
+at every width, which read exactly like a real regression from the stage 7
+`<picture>` change. It was not. Every layout measurement now begins by asserting
+the CSS actually applied (`getComputedStyle(img).position === 'absolute'`);
+without that guard the numbers are noise that looks like signal. Kill the server
+before rebuilding, and re-check the linked CSS returns 200.
+
+**Two CDP runs sharing a debug port and profile directory.** The second attaches
+to the first's dying browser and audits `about:blank`, which axe reports as
+missing `<title>` and missing `lang` — plausible-looking violations that have
+nothing to do with the page. The harness now randomises the port and profile per
+run and refuses to report a result at all if `<main>` and a title are not
+present.

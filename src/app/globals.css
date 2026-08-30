@@ -76,6 +76,11 @@
   /* --- rhythm --- */
   --spacing-gutter: 1.5rem; /* 24px — corner mark inset, section px on mobile */
   --spacing-gutter-lg: 3rem; /* 48px — section px from sm up */
+
+  /* --- the hero photograph's treatment ---
+     A token rather than a value in the component, so dark mode can dim the
+     photograph without HeroBackdrop knowing a theme exists. */
+  --hero-image-filter: none;
 }
 
 /* ============================================================
@@ -123,6 +128,70 @@
     color: var(--color-terminal-fg);
     animation: caret-blink 1.06s step-end infinite;
   }
+}
+
+/* ============================================================
+   DARK MODE (stage 11)
+
+   A token-override block and nothing else. No component is edited, because
+   stage 2R named every token for its role rather than its value — that
+   decision is what makes this file the whole feature.
+
+   THREE states, not two. An explicit choice stamps data-theme on <html>; the
+   default "system" setting stamps the *resolved* value, but only once
+   next-themes' blocking script has run. The media query covers the gap and
+   also covers a visitor with JavaScript disabled, who still gets the theme
+   their OS asked for. It is guarded with :not([data-theme="light"]) so an
+   explicit choice of light beats a dark OS preference.
+
+   DELIBERATELY UNLAYERED, for the reason the :lang(ja) block below is: cascade
+   layers beat specificity, so a block inside @layer would lose to Tailwind's
+   utilities and half the page would keep its light colours.
+
+   Every pair here was measured, not eyeballed — see docs/DECISIONS.md.
+   ============================================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #1a1a1a;
+    --color-ink: #ededed;
+    --color-ink-deep: #ffffff;
+    --color-prose: #9ca3af;
+    --color-accent: #ef4444;
+    --color-rule: rgba(237, 237, 237, 0.18);
+    --color-terminal-bg: #0a0a0a;
+    --color-terminal-fg: #ededed;
+    --color-terminal-accent: #ef4444;
+    --hero-image-filter: brightness(0.62) contrast(1.08) saturate(0.92);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #1a1a1a;
+  --color-ink: #ededed;
+  --color-ink-deep: #ffffff;
+  /* gray-400. gray-500 measures 4.10:1 here and fails AA. */
+  --color-prose: #9ca3af;
+  /* red-500, not the light theme's red-600: that is 3.4:1 on this ground.
+     4.62:1 — passing, but the tightest pair in either theme. */
+  --color-accent: #ef4444;
+  --color-rule: rgba(237, 237, 237, 0.18);
+  /* The panel stays the DARKEST element, as it is in light mode. Lifting the
+     page rather than the panel is what preserves that relationship; a panel at
+     #171717 on a #0a0a0a page separates by 1.10:1 and effectively disappears. */
+  --color-terminal-bg: #0a0a0a;
+  --color-terminal-fg: #ededed;
+  --color-terminal-accent: #ef4444;
+  /* The hero photograph is lit for a white page and glares against a dark one.
+     A filter rather than a second asset: it costs no bytes, and the art is
+     still placeholder. */
+  --hero-image-filter: brightness(0.62) contrast(1.08) saturate(0.92);
+}
+
+/* The photograph, dimmed by the token above. Light mode sets `none`, so this
+   rule is inert there and HeroBackdrop needs no knowledge of the theme. */
+.hero-image {
+  filter: var(--hero-image-filter);
 }
 
 /* ============================================================

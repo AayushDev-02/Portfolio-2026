@@ -15,4 +15,6 @@ export { SectionShell } from "./section-shell";
 export { SkillCard } from "./skill-card";
 export { type Status, StatusBadge } from "./status-badge";
 export { TerminalHero } from "./terminal-hero";
+export { ThemeProvider } from "./theme-provider";
+export { ThemeToggle } from "./theme-toggle";
 export { TimelineCard, TimelineGrid } from "./timeline-card";

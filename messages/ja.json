@@ -8,6 +8,9 @@
     "skipToContent": "本文へスキップ",
     "switchLanguage": "言語",
     "english": "EN",
-    "japanese": "JA"
+    "japanese": "JA",
+    "theme": "テーマ",
+    "themeLight": "ライト",
+    "themeDark": "ダーク"
   }
 }

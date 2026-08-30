@@ -12,6 +12,10 @@ import { heroImage } from "@/lib/images";
  * with `sm:hidden`, which does not cancel a fetch — and `priority` preloaded
  * both on top of that, so a phone downloaded 264KB to display 80KB of it.
  *
+ * `hero-image` carries no colour of its own — it applies `--hero-image-filter`,
+ * which is `none` in light and dims the photograph in dark, so this component
+ * still knows nothing about themes.
+ *
  * `<picture>` resolves the choice in the preload scanner, before a single byte
  * is requested: exactly one `<source>` matches, and only that file is fetched.
  * AVIF is offered first with a WebP sibling behind it, so the format is
@@ -40,7 +44,7 @@ export function HeroBackdrop() {
           height={mobile.height}
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="hero-image absolute inset-0 h-full w-full object-cover"
         />
       </picture>
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent to-bg" />

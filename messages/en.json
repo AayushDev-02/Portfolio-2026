@@ -8,6 +8,9 @@
     "skipToContent": "Skip to content",
     "switchLanguage": "Language",
     "english": "EN",
-    "japanese": "JA"
+    "japanese": "JA",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark"
   }
 }

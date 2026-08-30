@@ -8,7 +8,8 @@ const LANG_OF: Record<Locale, string> = { en: "en", ja: "ja" };
 const NAME_OF: Record<Locale, string> = { en: "English", ja: "日本語" };
 
 /**
- * The `[ EN / JA ]` bracket toggle, pinned top-right.
+ * The `[ EN / JA ]` bracket toggle. Positioned by the header that holds it,
+ * alongside the theme toggle, rather than pinning itself.
  *
  * Server component: these are real links, so switching works without JS and
  * the crawler sees both locales. next-intl's middleware writes its locale
@@ -16,10 +17,7 @@ const NAME_OF: Record<Locale, string> = { en: "English", ja: "日本語" };
  */
 export function LocaleSwitcher({ current, label }: { current: Locale; label: string }) {
   return (
-    <nav
-      aria-label={label}
-      className="absolute top-0 right-0 z-20 flex items-center gap-1 px-gutter py-10 text-eyebrow tracking-label sm:px-gutter-lg sm:py-14"
-    >
+    <nav aria-label={label} className="flex items-center gap-1">
       <span aria-hidden="true" className="text-rule">
         [
       </span>
