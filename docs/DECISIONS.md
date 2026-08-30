@@ -283,3 +283,28 @@ action. Worth remembering: the failure was invisible from outside, because the
 form correctly returned its generic "TRANSMISSION FAILED" rather than leaking
 the reason, and `vercel env pull` returns `""` for variables marked Sensitive
 so the values could not be inspected directly.
+
+### 2026-08-30 — The hero uses <picture>, not next/image (stage 7)
+Measured on production under mobile emulation with Slow 4G and 4x CPU
+throttling: LCP 2.18s against the 1.5s budget, with 264KB of images on a phone
+that only ever displays 80KB of them.
+
+`HeroBackdrop` rendered both crops as `next/image` and hid one with
+`sm:hidden`. `display: none` does not cancel an image fetch, and `priority`
+emitted a `<link rel="preload">` for **both** on top of that, so the desktop
+crop was not merely fetched on a phone, it was fetched eagerly and in
+competition with the crop actually being shown. The two files are genuinely
+different art — landscape and portrait — so `sizes` cannot express the choice
+and next/image cannot art-direct.
+
+`<picture>` resolves it in the preload scanner, before any byte is requested:
+one `<source>` matches and only that file is fetched. AVIF first with the WebP
+sibling behind it, so format negotiation happens in the same pass; the `<img>`
+fallback is the mobile WebP, so a browser understanding neither `<picture>` nor
+AVIF still gets art. `fetchPriority="high"` restores the head start `priority`
+gave, without preloading anything twice.
+
+Losing next/image costs nothing here. Both crops are already AVIF at their
+display size from stage 5, so the per-request re-encode had nothing left to do
+— and it removed 5KB of client runtime, taking the page's own JS from 7.76KB to
+2.58KB and first-load from 115KB to 110KB.
