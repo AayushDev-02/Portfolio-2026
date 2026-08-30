@@ -1,4 +1,4 @@
-import { MicroLabel, Reveal } from "@/components/primitives";
+import { CountUp, MicroLabel, Reveal } from "@/components/primitives";
 import type { SiteContent } from "@/content";
 
 /**
@@ -47,7 +47,7 @@ export function ResultsSection({ content }: { content: SiteContent }) {
               <dt className="sr-only">{figure.unit}</dt>
               <dd className="flex flex-col gap-3">
                 <span className="font-display text-index sm:text-index-lg font-bold leading-none text-accent">
-                  {figure.value}
+                  <CountUp text={figure.value} />
                 </span>
                 <span className="label font-bold uppercase text-ink-deep">
                   {figure.unit}
