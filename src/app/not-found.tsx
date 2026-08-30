@@ -1,7 +1,7 @@
 import { NotFoundSection } from "@/components/sections";
 import { getContent } from "@/content";
 import { routing } from "@/i18n/routing";
-import { fontVariables } from "@/lib/fonts";
+import { mono, pixel } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata = {
@@ -10,36 +10,51 @@ export const metadata = {
 };
 
 /**
+ * Lifts the two font variables onto `:root` for this page only.
+ *
+ * `[locale]/layout.tsx` is acting as this app's root layout — that is what lets
+ * it own `<html lang>` — so a `not-found` at the app root sits outside it and
+ * Next wraps this page in a generated `<html><body>` carrying neither the
+ * stylesheet nor the font classes.
+ *
+ * Putting `fontVariables` on a wrapping `<div>` looks like the fix and is not.
+ * globals.css declares the composite tokens on `:root`:
+ *
+ *     --font-display: var(--font-pixel), var(--font-geist-mono), …;
+ *
+ * A `var()` inside a custom property's value is resolved **where that property
+ * is declared**, not where it is used. At `:root` there is no `--font-pixel` on
+ * this page, so `--font-display` becomes invalid at computed-value time, and
+ * every heading falls back to Tailwind preflight's sans stack. No amount of
+ * defining the variables further down the tree changes that.
+ *
+ * So they are defined at `:root`, from next/font's own resolved family names —
+ * no token is duplicated, and nothing here can drift from `@theme`.
+ */
+function RootFontVariables() {
+  const css = `:root{--font-geist-mono:${mono.style.fontFamily};--font-pixel:${pixel.style.fontFamily};}`;
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: a <style> tag has no other insertion point; the value is next/font's generated family names, not user input.
+  return <style dangerouslySetInnerHTML={{ __html: css }} />;
+}
+
+/**
  * The styled 404.
  *
- * This page has no layout above it that it controls. `[locale]/layout.tsx` is
- * acting as this app's root layout — that is what lets it own `<html lang>` and
- * the font variables — and a `not-found` at the app root sits outside it, so
- * Next wraps this in a generated `<html><body>` that carries neither.
+ * Renders on Vercel but **not** under a local `next start`, which serves Next's
+ * built-in error page instead — verify any change here against a deploy.
  *
- * Two consequences, both handled here:
- *
- * 1. The stylesheet is imported directly, since nothing else pulls it in.
- * 2. `font-mono` is on this element and not only `fontVariables`. Custom
- *    properties resolve where the *declaration* sits, and globals.css declares
- *    `font-family: var(--font-mono)` on `body` — a parent of this div. At that
- *    point `--font-geist-mono` is not yet defined, so it fell through to
- *    `ui-monospace`, and this div inherited the already-computed value. Naming
- *    the family here, where the variables are in scope, is what actually makes
- *    the 404 match the rest of the site.
- *
- * `min-h-dvh` not `min-h-screen`, per CLAUDE.md rule 3 — iOS Safari's toolbar
+ * `min-h-dvh` not `min-h-screen`, per CLAUDE.md rule 3: iOS Safari's toolbar
  * clips a 404 as readily as it clips a section.
- *
- * Note this renders on Vercel but not under a local `next start`, which serves
- * Next's built-in page instead. Verify 404 changes against a deploy.
  */
 export default function NotFound() {
   return (
-    <div className={`${fontVariables} font-mono min-h-dvh bg-bg text-ink antialiased`}>
-      <main>
-        <NotFoundSection content={getContent(routing.defaultLocale)} />
-      </main>
-    </div>
+    <>
+      <RootFontVariables />
+      <div className="min-h-dvh bg-bg font-mono text-ink antialiased">
+        <main>
+          <NotFoundSection content={getContent(routing.defaultLocale)} />
+        </main>
+      </div>
+    </>
   );
 }
