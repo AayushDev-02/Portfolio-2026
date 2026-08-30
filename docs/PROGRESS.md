@@ -3,8 +3,8 @@
 **Read this first at the start of every session.**
 Update it before the end of every session. This file is the project's memory.
 
-- **Current stage:** **Stage 7 essentially done** — every measured budget passes on production (LCP 1.19s, CLS 0.0017, INP 24ms, app code 7.5KB). Only the Lighthouse *category score* is unverified, and the new CI workflow reports it on the next push. Stage 5 is still open on two human items.
-- **Next action:** read the `performance` workflow's first run for the Lighthouse score, then Stage 8 (SEO / a11y / analytics). Plus **confirm the notification email actually reached your inbox** (see the Stage 6 note), and the Stage 5 items you alone can close (read the Japanese; hand-redact the two PDFs). Plus three checks that have queued up behind the automated work:
+- **Current stage:** **Stages 6 and 7 are both DONE and fully verified.** Email delivery confirmed in Aayush's inbox 2026-08-30; Lighthouse ≥ 95 confirmed green in CI. Next is Stage 8 (SEO / a11y / analytics). Stage 5 is still open on two human items.
+- **Next action:** Stage 8. Plus the Stage 5 items you alone can close (read the Japanese; hand-redact the two PDFs). Plus three checks that have queued up behind the automated work:
   1. **Stage 2R's side-by-side** against https://www.project-uncensored.site/ at 1440 / 768 / 390. Still not done, and it is the exact check whose absence let a fully inverted palette pass review — do not let measurements stand in for it again.
   2. **Stage 3 on a real phone.** Emulation misses iOS Safari's toolbar (the reason for `min-h-dvh`), real touch, and font fallback.
   3. **Read the Japanese.** It typechecks and fits the layout; whether it reads naturally is not something I can verify.
@@ -135,11 +135,12 @@ Setup guide: `SETUP-STAGE6.md`. Migration: `supabase/migrations/0001_*.sql`.
 - [x] Real submission verified **in production** — 3 accepted, 4th refused with the localised rate-limit message; JA renders Japanese validation errors
 **DoD:** real submission lands in DB + inbox; 4th in an hour rejected — [x] *(verified in production 2026-08-30; see the inbox caveat below)*
 
-**One thing to confirm yourself:** that the notification actually landed in your
-inbox. Production's `CONTACT_TO_EMAIL` could not be read back (`vercel env pull`
-returns `""` for Sensitive variables), and if it is still the `…02jp@` address
-rather than the `…002@` Resend account address, Resend will reject delivery
-while the rows still store correctly. Rows are in the table either way.
+**Inbox confirmed 2026-08-30.** Aayush received the notifications at
+`…002@gmail.com`, correctly formatted. Nothing arrives at `…02jp@` and nothing
+will until stage 9: Resend's test mode only ever delivers to the account's own
+signup address. `CONTACT_FROM_EMAIL` moves to a verified domain in stage 9, and
+`CONTACT_TO_EMAIL` goes back to the `…02jp@` address at the same time — in both
+`.env` and Vercel.
 
 **Known limitation until stage 9.** `CONTACT_FROM_EMAIL` is `onboarding@resend.dev`, and Resend's test mode only delivers to the account's own signup address. `CONTACT_TO_EMAIL` is therefore temporarily `yadavaayush002@gmail.com` (the Resend account), not the `…02jp@` address the site advertises. Verify a domain at resend.com/domains in stage 9, change `CONTACT_FROM_EMAIL` to it, and point `CONTACT_TO_EMAIL` back. Both `.env` and Vercel need the change.
 
@@ -156,7 +157,7 @@ deliberate: a form that renders and cannot deliver is worse than no form.
 Unconfigured, CONTACT falls back to the mailto link and the documents note —
 verified in the production build.
 
-## Stage 7 — Performance ★ CURRENT
+## Stage 7 — Performance ✅ DONE
 Budgets revised — see PLAN.md §7 and DECISIONS.md. Harness:
 `pnpm perf <url>` (field measurement) and `pnpm budget` (bundle, exact).
 
@@ -165,8 +166,8 @@ Budgets revised — see PLAN.md §7 and DECISIONS.md. Harness:
 - [x] Font subset verified — Geist Mono moved off the `geist` package to next/font/google: the preloaded face went **69.7KB → 22.6KB**, fonts overall 76.9KB → 29.8KB
 - [x] LCP **1.19s** (was 2.18s) · CLS **0.0017** · INP **24ms**, TBT 0ms · app code **7.5KB / 15KB**
 - [x] Lighthouse CI in GitHub Actions — `.github/workflows/performance.yml`, plus the exact bundle gate
-- [ ] Lighthouse category score ≥ 95 confirmed ← **first CI run reports this.** PageSpeed Insights' public quota was exhausted all session, so it is the one number never measured
-**DoD:** all budgets met on throttled mobile, enforced in CI — [~] *(every measured budget passes; the category score is pending the first workflow run)*
+- [x] Lighthouse category score ≥ 95 confirmed — CI run `80de149` green. The assertions are hard errors, so a passing step means performance, accessibility **and** SEO all cleared 0.95 on both `/en` and `/ja`
+**DoD:** all budgets met on throttled mobile, enforced in CI — [x]
 
 Measured on production, mobile emulation at Slow 4G and 4x CPU throttle,
 median of 5 runs. Discard the first run after a deploy — it hits a cold edge.
@@ -190,7 +191,7 @@ Three fixes, in order of what they bought:
 3. **Hero re-encoded from the PNG originals** recovered at `757cd45^`, so no
    generation loss. Quality chosen by mean-absolute-error, all under 2/255.
 
-## Stage 8 — SEO / a11y / analytics
+## Stage 8 — SEO / a11y / analytics ★ CURRENT
 - [ ] Metadata, canonical, sitemap, robots
 - [ ] JSON-LD Person schema
 - [ ] Dynamic OG images per locale
@@ -256,6 +257,7 @@ themes, and Motion to exist first.
 
 | Date | Stage | What happened |
 |---|---|---|
+| 2026-08-30 | 6, 7 | **Both stages closed.** Aayush confirmed the notification emails arrive at `…002@gmail.com`, correctly rendered — the last open half of stage 6's DoD. Nothing reaches `…02jp@` and nothing will until stage 9, since Resend test mode only delivers to the account's own signup address. He also made the repo public again, which PLAN.md's stage 0 had asked for and which finally made CI readable. The first `performance` run had failed at `pnpm/action-setup`: package.json declares `"packageManager": "pnpm@9.12.0"` and the workflow also passed `version: 9`, and the action refuses outright when a version is given in both places rather than picking one — removed the input and let packageManager be the single source. Second run green, all nine steps, which closes stage 7's last item: the Lighthouse assertions are `error` level, so a passing step means performance, accessibility and SEO each cleared 0.95 on **both** locales. That also pre-verifies part of stage 8's DoD. Worth noting for next time: GitHub's job-log download endpoint 403s without a token even on a public repo, so step conclusions — not log text — are what is readable from here. |
 | 2026-08-30 | 7 | Performance. **LCP 2.18s → 1.19s and page weight 480KB → 209KB**, measured on production under mobile emulation at Slow 4G and 4x CPU, median of 5 runs, via a CDP harness using Node built-ins (now `scripts/measure-perf.mjs`). PageSpeed Insights' public quota was exhausted for the whole session, so nothing here comes from Lighthouse — the category score is the one number still unverified, and the new CI workflow is what will report it. **The big find: the hero downloaded both crops on every device.** `HeroBackdrop` rendered both as `next/image` and hid one with `sm:hidden`, which does not cancel a fetch — and `priority` emitted a preload for *both*, so the desktop crop was fetched eagerly, on a phone, in competition with the crop actually on screen: 264KB delivered to display 80KB. Replaced with `<picture>`, which resolves the choice in the preload scanner before any byte is requested; dropping next/image also took 5KB of client runtime off, page JS 7.76 → 2.58KB. Second: the `geist` package ships Geist Mono whole at 69.7KB with no subsetting option, nearly the size of the hero photo; moved to next/font/google's `Geist_Mono` with `subsets: ["latin"]` — same face, still self-hosted at build, 22.6KB — and removed the dependency. Latin-only is free here because Japanese resolves through `--font-jp` by design. Third: re-encoded the hero from the **PNG originals recovered from git history at `757cd45^`** rather than re-compressing the shipped AVIF, avoiding generation loss; quality picked by mean-absolute-error against the original rather than by eye, all four files under 2/255. **Deliberately did not take the desktop AVIF cliff at q35** (96.8KB → 14.1KB for only 1.36 → 1.81 error) — a collapse that large on gradient-heavy art is banding, exactly the artefact a mean-error metric understates. **The 90KB JS budget turned out to be below the framework floor**: an empty page already ships ~101KB of React 19 + Next 15 runtime, so the budget could never pass and CI would have failed on every commit for a reason no commit caused. Split it at Aayush's direction: app code ≤ 15KB (now 7.5KB) is the number that binds and catches real regressions, with the baseline recorded as a constant and a 120KB total as a secondary ceiling. Enforced by `scripts/check-budget.mjs`, which gzips the chunks from `app-build-manifest.json` rather than scraping `next build`'s human-formatted table. INP measured at 24ms and TBT at 0ms with real dispatched clicks on the accordion. |
 | 2026-08-30 | 6 | **Stage 6 closed — the form is live and verified in production.** Getting there turned up three separate faults, none visible from the browser. (1) Aayush renamed `NEXT_PUBLIC_SUPABASE_URL` to `SUPABASE_URL` in `.env.example` — correct, since the browser never talks to Supabase here and the prefix set the wrong precedent beside the RLS-bypassing secret key — but the code still read the old name, which silently gated the form in *both* environments. Adopted the rename in `contact-env.ts` and the setup guide. (2) Vercel does not rebuild when environment variables change, and the page is statically prerendered, so `isContactConfigured()` had been evaluated at build time before the variables existed; the form stayed hidden until a push forced a rebuild. `SETUP-STAGE6.md` had not said this — now it does. (3) The real one: production returned `TRANSMISSION FAILED` while the identical credentials worked locally. Found by streaming `vercel logs` while POSTing to the live server action — `Upstash Redis client was passed an invalid URL. Received: ""https://…""`. Upstash's dashboard hands you a quoted `.env` snippet; `dotenv` strips the quotes from a real `.env` file, Vercel's UI stores them verbatim. **Fixed in `req()` rather than by correcting the two Vercel values**, since that paste is how anyone would copy these credentials and it would recur on every rotation, on Preview, and for Supabase and Resend equally; nine cases unit-checked, interior quotes untouched. Worth remembering for next time: the failure was invisible from outside because the form correctly returns a generic error rather than leaking the reason, and `vercel env pull` returns `""` for variables marked Sensitive, so the values themselves could not be inspected. Production then verified: 3 submissions accepted, the 4th refused with the localised rate-limit message, and `/ja` returning Japanese validation errors. Also linked the repo to the Vercel project (`.vercel/`, already gitignored) and deleted the pulled env file. |
 | 2026-08-30 | 6 | Aayush created the Supabase, Resend and Upstash accounts and ran the migration. **The values were pasted into `.env.example`, which is tracked** — caught before any commit, so nothing reached GitHub and no key needed rotating; the real values were already in a gitignored `.env`, and `.env.example` was restored to the blank template. (A blank `.env.local` created mid-recovery was deleted — Next.js gives `.env.local` precedence, so its empty values would have overridden `.env` and silently re-gated the form.) Verified live against the real services: the form renders once all seven vars resolve, a submission inserts into `contact_submissions`, and the 4th within an hour is refused with the localised rate-limit message. **The first attempt exercised the insert-before-send design for real** — Resend rejected it (`onboarding@resend.dev` only delivers to the account's own signup address, and `CONTACT_TO_EMAIL` was the `…02jp@` address rather than the `…002@` account address) and the row was stored anyway, exactly as intended: `[contact] stored 2e1943cc… but email failed`. `CONTACT_TO_EMAIL` temporarily repointed at the Resend account address, with the comment on its own line rather than inline — dotenv's inline-comment handling would otherwise risk becoming part of the address. Reverts in stage 9 once a domain is verified. Four test rows are in the table and can be deleted. Production still unconfigured. |
