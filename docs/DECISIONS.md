@@ -259,3 +259,27 @@ space is small enough to enumerate in seconds — so it needs a key, and the
 service-role key is a secret necessarily present wherever this code runs, which
 avoids an eighth environment variable. The table is a job-search side effect,
 not a log; it should not accumulate personal data it has no use for.
+
+### 2026-08-30 — Env values get their surrounding quotes stripped
+Production failed with `Upstash Redis client was passed an invalid URL.
+Received: ""https://primary-gannet-216786.upstash.io""` while the identical
+value worked locally. Upstash's dashboard presents its credentials as a
+ready-made `.env` snippet with the value already quoted; pasting that into
+Vercel's UI stores the quotes as part of the value, whereas `dotenv` strips
+them when the same text sits in a real `.env` file.
+
+`req()` in `lib/contact-env.ts` now strips one layer of matching surrounding
+quotes, so a variable means the same thing wherever it was set. Fixed in code
+rather than by correcting the two Vercel values, because the paste is the
+normal way anyone would copy these credentials and it would recur on every
+future key rotation, on Preview as well as Production, and for the Supabase
+and Resend keys equally.
+
+Interior quotes are untouched — only a matched leading and trailing pair is
+removed, and a value that is nothing but quotes reads as unset.
+
+This was found by streaming `vercel logs` while POSTing to the live server
+action. Worth remembering: the failure was invisible from outside, because the
+form correctly returned its generic "TRANSMISSION FAILED" rather than leaking
+the reason, and `vercel env pull` returns `""` for variables marked Sensitive
+so the values could not be inspected directly.

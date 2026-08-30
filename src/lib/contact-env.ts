@@ -28,9 +28,27 @@ export type ContactEnv = {
   upstashToken: string;
 };
 
+/**
+ * Reads one variable, or null if it is absent or blank.
+ *
+ * Surrounding quotes are stripped. Several dashboards — Upstash's in
+ * particular — present their credentials as a ready-made `.env` snippet with
+ * the value already quoted, and pasting that into a platform UI stores the
+ * quotes as part of the value. `dotenv` strips them when the same text sits in
+ * a real `.env` file, so without this the app works locally and fails in
+ * production with a value that looks correct in every dashboard: the error is
+ * `invalid URL. Received: ""https://…""`. Matching dotenv's behaviour makes a
+ * variable mean the same thing wherever it was set.
+ */
 function req(name: string): string | null {
-  const value = process.env[name];
-  return value && value.trim() !== "" ? value : null;
+  const raw = process.env[name]?.trim();
+  if (!raw) return null;
+  const unquoted =
+    (raw.startsWith('"') && raw.endsWith('"')) ||
+    (raw.startsWith("'") && raw.endsWith("'"))
+      ? raw.slice(1, -1).trim()
+      : raw;
+  return unquoted === "" ? null : unquoted;
 }
 
 let cached: ContactEnv | null | undefined;

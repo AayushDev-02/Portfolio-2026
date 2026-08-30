@@ -20,3 +20,5 @@ next-env.d.ts
 # remove it, and it is public the moment it is pushed.
 docs/source/
 
+
+.vercel
