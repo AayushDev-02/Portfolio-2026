@@ -1,4 +1,5 @@
 import { Reveal } from "./reveal";
+import { ScrambleText } from "./scramble-text";
 
 /**
  * The centred heading + lede that opens every section below the hero.
@@ -14,7 +15,7 @@ export function SectionHead({ heading, lede }: { heading: string; lede: string }
   return (
     <Reveal className="flex flex-col items-center gap-4">
       <h2 className="font-display text-head sm:text-head-lg font-bold uppercase leading-none tracking-tight text-ink text-balance text-center">
-        {heading}
+        <ScrambleText text={heading} />
       </h2>
       <p className="max-w-xl font-sans text-lede sm:text-lede-lg leading-6 text-prose text-balance text-center">
         {lede}

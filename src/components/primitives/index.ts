@@ -12,6 +12,7 @@ export { PipelineDiagram } from "./pipeline-diagram";
 export { PullQuote } from "./pull-quote";
 export { RankBar, RankList } from "./rank-bar";
 export { Reveal } from "./reveal";
+export { ScrambleText } from "./scramble-text";
 export { SectionHead } from "./section-head";
 export { SectionShell } from "./section-shell";
 export { SkillCard } from "./skill-card";

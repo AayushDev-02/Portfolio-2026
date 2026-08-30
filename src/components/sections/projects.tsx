@@ -3,6 +3,7 @@ import {
   PipelineDiagram,
   PullQuote,
   Reveal,
+  ScrambleText,
   SectionShell,
 } from "@/components/primitives";
 import type { ProjectEntry, SiteContent } from "@/content";
@@ -84,7 +85,7 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
             visible break from the frame every other section uses. */}
         <Reveal className="grid gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:items-end lg:gap-16">
           <h2 className="font-display text-head sm:text-head-lg font-bold uppercase leading-none tracking-tight text-ink">
-            {projects.heading}
+            <ScrambleText text={projects.heading} />
           </h2>
           <p className="max-w-xl font-sans text-lede leading-6 text-prose">
             {projects.lead}
