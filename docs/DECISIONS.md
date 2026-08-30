@@ -455,3 +455,32 @@ fonts.googleapis.com. Both requests in `loadOgFont` now carry
 `AbortSignal.timeout(5000)`, so a slow or hung font server fails fast into the
 Latin-only fallback instead of stalling a deploy. A share card is never worth
 blocking a release over.
+
+### 2026-08-30 — The styled 404 is built but not yet reachable; needs a root layout
+Pulled stage 9's "404 page in-style" forward because it needs no domain. The
+page, the `NotFoundSection` and typed copy in both locales are done and the
+page prerenders correctly into `_not-found.html`. **It does not render for a
+mistyped URL, and could not be made to.**
+
+Next serves its own built-in error page for unmatched paths in this app. The
+cause is structural: there is no root `app/layout.tsx` — `[locale]/layout.tsx`
+is filling that role, which is what lets it own `<html lang>` and the fonts —
+and `not-found.tsx` boundaries need a real root above them. Three arrangements
+were tried and none rendered, verified by marking each boundary with a
+`data-boundary` attribute and finding neither in the response:
+
+- `app/not-found.tsx` alone
+- plus `app/[locale]/not-found.tsx`
+- plus an `app/[locale]/[...rest]/page.tsx` catch-all calling `notFound()`,
+  which is next-intl's own documented workaround
+
+Fixing it means introducing a real `app/layout.tsx` and moving `<html>`/`<body>`
+out of the locale layout, which changes the file every audit currently depends
+on. That is stage 9 work — it belongs beside the launch checks, not bolted onto
+the end of stage 8. The two dead files were deleted rather than left in place;
+`app/not-found.tsx` and `NotFoundSection` are kept, because they are the correct
+destination and cost nothing meanwhile.
+
+Worth recording for whoever picks this up: the symptom is a 404 that returns the
+right *status* with the wrong *page*, so it is invisible to any check that only
+asserts status codes.

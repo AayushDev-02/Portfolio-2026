@@ -332,6 +332,16 @@ const contact = {
   sigil: "END",
 };
 
+const notFound = {
+  eyebrow: "ERROR",
+  code: "404",
+  heading: "No such page",
+  lead: "That address does not exist. Nothing here is behind a login — if you followed a link to get here, it was wrong rather than restricted.",
+  homeLabel: "BACK TO THE START",
+  caption: "[+] EVERY SECTION IS ON ONE PAGE",
+  sigil: "404",
+};
+
 export const en: SiteContent = {
   intro,
   about,
@@ -339,6 +349,7 @@ export const en: SiteContent = {
   skills,
   projects,
   contact,
+  notFound,
 };
 
 export default en;

@@ -82,6 +82,18 @@ export type ContactFormCopy = {
   errors: Record<ContactErrorCode, string>;
 };
 
+/** The in-style 404. Content, not chrome, so it stays typed per locale. */
+export type NotFoundContent = {
+  eyebrow: string;
+  code: string;
+  heading: string;
+  lead: string;
+  /** Label on the link back to the homepage. */
+  homeLabel: string;
+  caption: string;
+  sigil: string;
+};
+
 export type SiteContent = {
   intro: {
     eyebrow: string;
@@ -123,6 +135,7 @@ export type SiteContent = {
     caption: string;
     sigil: string;
   };
+  notFound: NotFoundContent;
   contact: {
     eyebrow: string;
     heading: string;

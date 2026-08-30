@@ -350,6 +350,16 @@ const contact = {
   sigil: "END",
 };
 
+const notFound = {
+  eyebrow: "ERROR",
+  code: "404",
+  heading: "ページが見つかりません",
+  lead: "お探しのページは存在しません。閲覧制限によるものではありませんので、リンク元の誤りが考えられます。",
+  homeLabel: "トップへ戻る",
+  caption: "すべてのセクションは1ページにまとまっています",
+  sigil: "404",
+};
+
 export const ja: SiteContent = {
   intro,
   about,
@@ -357,6 +367,7 @@ export const ja: SiteContent = {
   skills,
   projects,
   contact,
+  notFound,
 };
 
 export default ja;
