@@ -17,9 +17,11 @@ Budget: about twenty minutes, all on free tiers, no card required.
 3. Paste the whole of `supabase/migrations/0001_contact_submissions.sql` and
    **Run**. It is idempotent, so re-running it is safe.
 4. **Project Settings → API**, and copy two values:
-   - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
-   - `service_role` key (under "Project API keys", click to reveal) →
-     `SUPABASE_SERVICE_ROLE_KEY`
+   - Project URL (the **Connect** dialog, or Settings → Data API) → `SUPABASE_URL`
+   - **Settings → API Keys → Secret keys → Create new secret key** →
+     `SUPABASE_SERVICE_ROLE_KEY`. New Supabase projects no longer offer a
+     `service_role` key; the `sb_secret_…` key replaces it and behaves the same
+     way, bypassing row-level security. Copy it at once — it is shown only once.
 
 > The `service_role` key bypasses row-level security. It is a real secret.
 > Never prefix it `NEXT_PUBLIC_`, never paste it into a client component, and

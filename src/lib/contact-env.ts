@@ -11,6 +11,11 @@ import "server-only";
  * All seven are required together. Rate limiting is not optional — a contact
  * form without it is a spam relay — so a half-configured environment yields no
  * form at all rather than an unprotected one.
+ *
+ * None of these carries a NEXT_PUBLIC_ prefix. The browser never talks to
+ * Supabase or Upstash here — every call goes through the server action — so a
+ * public prefix would buy nothing and, on the service-role key, would inline a
+ * credential that bypasses row-level security into the client bundle.
  */
 
 export type ContactEnv = {
@@ -43,7 +48,7 @@ export function getContactEnv(): ContactEnv | null {
   const resendApiKey = req("RESEND_API_KEY");
   const toEmail = req("CONTACT_TO_EMAIL");
   const fromEmail = req("CONTACT_FROM_EMAIL");
-  const supabaseUrl = req("NEXT_PUBLIC_SUPABASE_URL");
+  const supabaseUrl = req("SUPABASE_URL");
   const supabaseServiceRoleKey = req("SUPABASE_SERVICE_ROLE_KEY");
   const upstashUrl = req("UPSTASH_REDIS_REST_URL");
   const upstashToken = req("UPSTASH_REDIS_REST_TOKEN");
