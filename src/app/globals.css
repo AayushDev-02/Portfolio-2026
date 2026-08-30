@@ -83,6 +83,8 @@
   --reveal-distance: 0.75rem;
   --reveal-duration: 520ms;
   --reveal-stagger: 70ms;
+  /* Tighter than the block stagger: rules should read as one drawn gesture. */
+  --rule-stagger: 40ms;
   --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* --- the hero photograph's treatment ---
@@ -296,6 +298,27 @@
 }
 [data-js] [data-reveal-stagger] > * > *:nth-child(10) {
   transition-delay: calc(9 * var(--reveal-stagger));
+}
+
+/* §C — hairlines draw in from the left rather than fading.
+   scaleX only: a border cannot be transformed and `width` would force layout
+   on every frame, which is what the CLS and INP budgets are protecting. The
+   40ms step is tighter than the block stagger — rules read as one gesture
+   being drawn, not as four separate arrivals. */
+[data-js] [data-reveal-rule] > * {
+  transform-origin: left;
+  transition: transform var(--reveal-duration) var(--reveal-ease);
+  transition-delay: calc(var(--reveal-index, 0) * var(--rule-stagger));
+  will-change: transform;
+}
+
+[data-js] [data-reveal-rule="pending"] > * {
+  transform: scaleX(0);
+}
+
+[data-js] [data-reveal-rule="shown"] > * {
+  transform: scaleX(1);
+  will-change: auto;
 }
 
 /* Reduced motion: shown outright, not revealed quickly. The global block below

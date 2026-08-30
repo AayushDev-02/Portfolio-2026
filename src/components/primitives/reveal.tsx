@@ -23,6 +23,16 @@ type Props = {
    * borders.
    */
   stagger?: boolean;
+  /**
+   * `fade` (default) lifts and fades the block in.
+   *
+   * `rule` draws a hairline instead: `scaleX(0) → scaleX(1)` from the left.
+   * A border cannot be transformed, so a rule that draws has to be a real
+   * element — see `Hairline`. Kept as a variant here rather than as a second
+   * component with its own observer: the trigger logic is identical and only
+   * the CSS differs.
+   */
+  variant?: "fade" | "rule";
   className?: string;
 };
 
@@ -59,6 +69,7 @@ export function Reveal({
   index = 0,
   amount = 0.15,
   stagger = false,
+  variant = "fade",
   className,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -96,9 +107,11 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      {...(stagger
-        ? { "data-reveal-stagger": shown ? "shown" : "pending" }
-        : { "data-reveal": shown ? "shown" : "pending" })}
+      {...(variant === "rule"
+        ? { "data-reveal-rule": shown ? "shown" : "pending" }
+        : stagger
+          ? { "data-reveal-stagger": shown ? "shown" : "pending" }
+          : { "data-reveal": shown ? "shown" : "pending" })}
       style={index > 0 ? ({ "--reveal-index": index } as React.CSSProperties) : undefined}
       className={className}
     >

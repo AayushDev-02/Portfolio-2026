@@ -1,4 +1,4 @@
-import { CountUp, MicroLabel, Reveal } from "@/components/primitives";
+import { CountUp, Hairline, MicroLabel, Reveal } from "@/components/primitives";
 import type { SiteContent } from "@/content";
 
 /**
@@ -37,8 +37,9 @@ export function ResultsSection({ content }: { content: SiteContent }) {
 
       {/* gap-px over a rule background: neighbours share one hairline instead
           of doubling it, the same device the timeline grid uses. */}
-      <Reveal stagger className="mt-8">
-        <dl className="grid w-full grid-cols-1 gap-px border-y border-rule bg-rule sm:grid-cols-2 lg:grid-cols-4">
+      <Hairline className="mt-8" />
+      <Reveal stagger>
+        <dl className="grid w-full grid-cols-1 gap-px bg-rule sm:grid-cols-2 lg:grid-cols-4">
           {results.figures.map((figure) => (
             <div
               key={figure.unit}
@@ -60,6 +61,7 @@ export function ResultsSection({ content }: { content: SiteContent }) {
           ))}
         </dl>
       </Reveal>
+      <Hairline index={1} />
 
       <footer className="mt-8 flex items-baseline justify-between">
         <MicroLabel>{results.caption}</MicroLabel>

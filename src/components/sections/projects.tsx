@@ -1,4 +1,5 @@
 import {
+  Hairline,
   MicroLabel,
   PipelineDiagram,
   PullQuote,
@@ -93,29 +94,32 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
         </Reveal>
 
         {featured ? (
-          <Reveal className="grid gap-8 border-t border-accent pt-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,720px)] lg:gap-12">
-            <div className="flex flex-col gap-3">
-              <MicroLabel className="text-accent">001</MicroLabel>
-              <h3 className="text-lede font-bold text-ink">{featured.title}</h3>
-              {featured.org ? (
-                <p className="text-label text-prose">{featured.org}</p>
-              ) : null}
-              <p className="mt-1 font-sans text-ui leading-6 text-prose">
-                {featured.body}
-              </p>
-              {featured.quote ? <PullQuote>{featured.quote}</PullQuote> : null}
-              <div className="mt-2">
-                <Tags items={featured.tags} accent />
+          <>
+            <Hairline tone="accent" />
+            <Reveal className="grid gap-8 pt-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,720px)] lg:gap-12">
+              <div className="flex flex-col gap-3">
+                <MicroLabel className="text-accent">001</MicroLabel>
+                <h3 className="text-lede font-bold text-ink">{featured.title}</h3>
+                {featured.org ? (
+                  <p className="text-label text-prose">{featured.org}</p>
+                ) : null}
+                <p className="mt-1 font-sans text-ui leading-6 text-prose">
+                  {featured.body}
+                </p>
+                {featured.quote ? <PullQuote>{featured.quote}</PullQuote> : null}
+                <div className="mt-2">
+                  <Tags items={featured.tags} accent />
+                </div>
               </div>
-            </div>
 
-            <figure className="m-0 border border-rule p-5 sm:p-6">
-              <figcaption className="mb-4 flex items-baseline justify-between">
-                <MicroLabel>{projects.diagramLabel}</MicroLabel>
-              </figcaption>
-              <PipelineDiagram labels={projects.diagram} />
-            </figure>
-          </Reveal>
+              <figure className="m-0 border border-rule p-5 sm:p-6">
+                <figcaption className="mb-4 flex items-baseline justify-between">
+                  <MicroLabel>{projects.diagramLabel}</MicroLabel>
+                </figcaption>
+                <PipelineDiagram labels={projects.diagram} />
+              </figure>
+            </Reveal>
+          </>
         ) : null}
 
         <Reveal stagger>
