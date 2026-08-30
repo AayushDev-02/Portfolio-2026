@@ -1,11 +1,21 @@
-import { GeistMono } from "geist/font/mono";
-import { Silkscreen } from "next/font/google";
+import { Geist_Mono, Silkscreen } from "next/font/google";
 
 /**
  * Body / UI face. Matches the reference exactly.
- * Shipped by the `geist` package, self-hosted by next/font — no network hop.
+ *
+ * Loaded through next/font/google rather than the `geist` package, which ships
+ * the variable font whole: 70KB over the wire, nearly as much as the hero
+ * photograph, for a site that renders no glyph outside Latin in this face
+ * (Japanese falls through to --font-jp by design). next/font subsets to latin
+ * at build time and still self-hosts the result, so there is no request to
+ * fonts.gstatic.com at runtime. See docs/DECISIONS.md.
  */
-export const mono = GeistMono;
+export const mono = Geist_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-mono",
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+});
 
 /**
  * Pixel display face for headings.

@@ -308,3 +308,22 @@ Losing next/image costs nothing here. Both crops are already AVIF at their
 display size from stage 5, so the per-request re-encode had nothing left to do
 — and it removed 5KB of client runtime, taking the page's own JS from 7.76KB to
 2.58KB and first-load from 115KB to 110KB.
+
+### 2026-08-30 — Geist Mono moved from the `geist` package to next/font/google
+The `geist` package ships the variable font whole: 69.7KB over the wire, nearly
+as much as the hero photograph, and on Slow 4G it competes with the LCP image
+for bandwidth. It exposes no subsetting option.
+
+`next/font/google`'s `Geist_Mono` with `subsets: ["latin"]` is the same
+typeface, still self-hosted at build time — no request to fonts.gstatic.com at
+runtime, which was the original reason for the package — and it subsets per
+unicode range, so the preloaded file drops to 22.6KB. Roughly 47KB saved on
+first paint.
+
+Subsetting to latin costs nothing here: this face renders no glyph outside
+Latin. Japanese resolves through `--font-jp` by design, because font fallback
+is per-glyph — the rule set in stage 4 that lets a Latin run stay in Geist Mono
+while kana in the same string fall to the gothic stack.
+
+`geist` removed from package.json; nothing else imported it. The
+`--font-geist-mono` CSS variable name is unchanged, so globals.css is untouched.
