@@ -85,9 +85,19 @@ export default async function LocaleLayout({
             needs no consent banner — which is the reason for choosing them
             over anything session-based. They mount last and load after
             hydration, so neither is on the critical path.
+
+            Rendered only on Vercel. Their scripts are served from
+            /_vercel/... by the platform, so off-platform — local `next start`,
+            and CI, where Lighthouse runs — they 404 into the console. That is
+            noise in development and a real best-practices failure in CI, for
+            beacons that could not have reported anything there anyway.
           */}
-          <Analytics />
-          <SpeedInsights />
+          {process.env.VERCEL ? (
+            <>
+              <Analytics />
+              <SpeedInsights />
+            </>
+          ) : null}
         </NextIntlClientProvider>
       </body>
     </html>

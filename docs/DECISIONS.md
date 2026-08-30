@@ -422,3 +422,36 @@ white 4.83:1, terminal-fg 16.91:1. axe still reports `color-contrast` as
 *incomplete* rather than passing, because the hero wordmark sits over a
 photograph and no tool can compute that statically; at 48–72px it is large text,
 where the threshold is 3:1.
+
+### 2026-08-30 — The favicon 404'd because middleware was rewriting /icon
+Promoting Lighthouse's best-practices assertion from `warn` to `error` — so
+stage 8's DoD could actually be confirmed rather than assumed — turned up three
+console errors, one of them real.
+
+`/_vercel/insights/script.js` and `/_vercel/speed-insights/script.js` 404 off
+Vercel, because the platform serves them. That is noise locally and a genuine
+CI failure, for beacons that could not have reported anything there anyway; both
+components now render only when `process.env.VERCEL` is set.
+
+The third was real and affected production: **there was no favicon at all**, so
+every page load logged a 404 and every browser tab showed a blank square.
+Adding `src/app/icon.tsx` was not enough on its own — next-intl's middleware
+matcher excludes anything with a file extension, and `/icon` has none, so it
+was being rewritten to `/en/icon`, which does not exist. `icon` and `apple-icon`
+are now named explicitly in the matcher. `sitemap.xml` and `robots.txt` were
+always fine, being caught by the extension rule.
+
+Worth generalising: **any root-level Next metadata route without a file
+extension will hit this**, and the symptom is a 404 for a file that plainly
+exists in the build output.
+
+With all three fixed, both locales score Performance 98, Accessibility 100,
+Best Practices 100, SEO 100.
+
+### 2026-08-30 — The OG font fetch is bounded
+One build failed as `Failed to collect page data for /[locale]/opengraph-image`,
+which says nothing about what actually went wrong: an unbounded fetch to
+fonts.googleapis.com. Both requests in `loadOgFont` now carry
+`AbortSignal.timeout(5000)`, so a slow or hung font server fails fast into the
+Latin-only fallback instead of stalling a deploy. A share card is never worth
+blocking a release over.

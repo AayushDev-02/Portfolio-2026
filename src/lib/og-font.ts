@@ -22,6 +22,15 @@
 /** Old UA on purpose: it is what makes the CSS API return TrueType, not woff2. */
 const TTF_USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36";
 
+/**
+ * Both fetches are bounded. A hung request to fonts.googleapis.com would
+ * otherwise stall `next build` with no useful error — one build here died as
+ * "Failed to collect page data for /[locale]/opengraph-image", which says
+ * nothing about the network. Failing fast into the Latin-only fallback is
+ * always better than a deploy that hangs.
+ */
+const FETCH_TIMEOUT_MS = 5000;
+
 export type OgFont = {
   name: string;
   data: ArrayBuffer;
@@ -45,14 +54,17 @@ export async function loadOgFont(
     `${weight}&text=${encodeURIComponent(text)}`;
 
   try {
-    const css = await fetch(url, { headers: { "User-Agent": TTF_USER_AGENT } });
+    const css = await fetch(url, {
+      headers: { "User-Agent": TTF_USER_AGENT },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
     if (!css.ok) return null;
 
     const source = await css.text();
     const match = source.match(/src:\s*url\(([^)]+)\)\s*format\(['"]truetype['"]\)/);
     if (!match?.[1]) return null;
 
-    const file = await fetch(match[1]);
+    const file = await fetch(match[1], { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
     if (!file.ok) return null;
 
     return {
