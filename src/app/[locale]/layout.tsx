@@ -4,7 +4,12 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher, ThemeProvider, ThemeToggle } from "@/components/primitives";
+import {
+  CursorCrosshair,
+  LocaleSwitcher,
+  ThemeProvider,
+  ThemeToggle,
+} from "@/components/primitives";
 import { type Locale, locales, routing } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
 import { isDeployed, siteUrl } from "@/lib/site-url";
@@ -127,6 +132,11 @@ export default async function LocaleLayout({
               />
               <LocaleSwitcher current={locale as Locale} label={t("switchLanguage")} />
             </header>
+            {/* Sits above the page but below the header controls (z-10 vs
+                z-20) and takes no pointer events, so nothing it crosses
+                becomes unclickable. Renders nothing on touch or under
+                reduced motion. */}
+            <CursorCrosshair />
             <main id="main" className="bg-bg">
               {children}
             </main>
