@@ -377,31 +377,43 @@ zero component-level colour edits were needed.
 
 ---
 
-### Stage 12 — Motion
-*Estimate: 1–2 sessions*
+### Stage 12 — Motion pass ★ next
+*Estimate: 1–2 sessions. Brief: `docs/STAGE12-MOTION.md`*
 
-**Library: Motion** (`pnpm add motion`, imported as `motion/react`). It is the
-current name for Framer Motion, has by far the largest presence in Claude
-Code's training data, and its API is stable. Everything below is achievable
-with it; most of it should not use it.
+**Probably build this without an animation library.** Stage 13 left the app at
+11.7KB of app code, fully server-rendered, LCP 1.23s, Performance 98 in both
+locales. Every effect below is achievable with `IntersectionObserver`, CSS
+transitions and ~60 lines of vanilla JS in small client leaves. Installing
+`motion` costs ~30KB gz and converts the components that use it into client
+components — the opposite direction from the last three stages. Revisit it only
+when an effect genuinely needs orchestration CSS cannot express; nothing here
+does. If you install it anyway, log the measured before/after in `DECISIONS.md`.
 
-- **CSS first.** The reference's own accordion animates with a
-  `grid-rows-[0fr] → [1fr]` transition and no JS at all. Anything CSS can
-  express stays CSS — it costs zero bytes and never blocks hydration.
-- Reserve Motion for what CSS can't: staggered section reveals on scroll
-  (`useInView` + `staggerChildren`), the timeline cards dealing in sequence,
-  layout transitions when a filter changes.
-- Every animated component is a leaf client component. Motion must never be
-  imported into a file that also renders a whole section, or the section
-  stops being a Server Component.
-- `<LazyMotion features={domAnimation} strict>` to load the smaller feature
-  bundle (~5KB) instead of the full one.
-- **Everything respects `prefers-reduced-motion`** — `useReducedMotion()` for
-  JS-driven work, plus the existing global CSS block.
-- Re-run the stage 7 budget. Motion's cost counts against the 90KB.
+Five effects, in build order:
 
-**DoD:** stage 7 budgets still met; the whole page is usable and complete with
-motion disabled.
+- **A. Text scramble on headings.** Characters cycle and resolve on entry.
+  ~20 lines, highest impact per byte on the list — on a monospace-and-pixel
+  site it reads as native rather than applied. **Latin headings only**;
+  cycling random kana or kanji looks like a rendering fault, so `ja` fades in.
+- **B. Number count-up** on the four RESULTS figures. `tabular-nums`, width
+  reserved before animating. These numbers are the argument the page makes.
+- **C. Hairline draw-in** on section rules — `scaleX(0) → scaleX(1)`,
+  `transform-origin: left`, staggered ~40ms. Never animate `width`.
+- **D. Cursor crosshair**, CAD-reticle style. `pointer: fine` only,
+  `translate3d` inside rAF, `aria-hidden`, off under reduced motion.
+- **E. Scroll-linked section counter** — one observer, `rootMargin: -50%`.
+  Turns `01 / 06` from decoration into information.
+
+A boot sequence on first load is documented in the brief and **recommended
+against** — it fits the concept and is the item most likely to irritate a
+recruiter opening the site from a phone between meetings.
+
+Ground rules: each effect lives in the smallest possible client leaf; every one
+checks `prefers-reduced-motion` and renders its finished state; `transform` and
+`opacity` only; nothing animates above the fold on first paint.
+
+**DoD:** all five live; first-load JS essentially unchanged; stage 7 budgets
+pass; the page is complete and readable with motion disabled.
 
 ---
 
@@ -453,6 +465,38 @@ them can be reverted alone.
 **DoD:** the four changed sections read as composed rather than uniformly
 framed; every project shows evidence; the four numbers land in a fifteen-second
 skim; stage 7's budgets still pass in both themes and both locales.
+
+---
+
+### Stage 14 — 3D hero
+*Estimate: 2–3 sessions. Brief: `docs/STAGE14-3D-MOTION.md`*
+
+Runs after Stage 12, and only if Stage 12 did not already fix the complaint.
+
+**Settle the budget conflict before writing scene code.** Three.js core is
+~150KB gz before r3f, drei or a line of scene code, against a 90KB first-load
+budget — and the hero canvas is above the fold, so it cannot simply be deferred
+below the viewport. The workable shape: the poster image stays the LCP element,
+the canvas mounts after `load` and crossfades in, and the budget becomes two
+numbers — first-load under 90KB, deferred 3D under its own ceiling (~200KB gz).
+Four kill switches, any one of which leaves the poster as the final state:
+`prefers-reduced-motion`, `saveData`, `hardwareConcurrency <= 4`, no WebGL.
+
+What the 3D is actually *for*: the placeholder hero image is mottled noise with
+no focal point, and the wordmark sits over its busiest region. Whatever replaces
+it needs a focal point and a calm zone where the type sits.
+
+Five concepts in the brief — pick exactly one. Shader-only grain field
+(cheapest, can skip three.js entirely); point-cloud portrait (most striking,
+needs a real photo); ASCII/dither post-process (most native to the type system);
+embedding-space cloud (a picture of vector search — the thing he builds);
+wireframe terrain from real Otaru/Kashiwa elevation data.
+
+Recommended: the embedding cloud rendered through the dither treatment.
+
+**DoD:** first-load JS still under 90KB and LCP still under 1.5s with the canvas
+disabled; deferred 3D under its own ceiling; the hero has a focal point and the
+wordmark sits in a calm zone; the site is complete with every kill switch tripped.
 
 ---
 

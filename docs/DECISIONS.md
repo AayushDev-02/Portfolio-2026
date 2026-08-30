@@ -727,3 +727,34 @@ PROJECTS was six `AccordionRow`s with only the first open. Content behind a
 disclosure is content a fifteen-second skim never sees, and this is the section
 that most needs to be seen. Replaced with the asymmetric grid; the pull quote
 survives on the featured entry only, where there is room for it.
+
+### 2026-08-31 — Stage 12 motion pass: no animation library, and this is measured
+The brief estimates `motion` at ~30KB gz and recommends against it. The decision
+does not rest on that estimate: the library was **actually installed, wired up
+with the plan's own prescription and built** earlier in this project.
+
+| | app code | delta |
+|---|---|---|
+| baseline | 11.4KB | — |
+| `LazyMotion` + `domAnimation` + `strict`, one `m.div` | 49.7KB | **+38.3KB** |
+| `useInView` hook alone | 12.0KB | +0.6KB |
+
+38.3KB against a 15KB app-code budget — two and a half times the whole budget,
+and worse than the brief's estimate. `useInView` alone would fit, and was still
+rejected: keeping a 38KB dependency to use 1.5% of it leaves the next `m.div` to
+add the other 38KB, discovered from CI rather than from the code.
+
+**Decision: no animation library for any of A–E.** Every effect here is
+`IntersectionObserver`, `requestAnimationFrame` and CSS transitions. Nothing in
+this stage needs orchestration CSS cannot express — no shared layout
+transitions, no spring physics, no gesture handling. Revisit only when one of
+those is genuinely required.
+
+Baseline for this stage, measured before any effect code: first-load JS **110KB**
+per locale (both locales share the `/[locale]` route), app code **11.7KB**,
+total 112.1KB.
+
+The precedent this sets is worth stating plainly, because it has now held three
+times: on this project the library is measured against the budget before it is
+adopted, not after. The hero image, the font and the animation library were each
+chosen this way, and each measurement changed the answer.

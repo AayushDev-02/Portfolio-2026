@@ -259,16 +259,37 @@ Also fixed here: the layout header used the *same* offsets as `SectionShell`'s
 counter, so the locale switcher had been sitting on top of "01 / 06" since
 stage 4. A second control made it obvious.
 
-## Stage 12 — Motion
-- [ ] `pnpm add motion`; imported as `motion/react`
-- [ ] CSS-only for everything CSS can express (accordion stays CSS)
-- [ ] Scroll reveals + staggered timeline cards via `useInView`
-- [ ] `<LazyMotion features={domAnimation} strict>`; leaf client components only
-- [ ] `useReducedMotion()` honoured everywhere
-- [ ] Stage 7 budget re-run with motion enabled
-**DoD:** budgets still met; page fully usable with motion disabled — [ ]
+## Stage 12 — Motion pass ★ NEXT
+Brief: `docs/STAGE12-MOTION.md`. Library decision first — the recommendation is
+**no library**: app code is 11.7KB fully server-rendered, and every effect below
+is `IntersectionObserver` + CSS + ~60 lines of vanilla JS in small client leaves.
+
+- [ ] Decide on `motion` vs no library; log it in DECISIONS.md with measured numbers
+- [ ] **A** — text scramble on headings (Latin only; `ja` fades instead)
+- [ ] **B** — count-up on the four RESULTS figures (`tabular-nums`, width reserved)
+- [ ] **C** — hairline draw-in on section rules (`scaleX`, origin left, ~40ms stagger)
+- [ ] **D** — cursor crosshair (`pointer: fine`, rAF + `translate3d`, `aria-hidden`)
+- [ ] **E** — scroll-linked section counter (one observer, `rootMargin: -50%`)
+- [-] **F** — boot sequence on first load — **recommended against**; see brief §2F
+- [ ] Every effect renders its finished state under `prefers-reduced-motion`
+- [ ] `ja` checked at 360/768 — no per-character effect on CJK text
+- [ ] First-load JS reported before/after; >5KB movement means something became a client component
+- [ ] Lighthouse ≥ 95 both locales; LCP still < 1.5s
+**DoD:** all five live; first-load JS essentially unchanged; budgets pass; page complete with motion disabled — [ ]
 
 ---
+
+## Stage 14 — 3D hero
+Brief: `docs/STAGE14-3D-MOTION.md`. **After Stage 12**, and only if Stage 12
+did not already fix the complaint.
+
+- [ ] Settle the budget conflict and log it — poster stays LCP, canvas mounts after `load`, budget splits into two numbers
+- [ ] Pick exactly one of the five concepts
+- [ ] Four kill switches: reduced-motion, `saveData`, `hardwareConcurrency <= 4`, no WebGL
+- [ ] Hero has a focal point; wordmark sits in a calm zone
+- [ ] Both themes, both locales, 360/768
+- [ ] Stage 7 budgets re-run with the canvas disabled AND enabled
+**DoD:** first-load < 90KB and LCP < 1.5s with canvas off; deferred 3D under its own ceiling; site complete with every kill switch tripped — [ ]
 
 ## Stage 13 — Design enhancement
 Brief: `docs/STAGE13-DESIGN.md`. Runs after 10/11/12 — needs real content, both
