@@ -76,7 +76,6 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
       index={4}
       eyebrow={projects.eyebrow}
       position={5}
-      total={6}
       id="projects"
       caption={projects.caption}
       sigil={projects.sigil}

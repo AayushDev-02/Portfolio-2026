@@ -7,6 +7,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   CursorCrosshair,
   LocaleSwitcher,
+  SectionCounter,
   ThemeProvider,
   ThemeToggle,
 } from "@/components/primitives";
@@ -137,6 +138,11 @@ export default async function LocaleLayout({
                 becomes unclickable. Renders nothing on touch or under
                 reduced motion. */}
             <CursorCrosshair />
+            {/* Pinned where every section used to paint its own counter, so
+                the corner reads the same but now tracks scroll position. */}
+            <div className="pointer-events-none fixed top-0 right-0 z-20 px-gutter py-10 sm:px-gutter-lg sm:py-14">
+              <SectionCounter total={6} />
+            </div>
             <main id="main" className="bg-bg">
               {children}
             </main>

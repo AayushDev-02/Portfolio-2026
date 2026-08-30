@@ -15,7 +15,6 @@ export function ExperienceSection({ content }: { content: SiteContent }) {
       index={2}
       eyebrow={experience.eyebrow}
       position={3}
-      total={6}
       id="experience"
       caption={experience.caption}
       sigil={experience.sigil}

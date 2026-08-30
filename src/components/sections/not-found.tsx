@@ -28,7 +28,6 @@ export function NotFoundSection({ content }: { content: SiteContent }) {
       index={0}
       eyebrow={notFound.eyebrow}
       position={0}
-      total={6}
       id="not-found"
       caption={notFound.caption}
       sigil={notFound.sigil}

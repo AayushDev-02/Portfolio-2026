@@ -24,23 +24,6 @@ export function Eyebrow({
   );
 }
 
-/** Section counter, e.g. "01 / 06". */
-export function Counter({
-  current,
-  total,
-  tone = "accent",
-}: {
-  current: number;
-  total: number;
-  tone?: Tone;
-}) {
-  return (
-    <span className={cn("label tabular-nums", tones[tone])}>
-      {pad(current)} / {pad(total)}
-    </span>
-  );
-}
-
 /** Small uppercase caption used in section footers. */
 export function MicroLabel({
   children,

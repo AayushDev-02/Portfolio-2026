@@ -1,14 +1,16 @@
 import { CornerMarks } from "./corner-marks";
-import { Counter, Eyebrow, MicroLabel, Sigil } from "./labels";
+import { Eyebrow, MicroLabel, Sigil } from "./labels";
 
 type SectionShellProps = {
   /** Zero-based section number used in the eyebrow: 0 -> "00". */
   index: number;
   /** Eyebrow text, e.g. "INTRO". */
   eyebrow: string;
-  /** One-based position for the counter, e.g. 1 of 6. */
+  /**
+   * One-based position in the page. Exposed as `data-section-index` and read by
+   * the pinned `SectionCounter`; the section no longer paints its own counter.
+   */
   position: number;
-  total: number;
   /** Anchor id for in-page navigation. */
   id: string;
   /** Caption shown bottom-left. */
@@ -32,7 +34,6 @@ export function SectionShell({
   index,
   eyebrow,
   position,
-  total,
   id,
   caption,
   sigil,
@@ -44,6 +45,7 @@ export function SectionShell({
     <section
       id={id}
       aria-labelledby={`${id}-eyebrow`}
+      data-section-index={position}
       className="relative flex min-h-dvh w-full flex-col border-b border-rule px-gutter py-10 sm:px-gutter-lg sm:py-14"
     >
       {backdrop}
@@ -55,7 +57,6 @@ export function SectionShell({
             {eyebrow}
           </Eyebrow>
         </span>
-        <Counter current={position} total={total} tone={tone} />
       </header>
 
       <div className="relative flex flex-1 flex-col justify-center py-12">{children}</div>

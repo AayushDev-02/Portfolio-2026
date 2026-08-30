@@ -8,7 +8,6 @@ export function IntroSection({ content }: { content: SiteContent }) {
       index={0}
       eyebrow={intro.eyebrow}
       position={1}
-      total={6}
       id="intro"
       caption={intro.caption}
       sigil={intro.sigil}

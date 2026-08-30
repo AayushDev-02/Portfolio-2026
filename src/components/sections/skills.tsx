@@ -19,7 +19,6 @@ export function SkillsSection({ content }: { content: SiteContent }) {
       index={3}
       eyebrow={skills.eyebrow}
       position={4}
-      total={6}
       id="skills"
       caption={skills.caption}
       sigil={skills.sigil}

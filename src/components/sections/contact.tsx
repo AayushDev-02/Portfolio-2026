@@ -37,7 +37,6 @@ export function ContactSection({
       index={5}
       eyebrow={contact.eyebrow}
       position={6}
-      total={6}
       id="contact"
       caption={contact.caption}
       sigil={contact.sigil}

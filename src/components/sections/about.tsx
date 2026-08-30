@@ -16,7 +16,6 @@ export function AboutSection({ content }: { content: SiteContent }) {
       index={1}
       eyebrow={about.eyebrow}
       position={2}
-      total={6}
       id="about"
       caption={about.caption}
       sigil={about.sigil}
