@@ -215,6 +215,7 @@ a `warn` until this stage — which is exactly why the missing favicon survived
 this long.
 
 ## Stage 9 — Launch ★ CURRENT
+- [x] 404 page in-style — **done and live**, pulled forward since it needs no domain. Renders on Vercel only; a local `next start` serves Next's built-in page, so verify changes against a deploy
 - [ ] Production env vars set
 - [ ] Custom domain + HTTPS + Resend DNS
 - [ ] Safari iOS / Chrome Android / Firefox pass (`100dvh` not `100vh`)

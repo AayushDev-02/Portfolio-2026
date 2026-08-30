@@ -512,3 +512,37 @@ are in scope. The general trap: **putting a font-variable class lower than the
 element that declares `font-family` silently does nothing** — there is no error,
 the text just renders in the fallback, which is exactly the kind of thing that
 survives an automated audit and only a person notices.
+
+### 2026-08-30 — Correction: the font fix above was wrong; variables must be on :root
+The previous entry said the 404's font bug was fixed by naming `font-mono` on
+the wrapping div. That was reasoning about the right principle applied one level
+too shallow, and it did not work — Aayush was still looking at the wrong face.
+
+The variables *were* correctly defined on the wrapper; a probe confirmed
+`--font-pixel` resolving there. Headings still computed to Tailwind preflight's
+sans, because globals.css declares the composite tokens on `:root`:
+
+    --font-display: var(--font-pixel), var(--font-geist-mono), …;
+
+**A `var()` inside a custom property's value is resolved where that property is
+declared, not where it is used.** At `:root` there was no `--font-pixel` on this
+page, so `--font-display` was invalid at computed-value time and every element
+using it fell back. Defining `--font-pixel` further down the tree could never
+help, because the substitution had already failed higher up.
+
+The 404 now emits `--font-geist-mono` and `--font-pixel` onto `:root` in a
+`<style>` tag, taken from next/font's own `.style.fontFamily`, so no token value
+is duplicated and nothing can drift from `@theme`. Verified on a deploy: both
+the code and the heading compute to Silkscreen, labels to Geist Mono.
+
+Two things worth carrying forward. **Any page outside `[locale]/layout.tsx`
+needs the font variables at `:root`, not on a wrapper** — that includes anything
+stage 9's root-layout work might add. And this whole class of bug is silent:
+no error, no warning, correct layout, just the fallback face. Only a person
+looking at the page catches it, which is why the visual checks still queued in
+this file are not optional.
+
+### 2026-08-30 — Verify 404 behaviour on a deploy, never on `next start`
+Recorded twice now at cost. A local `next start` serves Next's built-in error
+page for unmatched paths in this app; Vercel serves `app/not-found.tsx`. Every
+conclusion drawn from the local server about the 404 has been wrong.
