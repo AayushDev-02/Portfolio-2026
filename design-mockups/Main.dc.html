@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Geist+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #dc2626; text-decoration: none; }
+    a:hover { color: #1f2937; }
+    .lbl { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; }
+    .mic { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #4b5563; }
+    .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+    .plus { position: absolute; font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px; line-height: 1; color: rgba(107,114,128,0.35); }
+    .tag { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.06em; color: #4b5563; border: 1px solid rgba(107,114,128,0.2); padding: 3px 7px; }
+    .ptitle { font-family: "Geist Mono", ui-monospace, monospace; font-size: 14px; font-weight: 700; color: #1f2937; }
+    .pbody { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; line-height: 1.6; color: #4b5563; }
+  </style>
+</helmet>
+
+<div style="position: relative; width: 1440px; height: 1120px; background: #ffffff; overflow: hidden;">
+
+  <span class="plus" style="top: 24px; left: 24px;">+</span>
+  <span class="plus" style="top: 24px; right: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; left: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; right: 24px;">+</span>
+
+  <div style="position: relative; height: 100%; display: flex; flex-direction: column; padding: 56px 48px;">
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="lbl" style="color: #dc2626;">04 — PROJECTS</span>
+      <span class="lbl" style="color: #dc2626;">05 / 06</span>
+    </div>
+
+    <!-- asymmetric: heading pinned left at 1/3, lede offset right. Not centred. -->
+    <div style="display: grid; grid-template-columns: 420px 1fr; gap: 64px; align-items: end; margin-top: 40px;">
+      <h2 style="margin: 0; font-family: 'Silkscreen', ui-monospace, monospace; font-weight: 700; font-size: 44px; line-height: 1; text-transform: uppercase; color: #1f2937;">Projects</h2>
+      <p style="margin: 0; max-width: 560px;" class="pbody">Six systems in production or near it. The first is shown with its architecture, because how it fits together is the part worth judging.</p>
+    </div>
+
+    <!-- FEATURED: wide, with the diagram carrying the evidence -->
+    <div style="display: grid; grid-template-columns: 1fr 720px; gap: 48px; margin-top: 40px; padding-top: 28px; border-top: 1px solid #dc2626;">
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <span class="mic" style="color: #dc2626;">Featured — 001</span>
+        <span class="ptitle" style="font-size: 17px;">Production RAG assistant</span>
+        <span class="mono" style="font-size: 12px; color: #4b5563;">Pacific Consultants 株式会社</span>
+        <p style="margin: 4px 0 0;" class="pbody">LangChain and LLMs over roughly 400,000 construction and tender documents — search, summarisation and Q&amp;A. Out of the sandbox and into daily use in about two months.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
+          <span class="tag">Python</span><span class="tag">Express</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">Docker</span><span class="tag">DigitalOcean</span><span class="tag">Cloudflare</span>
+        </div>
+      </div>
+
+      <!-- The architecture, in the site's own hairline-and-mono idiom.
+           Real stages, not generic boxes-and-arrows. -->
+      <div style="border: 1px solid rgba(107,114,128,0.2); padding: 22px 24px 18px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px;">
+          <span class="mic">Retrieval pipeline</span>
+          <span class="mic">~400k docs</span>
+        </div>
+
+        <svg viewBox="0 0 660 260" width="100%" height="222" role="img" aria-labelledby="ragTitle ragDesc" style="display: block;">
+          <title id="ragTitle">Retrieval-augmented generation pipeline</title>
+          <desc id="ragDesc">Construction and tender documents are chunked, embedded and stored in a vector index. A user question is embedded, matched against that index, and the retrieved passages are passed with the question to a large language model, which returns an answer with citations back to the source documents.</desc>
+
+          <defs>
+            <marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="rgba(107,114,128,0.75)"></path>
+            </marker>
+            <marker id="arRed" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#dc2626"></path>
+            </marker>
+          </defs>
+
+          <!-- INGEST row -->
+          <text x="0" y="12" font-family="Geist Mono, monospace" font-size="9" letter-spacing="1.6" fill="#4b5563">INGEST — OFFLINE</text>
+
+          <rect x="0" y="24" width="120" height="42" fill="none" stroke="rgba(107,114,128,0.45)"></rect>
+          <text x="60" y="43" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1f2937">Tender +</text>
+          <text x="60" y="56" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1f2937">construction PDFs</text>
+
+          <line x1="120" y1="45" x2="163" y2="45" stroke="rgba(107,114,128,0.75)" marker-end="url(#ar)"></line>
+
+          <rect x="168" y="24" width="104" height="42" fill="none" stroke="rgba(107,114,128,0.45)"></rect>
+          <text x="220" y="43" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1f2937">Chunker</text>
+          <text x="220" y="56" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#4b5563">overlap + metadata</text>
+
+          <line x1="272" y1="45" x2="315" y2="45" stroke="rgba(107,114,128,0.75)" marker-end="url(#ar)"></line>
+
+          <rect x="320" y="24" width="104" height="42" fill="none" stroke="rgba(107,114,128,0.45)"></rect>
+          <text x="372" y="43" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1f2937">Embeddings</text>
+          <text x="372" y="56" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#4b5563">batch</text>
+
+          <line x1="424" y1="45" x2="467" y2="45" stroke="rgba(107,114,128,0.75)" marker-end="url(#ar)"></line>
+
+          <rect x="472" y="24" width="118" height="42" fill="none" stroke="rgba(107,114,128,0.45)"></rect>
+          <text x="531" y="43" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#1f2937">Vector index</text>
+          <text x="531" y="56" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#4b5563">+ keyword field</text>
+
+          <!-- index feeds the retriever -->
+          <path d="M531 66 L531 150" stroke="rgba(107,114,128,0.75)" fill="none" marker-end="url(#ar)"></path>
+
+          <line x1="0" y1="104" x2="660" y2="104" stroke="rgba(107,114,128,0.2)" stroke-dasharray="3 4"></line>
+
+          <!-- QUERY row -->
+          <text x="0" y="130" font-family="Geist Mono, monospace" font-size="9" letter-spacing="1.6" fill="#dc2626">QUERY — LIVE</text>
+
+          <rect x="0" y="142" width="120" height="42" fill="none" stroke="rgba(220,38,38,0.5)"></rect>
+          <text x="60" y="167" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#dc2626">Question</text>
+
+          <line x1="120" y1="163" x2="163" y2="163" stroke="#dc2626" marker-end="url(#arRed)"></line>
+
+          <rect x="168" y="142" width="104" height="42" fill="none" stroke="rgba(220,38,38,0.5)"></rect>
+          <text x="220" y="161" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#dc2626">Embed +</text>
+          <text x="220" y="174" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#dc2626">rewrite</text>
+
+          <line x1="272" y1="163" x2="424" y2="163" stroke="#dc2626" marker-end="url(#arRed)"></line>
+
+          <rect x="429" y="142" width="204" height="42" fill="none" stroke="rgba(220,38,38,0.5)"></rect>
+          <text x="531" y="161" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#dc2626">Retriever — hybrid + rerank</text>
+          <text x="531" y="175" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#4b5563">top-k passages</text>
+
+          <path d="M531 184 L531 212" stroke="#dc2626" fill="none" marker-end="url(#arRed)"></path>
+
+          <rect x="429" y="214" width="204" height="40" fill="#0a0a0a"></rect>
+          <text x="531" y="232" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" fill="#ededed">LLM — grounded answer</text>
+          <text x="531" y="246" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#9ca3af">cites source documents</text>
+
+          <path d="M429 234 L128 234" stroke="rgba(107,114,128,0.75)" fill="none" marker-end="url(#ar)"></path>
+          <text x="126" y="231" text-anchor="end" font-family="Geist Mono, monospace" font-size="9" fill="#4b5563">back to the asker, with citations</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- the rest: uneven gutters, deliberately not a uniform stack -->
+    <div style="display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 1px; background: rgba(107,114,128,0.2); margin-top: 34px; border-top: 1px solid rgba(107,114,128,0.2); border-bottom: 1px solid rgba(107,114,128,0.2);">
+
+      <div style="background: #ffffff; padding: 22px 26px 22px 0; display: flex; flex-direction: column; gap: 9px;">
+        <span class="mic">002</span>
+        <span class="ptitle">AI presentation generator</span>
+        <span class="mono" style="font-size: 11px; color: #4b5563;">MLIT / 国総研</span>
+        <p style="margin: 2px 0 0;" class="pbody">Staff describe what they need; the system assembles outline, body and slides. Deck preparation went from days to under an hour.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"><span class="tag">Azure</span><span class="tag">Functions</span><span class="tag">VNet</span></div>
+      </div>
+
+      <div style="background: #ffffff; padding: 22px 26px; display: flex; flex-direction: column; gap: 9px;">
+        <span class="mic">003</span>
+        <span class="ptitle">MapAI</span>
+        <span class="mono" style="font-size: 11px; color: #4b5563;">Otaru Canal · Kashiwa City</span>
+        <p style="margin: 2px 0 0;" class="pbody">Transit, rail, weather and retail data normalised into 250m mesh cells, with congestion forecasting on top.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"><span class="tag">MapLibre</span><span class="tag">PostGIS</span><span class="tag">QGIS</span></div>
+      </div>
+
+      <div style="background: #ffffff; padding: 22px 0 22px 26px; display: flex; flex-direction: column; gap: 9px;">
+        <span class="mic">004</span>
+        <span class="ptitle">Tender PDF extraction</span>
+        <span class="mono" style="font-size: 11px; color: #4b5563;">Pipeline</span>
+        <p style="margin: 2px 0 0;" class="pbody">Government tender PDFs to structured CSV, with region-aware rules for the long tail of prefectural formats.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"><span class="tag">PyMuPDF</span><span class="tag">Multithreaded</span></div>
+      </div>
+
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 1px; background: rgba(107,114,128,0.2); border-bottom: 1px solid rgba(107,114,128,0.2);">
+      <div style="background: #ffffff; padding: 22px 26px 22px 0; display: flex; flex-direction: column; gap: 9px;">
+        <span class="mic">005</span>
+        <span class="ptitle">ManiKani</span>
+        <p style="margin: 2px 0 0;" class="pbody">Subscription learning SaaS: scheduling engine, RAG-backed mnemonics, Stripe billing.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"><span class="tag">Next.js</span><span class="tag">FastAPI</span><span class="tag">pgvector</span><span class="tag">Redis</span></div>
+      </div>
+      <div style="background: #ffffff; padding: 22px 0 22px 26px; display: flex; flex-direction: column; gap: 9px;">
+        <span class="mic">006</span>
+        <span class="ptitle">AI chat assistant</span>
+        <p style="margin: 2px 0 0;" class="pbody">Token-level streaming, persistent multi-session history, per-user rate limiting. Streaming alone cut perceived response time by around 40 percent.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;"><span class="tag">Streaming</span><span class="tag">Prompt templates</span></div>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1;"></div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="mic">Numbers are from delivered work, not estimates</span>
+      <span class="lbl" style="color: #4b5563;">WRK</span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

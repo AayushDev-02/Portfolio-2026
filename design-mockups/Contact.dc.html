@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Geist+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #dc2626; text-decoration: none; }
+    a:hover { color: #1f2937; }
+    .lbl { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; }
+    .mic { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #4b5563; }
+    .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+    .plus { position: absolute; font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px; line-height: 1; color: rgba(107,114,128,0.35); }
+    .drow { display: flex; align-items: baseline; gap: 24px; padding: 14px 0; border-bottom: 1px solid rgba(107,114,128,0.2); }
+    .dkey { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; color: #dc2626; width: 160px; flex-shrink: 0; }
+    .dval { font-family: "Geist Mono", ui-monospace, monospace; font-size: 14px; color: #1f2937; }
+    .field { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; color: #dc2626; display: block; margin-bottom: 6px; }
+    .input { border: 0; border-bottom: 1px solid rgba(107,114,128,0.2); height: 44px; }
+  </style>
+</helmet>
+
+<!-- Calm bookend. Same full-viewport frame as INTRO: after the dense middle,
+     the return to air is what makes the contrast read as deliberate. -->
+<div style="position: relative; width: 1440px; height: 900px; background: #ffffff; overflow: hidden;">
+
+  <span class="plus" style="top: 24px; left: 24px;">+</span>
+  <span class="plus" style="top: 24px; right: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; left: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; right: 24px;">+</span>
+
+  <div style="position: relative; height: 100%; display: flex; flex-direction: column; padding: 56px 48px;">
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="lbl" style="color: #dc2626;">05 — CONTACT</span>
+      <span class="lbl" style="color: #dc2626;">06 / 06</span>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px;">
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+        <h2 style="margin: 0; font-family: 'Silkscreen', ui-monospace, monospace; font-weight: 700; font-size: 60px; line-height: 1; text-transform: uppercase; color: #1f2937;">Contact</h2>
+        <p style="margin: 0; max-width: 576px; text-align: center; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 18px; line-height: 1.6; color: #4b5563;">Open to permanent in-house engineering roles in Tokyo from December 2026.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 72px; width: 1060px; align-items: start;">
+
+        <div style="display: flex; flex-direction: column;">
+          <div class="drow"><span class="dkey">Email</span><span class="dval" style="text-decoration: underline; text-underline-offset: 4px;">yadavaayush02jp@gmail.com</span></div>
+          <div class="drow"><span class="dkey">GitHub</span><span class="dval" style="text-decoration: underline; text-underline-offset: 4px;">github.com/AayushDev-02</span></div>
+          <div class="drow"><span class="dkey">LinkedIn</span><span class="dval" style="text-decoration: underline; text-underline-offset: 4px;">linkedin.com/in/aayush-yadav</span></div>
+          <div class="drow"><span class="dkey">Location</span><span class="dval">Tokyo, Japan</span></div>
+          <div class="drow" style="border-bottom: 0;"><span class="dkey">Available</span><span class="dval">From December 2026</span></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 22px;">
+          <span class="lbl" style="color: #dc2626; font-weight: 700;">Send a message</span>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div><span class="field">Name</span><div class="input"></div></div>
+            <div><span class="field">Email</span><div class="input"></div></div>
+          </div>
+          <div><span class="field">Message</span><div style="border-bottom: 1px solid rgba(107,114,128,0.2); height: 96px;"></div></div>
+          <span class="mono" style="font-size: 12px; letter-spacing: 0.2em; font-weight: 700; color: #dc2626; border: 1px solid rgba(107,114,128,0.2); padding: 13px 20px; align-self: flex-start;">[ SEND MESSAGE ]</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="mic">Currently in Japan on a valid work visa</span>
+      <span class="lbl" style="color: #4b5563;">END</span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

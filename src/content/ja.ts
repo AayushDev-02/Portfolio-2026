@@ -19,7 +19,9 @@
 
 import type {
   AccordionRowContent,
+  PipelineDiagram,
   ProjectEntry,
+  ResultFigure,
   SiteContent,
   SkillGroup,
   TimelineEntry,
@@ -251,40 +253,111 @@ const skills = {
   sigil: "SKL",
 };
 
+const results = {
+  eyebrow: "RESULTS",
+  note: "実績値であり、見積もりではありません",
+  figures: [
+    {
+      value: "1,400",
+      unit: "時間 / 年",
+      caption: "検索精度の改善のみで削減した、手作業による資料確認の時間。",
+    },
+    {
+      value: "2",
+      unit: "か月",
+      caption: "約40万件の文書を対象に、検証環境から日常運用まで。",
+    },
+    {
+      value: "<1",
+      unit: "時間（従来は数日）",
+      caption: "資料作成にかかる時間。生成機能の導入後。",
+    },
+    {
+      value: "40%",
+      unit: "体感レスポンス",
+      caption: "チャットアシスタントのストリーミング配信による短縮率。",
+    },
+  ] satisfies ResultFigure[],
+  caption: "各数値は下記のプロジェクトに対応しています",
+  sigil: "NUM",
+};
+
 const projects = {
   eyebrow: "PROJECTS",
   heading: "主な実績",
   lead: "定量的な成果が出ているものから順に6件。多くは東京で常駐対応したクライアント案件です。",
   items: [
     {
-      title: "企業向けRAG AIアプリケーション — パシフィックコンサルタンツ",
+      title: "企業向けRAG AIアプリケーション",
+      org: "パシフィックコンサルタンツ株式会社",
+      featured: true,
+      tags: [
+        "Python",
+        "Express",
+        "React",
+        "TypeScript",
+        "Docker",
+        "DigitalOcean",
+        "Cloudflare",
+      ],
       body: "建設関連ドキュメント約40万件を対象に、LangChainとLLMを組み合わせた社内向けAIアシスタントを開発。ナレッジ検索と問い合わせ対応を自動化し、対応にかかる工数を年間1,400時間規模で圧縮しました。検証段階から実運用への移行を約2か月で完了させ、本番環境へリリース。バックエンドはPythonとNode.js（Express）、フロントエンドはReactとTypeScript、DockerでDigitalOceanへデプロイし、Cloudflare CDNで配信を最適化しています。",
       quote:
         "精度改善の大半はプロンプトではなく検索側でした。チャンク設計、pgvectorによるハイブリッド検索、リランキング処理を、実際のユーザー質問から作成した評価セットで検証しています。",
     },
     {
-      title: "生成AIを用いた文書自動起案システム — 国総研",
+      title: "生成AIを用いた文書自動起案システム",
+      org: "国土交通省 / 国総研",
+      tags: ["Azure Web Apps", "Functions", "Application Gateway", "VNet"],
       body: "職員がチャット形式で要件を伝えるだけで、構成案からスライドまでを自動生成するWebアプリケーションを開発。資料作成の工数を削減し、初稿到達までの所要時間を大きく短縮しました。既存文書を自動参照して根拠に反映させる仕組みにより、記載内容のばらつきを解消。Azure Web AppsとAzure Functionsを軸に構成し、Application Gatewayと仮想ネットワークで公開経路を限定しています。",
       quote:
         "行政機関向けのため、モデルと同じくらいネットワーク設計が重要でした。公開経路の限定とネットワーク分離を前提とした構成です。",
     },
     {
-      title: "地理情報AIマップアプリケーション（MapAI） — 小樽運河・柏市",
+      title: "地理情報AIマップアプリケーション（MapAI）",
+      org: "小樽運河・柏市",
+      tags: ["MapLibre", "PostGIS", "QGIS", "Azure", "Neon"],
       body: "観光過密（オーバーツーリズム）問題の解決を目的とした、地理空間データ活用型AIマップアプリケーション。交通、鉄道、フェリー、イベント、天候、店舗情報など複数のデータを統合し、250mメッシュ単位で整形・格納したうえで、混雑状況の可視化および将来予測を行います。LLMを活用し、自然言語による問い合わせにも対応。MapLibreによる地図可視化、AzureとNeon上のPostGIS、QGISでの前処理という構成です。",
     },
     {
       title: "官公庁向け入札PDFデータ抽出・自動化システム",
+      tags: ["PyMuPDF", "マルチスレッド", "CSV / Excel"],
       body: "官公庁の入札関連PDFから必要な情報を自動抽出し、構造化データとして整理・出力する業務自動化システム。PyMuPDFによる解析処理とマルチスレッド処理による高速化に加え、地域別の構造化データ抽出ロジックを設計し、CSVおよびExcel形式でのレポート出力に対応しました。",
     },
     {
-      title: "ManiKani — 間隔反復学習SaaS",
+      title: "ManiKani",
+      org: "間隔反復学習SaaS",
+      tags: ["Next.js", "FastAPI", "PostgreSQL", "pgvector", "Redis", "Stripe"],
       body: "本番運用を想定して構築したサブスクリプション型の学習アプリケーション。間隔反復のスケジューリングエンジンと、RAGを用いた個別学習用ニーモニックの生成、進捗管理を実装しています。フロントエンドはNext.js、AI処理は独立したPython（FastAPI）サービスとして分離。PostgreSQLとpgvectorで意味検索、Redisでセッションとレート制限、Stripeで課金を処理しています。",
     },
     {
       title: "AIチャットアシスタント",
+      tags: ["ストリーミング", "プロンプトテンプレート", "レート制限"],
       body: "トークン単位のストリーミング応答、複数セッションの履歴保持、ユーザー単位のレート制限を備えた対話型アシスタント。ストリーミングの導入だけで体感応答速度を約40%改善しました。プロンプトテンプレート層により、会話コンテキストをモデルのトークン上限内に収めています。",
     },
   ] satisfies ProjectEntry[],
+  diagramLabel: "検索パイプライン",
+  diagram: {
+    title: "検索拡張生成（RAG）のパイプライン",
+    desc: "建設・入札関連の文書を分割し、ベクトル化して索引に格納します。質問文もベクトル化・書き換えのうえ、ハイブリッド検索と再ランキングで該当箇所を取得し、質問とあわせて大規模言語モデルに渡すことで、出典を明示した回答を返します。",
+    ingestRow: "INGEST — 事前処理",
+    queryRow: "QUERY — 実行時",
+    scale: "約40万件",
+    documents: "入札・建設",
+    documentsSub: "関連PDF",
+    chunker: "チャンク分割",
+    chunkerSub: "重複 + メタデータ",
+    embeddings: "ベクトル化",
+    embeddingsSub: "バッチ処理",
+    index: "ベクトル索引",
+    indexSub: "+ キーワード検索",
+    question: "質問",
+    embedQuery: "ベクトル化 + 書き換え",
+    retriever: "検索 — ハイブリッド + 再ランキング",
+    retrieverSub: "上位k件の該当箇所",
+    answer: "LLM — 根拠に基づく回答",
+    answerSub: "出典を明示",
+    returnLabel: "出典付きで質問者へ",
+  } satisfies PipelineDiagram,
   caption: "記載の数値は実際に納品した案件の実績です",
   sigil: "WRK",
 };
@@ -365,6 +438,7 @@ export const ja: SiteContent = {
   about,
   experience,
   skills,
+  results,
   projects,
   contact,
   notFound,

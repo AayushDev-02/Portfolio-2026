@@ -4,4 +4,5 @@ export { ExperienceSection } from "./experience";
 export { IntroSection } from "./intro";
 export { NotFoundSection } from "./not-found";
 export { ProjectsSection } from "./projects";
+export { ResultsSection } from "./results";
 export { SkillsSection } from "./skills";

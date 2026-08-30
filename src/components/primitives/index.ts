@@ -8,6 +8,7 @@ export { HeroBackdrop } from "./hero-backdrop";
 export { Counter, Eyebrow, MicroLabel, Sigil } from "./labels";
 export { LocaleSwitcher } from "./locale-switcher";
 export { NumberedItem, NumberedList } from "./numbered-item";
+export { PipelineDiagram } from "./pipeline-diagram";
 export { PullQuote } from "./pull-quote";
 export { RankBar, RankList } from "./rank-bar";
 export { Reveal } from "./reveal";

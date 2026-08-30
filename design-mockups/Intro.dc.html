@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Geist+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #dc2626; text-decoration: none; }
+    a:hover { color: #1f2937; }
+    .lbl { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; }
+    .mic { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #4b5563; }
+    .plus { position: absolute; font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px; line-height: 1; color: rgba(107,114,128,0.35); }
+  </style>
+</helmet>
+
+<div style="position: relative; width: 1440px; height: 900px; background: #ffffff; overflow: hidden;">
+
+  <!-- full-bleed photographic hero: the calm bookend stays as it is today -->
+  <div style="position: absolute; inset: 0; overflow: hidden;">
+    <img src="hero.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 33%; background: linear-gradient(to bottom, rgba(255,255,255,0), #ffffff);"></div>
+  </div>
+
+  <span class="plus" style="top: 24px; left: 24px;">+</span>
+  <span class="plus" style="top: 24px; right: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; left: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; right: 24px;">+</span>
+
+  <div style="position: relative; height: 100%; display: flex; flex-direction: column; padding: 56px 48px;">
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="lbl" style="color: #1f2937;">00 — INTRO</span>
+      <span class="lbl" style="color: #1f2937;">01 / 06</span>
+    </div>
+
+    <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;">
+      <h1 style="margin: 0; font-family: 'Silkscreen', ui-monospace, monospace; font-weight: 700; font-size: 72px; line-height: 1; text-transform: uppercase; color: #dc2626; letter-spacing: -0.01em;">Aayush Yadav</h1>
+
+      <div style="width: 576px; background: #0a0a0a; padding: 20px 24px; display: flex; flex-direction: column; gap: 10px;">
+        <span style="font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; color: #ef4444;">Software engineer — Tokyo, Japan</span>
+        <span style="font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; color: #ededed;"><span style="color: #ef4444;">&gt;</span> What have you actually shipped?<span style="color: #ededed;">_</span></span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="mic">[+] Available from December 2026</span>
+      <span class="lbl" style="color: #4b5563;">AY</span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

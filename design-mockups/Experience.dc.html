@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Geist+Mono:wght@400;500;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #dc2626; text-decoration: none; }
+    a:hover { color: #1f2937; }
+    .lbl { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.2em; }
+    .mic { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #4b5563; }
+    .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+    .plus { position: absolute; font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px; line-height: 1; color: rgba(107,114,128,0.35); }
+    .row { display: grid; grid-template-columns: 52px 190px 1fr 300px 96px; gap: 24px; align-items: start; padding: 18px 0; border-top: 1px solid rgba(107,114,128,0.2); }
+    .tag { font-family: "Geist Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.06em; color: #4b5563; border: 1px solid rgba(107,114,128,0.2); padding: 3px 7px; }
+  </style>
+</helmet>
+
+<div style="position: relative; width: 1440px; height: 900px; background: #ffffff; overflow: hidden;">
+
+  <span class="plus" style="top: 24px; left: 24px;">+</span>
+  <span class="plus" style="top: 24px; right: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; left: 24px;">+</span>
+  <span class="plus" style="bottom: 24px; right: 24px;">+</span>
+
+  <div style="position: relative; height: 100%; display: flex; flex-direction: column; padding: 56px 48px;">
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="lbl" style="color: #dc2626;">02 — EXPERIENCE</span>
+      <span class="lbl" style="color: #dc2626;">03 / 06</span>
+    </div>
+
+    <!-- Left-aligned, not centred. The heading sits beside the lede rather than
+         stacking above it, which buys a full row of vertical space for content. -->
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 64px; margin-top: 40px; padding-bottom: 22px;">
+      <h2 style="margin: 0; font-family: 'Silkscreen', ui-monospace, monospace; font-weight: 700; font-size: 44px; line-height: 1; text-transform: uppercase; color: #1f2937;">Experience</h2>
+      <p style="margin: 0; max-width: 520px; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 15px; line-height: 1.55; color: #4b5563;">Two years from first internship to shipping retrieval systems in production for Japanese public-sector and construction clients — with a year of full-time language study in the middle.</p>
+    </div>
+
+    <!-- column header: this is what makes it read as a table rather than cards -->
+    <div style="display: grid; grid-template-columns: 52px 190px 1fr 300px 96px; gap: 24px; padding-bottom: 10px;">
+      <span class="mic">No.</span>
+      <span class="mic">Period</span>
+      <span class="mic">Role</span>
+      <span class="mic">What shipped</span>
+      <span class="mic" style="text-align: right;">Status</span>
+    </div>
+
+    <div style="border-bottom: 1px solid rgba(107,114,128,0.2);">
+
+      <div class="row">
+        <span class="mono" style="font-size: 20px; color: #111827;">001</span>
+        <span class="mono" style="font-size: 12px; color: #4b5563; letter-spacing: 0.06em;">JUL 2023 – JAN 2024</span>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="mono" style="font-size: 14px; font-weight: 700; color: #1f2937;">Hevonic.AI</span>
+          <span class="mono" style="font-size: 12px; color: #4b5563;">Software Developer Intern</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="tag">React</span><span class="tag">Node</span><span class="tag">REST APIs</span><span class="tag">First production deploys</span>
+        </div>
+        <span class="mono" style="font-size: 10px; letter-spacing: 0.14em; color: #111827; text-align: right;">[DONE]</span>
+      </div>
+
+      <div class="row">
+        <span class="mono" style="font-size: 20px; color: #111827;">002</span>
+        <span class="mono" style="font-size: 12px; color: #4b5563; letter-spacing: 0.06em;">JAN – JUN 2024</span>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="mono" style="font-size: 14px; font-weight: 700; color: #1f2937;">Human Resocia</span>
+          <span class="mono" style="font-size: 12px; color: #4b5563;">Software Engineer Intern</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="tag">Python</span><span class="tag">Automation</span><span class="tag">Internal tooling</span>
+        </div>
+        <span class="mono" style="font-size: 10px; letter-spacing: 0.14em; color: #111827; text-align: right;">[DONE]</span>
+      </div>
+
+      <!-- the year of language study is a row, not a gap: it is the thing that
+           makes the rest of the timeline legible to a Japanese reader -->
+      <div class="row" style="background: rgba(107,114,128,0.045);">
+        <span class="mono" style="font-size: 20px; color: #111827;">003</span>
+        <span class="mono" style="font-size: 12px; color: #4b5563; letter-spacing: 0.06em;">JAN 2024 – JAN 2025</span>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="mono" style="font-size: 14px; font-weight: 700; color: #1f2937;">Japanese language training</span>
+          <span class="mono" style="font-size: 12px; color: #4b5563;">Full-time study → relocation to Japan</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="tag">日本語</span><span class="tag">Relocation</span><span class="tag">Business-level working proficiency</span>
+        </div>
+        <span class="mono" style="font-size: 10px; letter-spacing: 0.14em; color: #111827; text-align: right;">[DONE]</span>
+      </div>
+
+      <div class="row">
+        <span class="mono" style="font-size: 20px; color: #111827;">004</span>
+        <span class="mono" style="font-size: 12px; color: #4b5563; letter-spacing: 0.06em;">FEB – MAY 2025</span>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="mono" style="font-size: 14px; font-weight: 700; color: #1f2937;">Suntec 株式会社</span>
+          <span class="mono" style="font-size: 12px; color: #4b5563;">Frontend Engineer</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="tag">TypeScript</span><span class="tag">React</span><span class="tag">Client delivery in Japanese</span>
+        </div>
+        <span class="mono" style="font-size: 10px; letter-spacing: 0.14em; color: #111827; text-align: right;">[DONE]</span>
+      </div>
+
+      <div class="row" style="border-top: 1px solid #dc2626;">
+        <span class="mono" style="font-size: 20px; color: #dc2626;">005</span>
+        <span class="mono" style="font-size: 12px; color: #dc2626; letter-spacing: 0.06em;">JUN 2025 – PRESENT</span>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="mono" style="font-size: 14px; font-weight: 700; color: #dc2626;">Pacific Consultants 株式会社</span>
+          <span class="mono" style="font-size: 12px; color: #4b5563;">Software Engineer</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="tag" style="border-color: rgba(220,38,38,0.35); color: #dc2626;">LangChain</span>
+          <span class="tag" style="border-color: rgba(220,38,38,0.35); color: #dc2626;">RAG over 400k documents</span>
+          <span class="tag" style="border-color: rgba(220,38,38,0.35); color: #dc2626;">Azure</span>
+          <span class="tag" style="border-color: rgba(220,38,38,0.35); color: #dc2626;">Requirements → operations</span>
+        </div>
+        <span class="mono" style="font-size: 10px; letter-spacing: 0.14em; color: #dc2626; text-align: right;">[CURRENT]</span>
+      </div>
+
+    </div>
+
+    <div style="flex-grow: 1;"></div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between;">
+      <span class="mic">Five roles, three companies, one relocation</span>
+      <span class="lbl" style="color: #4b5563;">EXP</span>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

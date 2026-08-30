@@ -7,6 +7,7 @@ import {
   ExperienceSection,
   IntroSection,
   ProjectsSection,
+  ResultsSection,
   SkillsSection,
 } from "@/components/sections";
 import { getContent } from "@/content";
@@ -44,6 +45,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <AboutSection content={content} />
       <ExperienceSection content={content} />
       <SkillsSection content={content} />
+      {/* The numbers band sits between SKILLS and PROJECTS: half the height of
+          either, so the rhythm breaks right before the densest section. It is
+          unnumbered and does not advance the 01/06 counter. */}
+      <ResultsSection content={content} />
       <ProjectsSection content={content} />
       <ContactSection content={content} locale={locale} />
     </>

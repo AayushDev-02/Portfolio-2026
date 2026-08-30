@@ -670,3 +670,60 @@ Use `Get-Process -Name node | Stop-Process -Force` via PowerShell, and start
 each verification server on a fresh port. Every measurement harness in
 `scratchpad` now asserts the CSS actually applied before reporting anything,
 which is what caught this rather than another wrong conclusion.
+
+### 2026-08-30 — Stage 13 §B and §C built; §A falls out of them
+Aayush approved B (evidence) and C (numbers) from the design canvas and asked
+what A actually meant. A is not a separate workstream: "break the rhythm" is a
+*consequence* of B and C, not a third thing to build.
+
+- §C adds a band roughly **416px** tall between sections measuring 900–1676px.
+  After a full-height section it arrives as a jolt. That is the rhythm break,
+  and it costs one section component.
+- §B makes PROJECTS **taller and asymmetric** — heading beside the lede rather
+  than centred above it, a featured entry in a 1fr/720px split, then 1.35/1/1
+  and 1/1.35 grids instead of a uniform stack.
+
+The only piece of A left undone is EXPERIENCE going dense, which is drawn on
+the canvas and not yet built. Measured heights, light EN: intro 900, about 1003,
+experience 1270, skills 1676, **results 416**, projects 1392, contact 1458 —
+the uniform six-frame page is gone.
+
+### 2026-08-30 — The RESULTS band deliberately does not use SectionShell
+Every other section is `min-h-dvh` with centred content. That shell is what
+makes the page uniform, so the band cannot use it and still do its job. It keeps
+the eyebrow, caption and sigil so it plainly belongs to the page — a different
+tempo, not a different site — but it is unnumbered and does not advance the
+"01 / 06" counter, because it is a band *between* sections rather than a seventh
+one.
+
+The four figures are not new content. They were already in PROJECTS body prose,
+where a fifteen-second skim would never reach them. `ResultFigure` splits each
+into value, unit and caption because only the value goes in the display face.
+
+### 2026-08-30 — The pipeline diagram is inline SVG, and its labels are content
+Stage 13 called evidence the highest-value item, because a portfolio belonging
+to someone who builds retrieval systems contained no diagram, image or
+screenshot — nothing a reader could judge the engineering by.
+
+Hand-authored inline SVG in the existing hairline-and-mono idiom. No charting
+library: stage 7's budget binds, and a generic boxes-and-arrows import would
+look like clip art beside the rest of the page. It cost **0KB** — app code is
+unchanged at 11.7KB, because the whole thing is server-rendered markup.
+
+Two decisions worth keeping. **Every label lives in `content/*.ts`**, typed as
+`PipelineDiagram`, so the diagram translates with the page; a diagram that
+stayed English on the Japanese page would read as an oversight rather than a
+choice, and the type makes a missing Japanese label a compile error. **Colours
+are token classes**, so the drawing follows light and dark without knowing a
+theme exists — the model sits on `fill-terminal-bg`, the one dark element,
+marking where the answer is actually produced.
+
+`useId` was removed after being written: this is a Server Component, and hooks
+are not available there. Fixed ids are safe because `featured` marks exactly one
+project, so the diagram renders once.
+
+### 2026-08-30 — The projects accordion is gone
+PROJECTS was six `AccordionRow`s with only the first open. Content behind a
+disclosure is content a fifteen-second skim never sees, and this is the section
+that most needs to be seen. Replaced with the asymmetric grid; the pull quote
+survives on the featured entry only, where there is room for it.

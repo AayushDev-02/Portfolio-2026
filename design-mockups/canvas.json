@@ -1,0 +1,75 @@
+{
+  "artboards": [
+    {
+      "file": "Intro.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "00 INTRO — calm bookend"
+    },
+    {
+      "file": "Experience.dc.html",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "02 EXPERIENCE — dense"
+    },
+    {
+      "file": "Results.dc.html",
+      "x": 3120,
+      "y": 0,
+      "w": 1440,
+      "h": 420,
+      "title": "RESULTS — the numbers (new)"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 4680,
+      "y": 0,
+      "w": 1440,
+      "h": 1120,
+      "title": "04 PROJECTS — asymmetric + evidence"
+    },
+    {
+      "file": "Contact.dc.html",
+      "x": 6240,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "05 CONTACT — calm bookend"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "rhythm",
+      "x": 0,
+      "y": -230,
+      "w": 620,
+      "text": "A — BREAK THE RHYTHM\n\nRead these left to right, in page order. The frames are deliberately different heights: calm full-viewport bookends, a dense table, a short 420px numbers band, then a tall asymmetric projects section.\n\nToday all six sections are the same height, centred, in the same frame. That sameness is the actual complaint behind \"bland\" — not a lack of decoration."
+    },
+    {
+      "id": "evidence",
+      "x": 4680,
+      "y": -230,
+      "w": 620,
+      "text": "B — SHOW THE WORK (highest value)\n\nThe featured project carries a real retrieval-pipeline diagram: ingest offline in grey, live query in red, the LLM in the terminal black. Drawn as inline SVG in the existing hairline-and-mono idiom, so it costs no library and no bundle.\n\nThe other five are asymmetric — 1.35/1/1 then 1/1.35 — rather than a uniform stack."
+    },
+    {
+      "id": "numbers",
+      "x": 3120,
+      "y": -230,
+      "w": 620,
+      "text": "C — MAKE THE NUMBERS THE HERO\n\nAll four figures exist today, buried in project body text where nobody reads them. Pulled out into a short band in the pixel face, each traceable to a project below.\n\nThis band is the shortest frame on the canvas on purpose — arriving after a full-height section, its shortness is the jolt."
+    },
+    {
+      "id": "open",
+      "x": 1560,
+      "y": -230,
+      "w": 620,
+      "text": "OPEN QUESTIONS FOR YOU\n\n1. EXPERIENCE now reads as a table with a \"What shipped\" column — those tags are my summary, not your words. Worth checking.\n2. The language-study year is shown as a row of its own rather than a gap. Deliberate; tell me if you would rather it were quieter.\n3. Company names carry 株式会社 here. Consistent with the JA copy — say if you want them Latin-only in EN.\n\nD, E and F from the brief are NOT drawn yet — they are upside, and the brief says re-measure after A."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

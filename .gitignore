@@ -22,3 +22,8 @@ docs/source/
 
 
 .vercel
+
+# Design-canvas output. Regenerated from the .dc.html working files beside it
+# by the design skill's seeder; ~2.5MB of editor payload, not source.
+design-mockups/*.html
+!design-mockups/*.dc.html

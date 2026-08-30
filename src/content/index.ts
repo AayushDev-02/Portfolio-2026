@@ -1,7 +1,13 @@
 import type { Locale } from "@/i18n/routing";
 import { en } from "./en";
 import { ja } from "./ja";
-import type { ContactFormCopy, SiteContent } from "./types";
+import type {
+  ContactFormCopy,
+  PipelineDiagram,
+  ProjectEntry,
+  ResultFigure,
+  SiteContent,
+} from "./types";
 
 const content: Record<Locale, SiteContent> = { en, ja };
 
@@ -10,4 +16,4 @@ export function getContent(locale: Locale): SiteContent {
   return content[locale];
 }
 
-export type { ContactFormCopy, SiteContent };
+export type { ContactFormCopy, PipelineDiagram, ProjectEntry, ResultFigure, SiteContent };
