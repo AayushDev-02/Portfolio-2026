@@ -21,6 +21,12 @@
   --color-rule: rgba(107, 114, 128, 0.2); /* gray-500/20 — every hairline */
   --color-terminal-bg: #0a0a0a; /* ONLY the hero terminal panel */
   --color-terminal-fg: #ededed; /* text inside that panel */
+  /* The accent, re-lit for the dark panel. --color-accent is tuned for red on
+     white (4.83:1) and drops to 4.10:1 on the terminal ground — below AA even
+     at full opacity, and the status line was rendering it at 80% for 2.94:1.
+     One step lighter (red-500) restores 5.26:1 at the same hue. A panel with
+     its own ground needs its own accent; see docs/DECISIONS.md. */
+  --color-terminal-accent: #ef4444;
 
   /* --- type families ---
      --font-pixel and --font-geist-mono are injected by next/font (see lib/fonts.ts).

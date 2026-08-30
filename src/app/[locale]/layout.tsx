@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -5,9 +7,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/primitives";
 import { type Locale, locales, routing } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
+import { siteUrl } from "@/lib/site-url";
 import "../globals.css";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -79,6 +80,14 @@ export default async function LocaleLayout({
           <main id="main" className="bg-bg">
             {children}
           </main>
+          {/*
+            Both are cookie-free and collect no personal data, so the site
+            needs no consent banner — which is the reason for choosing them
+            over anything session-based. They mount last and load after
+            hydration, so neither is on the critical path.
+          */}
+          <Analytics />
+          <SpeedInsights />
         </NextIntlClientProvider>
       </body>
     </html>

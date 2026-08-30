@@ -357,3 +357,68 @@ it is tuned for size rather than fidelity.
 
 The art is still placeholder. These settings are the starting point when real
 photography lands, not a result to copy blindly — re-run the sweep.
+
+### 2026-08-30 — The site URL is resolved, not read (stage 8)
+Production was serving `<link rel="canonical" href="http://localhost:3000/en">`.
+`NEXT_PUBLIC_SITE_URL` had been left at its `.env.example` default in Vercel, and
+every canonical, hreflang and sitemap URL is built from it. A canonical pointing
+at localhost tells a search engine the real page is somewhere it cannot reach —
+for a site whose entire purpose is being found by a recruiter, that is the most
+expensive possible bug, and nothing about the rendered page looks wrong.
+
+`lib/site-url.ts` now resolves rather than reads: a localhost value is not
+trusted when `VERCEL_PROJECT_PRODUCTION_URL` is present. That variable rather
+than `VERCEL_URL` — the latter is unique per deployment, and a canonical that
+changes on every push is its own problem. The Vercel value was corrected too;
+the code change exists so the same mistake cannot silently recur on a new
+environment or at stage 9's domain switch.
+
+### 2026-08-30 — JSON-LD asserts only what the page already shows
+`lib/person-schema.ts` is built entirely from `content/*.ts`. Two reasons.
+Structured data that disagrees with the visible page is a manual-action risk, and
+this is a privacy boundary: the address is city and country only. The home
+address and phone number that stage 5 refused to publish do not get in through
+the back door of a `<script type="application/ld+json">`, which is exactly the
+sort of place nobody thinks to check.
+
+`worksFor` is deliberately absent. The employers are named in EXPERIENCE, but
+nothing in the content model marks which engagement is current, and a stale
+employer is worse than none. `sameAs` is the property doing the real work — it
+merges this page, the GitHub profile and the LinkedIn profile into one entity,
+which is what makes a search for the name resolve to him.
+
+### 2026-08-30 — OG images subset a CJK font at build time
+Satori needs font *data*, not a CSS variable, so the per-glyph `--font-jp`
+fallback the rest of the site relies on does not exist for an OG image: without
+a real CJK face, every kana on the Japanese card renders as a blank box.
+
+Noto Sans JP is fetched from Google Fonts at build with the `text=` parameter,
+which returns only the glyphs the card actually draws — a few KB rather than a
+multi-megabyte face — and with an old user-agent, which is what makes the CSS
+API serve TrueType instead of the woff2 satori cannot parse. One family covers
+Latin and Japanese, so there is no second fetch to fail.
+
+`loadOgFont` returns `null` instead of throwing. This runs during `next build`,
+including in CI, and a share card is not worth failing a deploy over; the card
+falls back to satori's built-in face, which still renders Latin.
+
+### 2026-08-30 — The dark panel gets its own accent token
+axe found one real WCAG AA failure, in both locales: the hero terminal panel's
+status line at `text-accent/80` scored 2.94:1.
+
+`--color-accent` (#dc2626) is tuned for red on white, where it is 4.83:1. On the
+terminal's #0a0a0a ground the same red is 4.10:1 — below AA even at full
+opacity, so removing the 80% alone would not have fixed it. Added
+`--color-terminal-accent: #ef4444`, one step lighter at the same hue, 5.26:1.
+
+The fix is a token rather than a value in the component, per CLAUDE.md rule 1,
+and it sits beside `--color-terminal-bg` / `--color-terminal-fg` which are
+already scoped to that panel. The general principle: a surface with its own
+ground needs its own accent, and stage 11's dark mode will need exactly this
+again for the whole page.
+
+Every other pair passes comfortably — ink 14.68:1, prose 7.56:1, accent on
+white 4.83:1, terminal-fg 16.91:1. axe still reports `color-contrast` as
+*incomplete* rather than passing, because the hero wordmark sits over a
+photograph and no tool can compute that statically; at 48–72px it is large text,
+where the threshold is 3:1.

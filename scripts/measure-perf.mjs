@@ -157,9 +157,9 @@ const row = (label, val, target, pass) =>
   console.log(
     `  ${label.padEnd(8)} ${String(val).padEnd(12)} ${target.padEnd(14)} ${pass ? "PASS" : "FAIL"}`,
   );
-row("LCP", (lcp / 1000).toFixed(2) + " s", "< 1.5 s", lcp < 1500);
+row("LCP", `${(lcp / 1000).toFixed(2)} s`, "< 1.5 s", lcp < 1500);
 row("CLS", cls.toFixed(4), "< 0.05", cls < 0.05);
-row("FCP", (fcp / 1000).toFixed(2) + " s", "—", true);
+row("FCP", `${(fcp / 1000).toFixed(2)} s`, "—", true);
 
 const agg = {};
 for (const r of results)

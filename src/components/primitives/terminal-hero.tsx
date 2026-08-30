@@ -24,7 +24,7 @@ export function TerminalHero({ title, status, lines }: Props) {
 
       <div className="w-full max-w-xl bg-terminal-bg px-6 py-5 text-terminal-fg">
         {status ? (
-          <p className="text-micro tracking-label text-accent/80">{status}</p>
+          <p className="text-micro tracking-label text-terminal-accent">{status}</p>
         ) : null}
         <TerminalPrompt lines={lines} />
       </div>
