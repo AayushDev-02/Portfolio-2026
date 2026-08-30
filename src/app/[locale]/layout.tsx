@@ -7,7 +7,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/primitives";
 import { type Locale, locales, routing } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
-import { siteUrl } from "@/lib/site-url";
+import { isDeployed, siteUrl } from "@/lib/site-url";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -86,13 +86,13 @@ export default async function LocaleLayout({
             over anything session-based. They mount last and load after
             hydration, so neither is on the critical path.
 
-            Rendered only on Vercel. Their scripts are served from
+            Mounted only on a real host. Their scripts are served from
             /_vercel/... by the platform, so off-platform — local `next start`,
             and CI, where Lighthouse runs — they 404 into the console. That is
             noise in development and a real best-practices failure in CI, for
             beacons that could not have reported anything there anyway.
           */}
-          {process.env.VERCEL ? (
+          {isDeployed ? (
             <>
               <Analytics />
               <SpeedInsights />

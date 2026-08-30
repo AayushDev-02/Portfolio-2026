@@ -41,6 +41,21 @@ function resolve(): string {
 
 export const siteUrl = resolve();
 
+/**
+ * Whether this build is serving from a real host rather than a developer's
+ * machine or a CI runner.
+ *
+ * Used to decide whether the Vercel analytics beacons mount. Deliberately
+ * derived from the resolved URL rather than from `process.env.VERCEL`, which
+ * was falsy during the static prerender and silently left analytics off in
+ * production — a gate that fails closed and says nothing is worse than no gate.
+ * This reuses the one notion of "where does this site live" that the canonical,
+ * the sitemap and the OG images already depend on, so it cannot disagree with
+ * them.
+ */
+export const isDeployed =
+  !siteUrl.includes("localhost") && !siteUrl.includes("127.0.0.1");
+
 /** Absolute URL for a path. `absoluteUrl("/en")` -> "https://…/en". */
 export function absoluteUrl(path: string): string {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
