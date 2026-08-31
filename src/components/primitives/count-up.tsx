@@ -79,11 +79,11 @@ export function CountUp({ text }: { text: string }) {
         });
       });
     };
-    if (document.readyState === "complete") start();
-    else window.addEventListener("load", start, { once: true });
+    if (window.scrollY > 0) start();
+    else window.addEventListener("scroll", start, { once: true, passive: true });
     return () => {
       cancelled = true;
-      window.removeEventListener("load", start);
+      window.removeEventListener("scroll", start);
       tween?.kill();
       trigger?.kill();
     };

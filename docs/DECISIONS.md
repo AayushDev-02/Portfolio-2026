@@ -796,3 +796,21 @@ The precedent this sets is worth stating plainly, because it has now held three
 times: on this project the library is measured against the budget before it is
 adopted, not after. The hero image, the font and the animation library were each
 chosen this way, and each measurement changed the answer.
+
+### 2026-08-31 — Bundle analysis and deferred activation seam
+`@next/bundle-analyzer@15.5.24` is retained as a dev-only analyzer so the
+client chunk graph can be inspected with `ANALYZE=true pnpm build`; it is not
+reachable from the application bundle. The generated report confirms that the
+GSAP-marked chunks are async after the fix: the initial `/[locale]` manifest
+contains no GSAP chunk, while the deferred chunks are 04763798 (19.8KB gzip),
+436 (17.4KB), 114 (8.2KB), 473 (4.0KB), and 567 (3.3KB). The previous static
+build put 04763798 (19.8KB), 423 (24.8KB), and 473 (6.9KB) in the initial
+route, about 51.5KB gzip of motion code. The loader now waits for the first
+scroll (or first fine-pointer move for the cursor), which also keeps module
+evaluation off the initial LCP path. Cleanup only kills a loaded GSAP
+instance, so unmounting before activation cannot pull the vendor chunk back in.
+
+The earlier reversal entry referred to the old 90KB total fiction; the
+defensible enforced target is the 120KB browser-visible ceiling recorded above
+because the measured framework floor is 100.8KB and the current route is
+114.4KB gzip. The app-code gate remains 15KB.

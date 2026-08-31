@@ -22,15 +22,15 @@ import { loadMotionModules } from "@/lib/gsap-motion";
  * or lose a fine pointer, and the reduced-motion preference can be toggled while
  * the page is open; a one-time read at mount would strand the crosshair on.
  *
- * **The listener never writes to the DOM.** `mousemove` fires far more often
- * than the display refreshes, so it only records coordinates and flags a frame;
- * a single `requestAnimationFrame` loop does the one `translate3d` per frame.
- * Writing on every event is how this effect usually ends up on the INP budget.
+ * **The listener never writes styles directly.** `mousemove` fires far more
+ * often than the display refreshes, so `gsap.quickTo` coalesces the updates
+ * into its own render loop rather than writing a `translate3d` on every event.
  * Transform only — never `top`/`left`, which would force layout each frame.
  */
 export function CursorCrosshair() {
   const horizontal = useRef<HTMLDivElement>(null);
   const vertical = useRef<HTMLDivElement>(null);
+  const visibleRef = useRef(false);
   const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -50,30 +50,40 @@ export function CursorCrosshair() {
   }, []);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      visibleRef.current = false;
+      setVisible(false);
+      return;
+    }
 
     let cancelled = false;
     let toX: ((value: number) => void) | undefined;
     let toY: ((value: number) => void) | undefined;
+    let gsapInstance: typeof import("gsap").default | undefined;
     const start = () => {
       loadMotionModules().then(({ gsap }) => {
         if (cancelled || !horizontal.current || !vertical.current) return;
+        gsapInstance = gsap;
         toX = gsap.quickTo(vertical.current, "x", { duration: 0.18, ease: "power3" });
         toY = gsap.quickTo(horizontal.current, "y", { duration: 0.18, ease: "power3" });
       });
     };
-    if (document.readyState === "complete") start();
-    else window.addEventListener("load", start, { once: true });
-
     const onMove = (event: MouseEvent) => {
+      if (!toX) start();
       toX?.(event.clientX);
       toY?.(event.clientY);
-      if (!visible) setVisible(true);
+      if (!visibleRef.current) {
+        visibleRef.current = true;
+        setVisible(true);
+      }
     };
 
     // Hide when the pointer leaves the window entirely, so the lines do not
     // hang at the edge while someone is in another application.
-    const onLeave = () => setVisible(false);
+    const onLeave = () => {
+      visibleRef.current = false;
+      setVisible(false);
+    };
 
     window.addEventListener("mousemove", onMove, { passive: true });
     document.addEventListener("mouseleave", onLeave);
@@ -81,12 +91,9 @@ export function CursorCrosshair() {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
       cancelled = true;
-      window.removeEventListener("load", start);
-      loadMotionModules().then(({ gsap }) =>
-        gsap.killTweensOf([horizontal.current, vertical.current]),
-      );
+      gsapInstance?.killTweensOf([horizontal.current, vertical.current]);
     };
-  }, [enabled, visible]);
+  }, [enabled]);
 
   if (!enabled) return null;
 
