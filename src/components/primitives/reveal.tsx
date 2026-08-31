@@ -79,6 +79,11 @@ export function Reveal({
     const el = ref.current;
     if (!el) return;
 
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setShown(true);
+      return;
+    }
+
     // Anything already on screen at mount reveals without waiting for a scroll
     // that may never come — a short section, or a visitor who lands deep-linked.
     if (typeof IntersectionObserver === "undefined") {
