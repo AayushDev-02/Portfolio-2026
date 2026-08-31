@@ -59,12 +59,13 @@ export function CountUp({ text }: { text: string }) {
       parsed.grouped ? Math.round(n).toLocaleString("en-US") : String(Math.round(n));
 
     const state = { value: 0 };
+    let tween: gsap.core.Tween | undefined;
     const trigger = ScrollTrigger.create({
       trigger: el,
       start: "top 85%",
       once: true,
       onEnter: () => {
-        gsap.to(state, {
+        tween = gsap.to(state, {
           value: parsed.value,
           duration: DURATION_MS,
           ease: "power3.out",
@@ -74,7 +75,10 @@ export function CountUp({ text }: { text: string }) {
         });
       },
     });
-    return () => trigger.kill();
+    return () => {
+      tween?.kill();
+      trigger.kill();
+    };
   }, [text]);
 
   if (display === null) {

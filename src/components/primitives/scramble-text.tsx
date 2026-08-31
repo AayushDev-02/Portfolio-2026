@@ -75,12 +75,13 @@ export function ScrambleText({ text }: { text: string }) {
     }
     const split = new SplitText(el, { type: "chars" });
     const chars = split.chars;
+    let timeline: gsap.core.Timeline | undefined;
     const trigger = ScrollTrigger.create({
       trigger: el,
       start: "top 85%",
       once: true,
       onEnter: () => {
-        const timeline = gsap.timeline({ onComplete: () => setReady(true) });
+      timeline = gsap.timeline({ onComplete: () => setReady(true) });
         chars.forEach((char, index) => {
           timeline.to(
             char,
@@ -102,6 +103,7 @@ export function ScrambleText({ text }: { text: string }) {
     });
     return () => {
       trigger.kill();
+      timeline?.kill();
       split.revert();
     };
   }, [text]);
