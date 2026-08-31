@@ -1,5 +1,6 @@
 "use client";
 
+import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -51,29 +52,13 @@ export function CursorCrosshair() {
   useEffect(() => {
     if (!enabled) return;
 
-    let x = 0;
-    let y = 0;
-    let frame = 0;
-    let queued = false;
-
-    const paint = () => {
-      queued = false;
-      // Each line is translated on one axis only; the other stays full-bleed.
-      if (horizontal.current) {
-        horizontal.current.style.transform = `translate3d(0, ${y}px, 0)`;
-      }
-      if (vertical.current) {
-        vertical.current.style.transform = `translate3d(${x}px, 0, 0)`;
-      }
-    };
+    const toX = gsap.quickTo(vertical.current, "x", { duration: 0.18, ease: "power3" });
+    const toY = gsap.quickTo(horizontal.current, "y", { duration: 0.18, ease: "power3" });
 
     const onMove = (event: MouseEvent) => {
-      x = event.clientX;
-      y = event.clientY;
+      toX(event.clientX);
+      toY(event.clientY);
       if (!visible) setVisible(true);
-      if (queued) return;
-      queued = true;
-      frame = requestAnimationFrame(paint);
     };
 
     // Hide when the pointer leaves the window entirely, so the lines do not
@@ -85,7 +70,7 @@ export function CursorCrosshair() {
     return () => {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
-      cancelAnimationFrame(frame);
+      gsap.killTweensOf([horizontal.current, vertical.current]);
     };
   }, [enabled, visible]);
 
