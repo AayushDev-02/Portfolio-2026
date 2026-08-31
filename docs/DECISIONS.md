@@ -763,6 +763,11 @@ The measured pre-GSAP first-load JS was **110KB per locale** (app code 11.7KB;
 total 112.1KB). The post-build first-load figure will be recorded after A–E;
 the expected increase is roughly 40KB gzipped, within the 90KB budget.
 
+Post-GSAP production build measured `/[locale]` at **159KB first-load JS** for
+both `/en` and `/ja` (**+49KB**). The route remains server-rendered; the extra
+weight is in shared GSAP/runtime chunks. This is above the rough estimate and
+must be investigated with the bundle budget before Stage 12 can be closed.
+
 The precedent this sets is worth stating plainly, because it has now held three
 times: on this project the library is measured against the budget before it is
 adopted, not after. The hero image, the font and the animation library were each
