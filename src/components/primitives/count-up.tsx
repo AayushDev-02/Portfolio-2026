@@ -1,8 +1,12 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
-const DURATION_MS = 800;
+gsap.registerPlugin(ScrollTrigger);
+
+const DURATION_MS = 0.8;
 
 /**
  * Splits a figure into the parts that animate and the parts that do not.
@@ -20,11 +24,6 @@ function parseFigure(text: string) {
   const value = Number(digits.replace(/,/g, ""));
   if (!Number.isFinite(value)) return null;
   return { prefix, value, suffix, grouped: digits.includes(",") };
-}
-
-/** Ease-out cubic: fast first, settling at the end, so the final value reads. */
-function easeOut(t: number): number {
-  return 1 - (1 - t) ** 3;
 }
 
 /**
@@ -47,7 +46,6 @@ function easeOut(t: number): number {
 export function CountUp({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState<string | null>(null);
-  const frame = useRef(0);
 
   useEffect(() => {
     const el = ref.current;
@@ -60,36 +58,23 @@ export function CountUp({ text }: { text: string }) {
     const format = (n: number) =>
       parsed.grouped ? Math.round(n).toLocaleString("en-US") : String(Math.round(n));
 
-    let start = 0;
-    const run = (now: number) => {
-      if (!start) start = now;
-      const progress = Math.min((now - start) / DURATION_MS, 1);
-      setDisplay(
-        `${parsed.prefix}${format(parsed.value * easeOut(progress))}${parsed.suffix}`,
-      );
-      if (progress < 1) {
-        frame.current = requestAnimationFrame(run);
-      } else {
-        setDisplay(null);
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          observer.disconnect();
-          frame.current = requestAnimationFrame(run);
-        }
+    const state = { value: 0 };
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: "top 85%",
+      once: true,
+      onEnter: () => {
+        gsap.to(state, {
+          value: parsed.value,
+          duration: DURATION_MS,
+          ease: "power3.out",
+          onUpdate: () =>
+            setDisplay(`${parsed.prefix}${format(state.value)}${parsed.suffix}`),
+          onComplete: () => setDisplay(null),
+        });
       },
-      { threshold: 0.4 },
-    );
-
-    observer.observe(el);
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame.current);
-    };
+    });
+    return () => trigger.kill();
   }, [text]);
 
   if (display === null) {
