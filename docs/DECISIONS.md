@@ -754,6 +754,15 @@ Baseline for this stage, measured before any effect code: first-load JS **110KB*
 per locale (both locales share the `/[locale]` route), app code **11.7KB**,
 total 112.1KB.
 
+### 2026-08-31 — Stage 12 decision reversed: GSAP is the motion foundation
+Reference B supersedes the earlier no-library recommendation. GSAP is required
+now because Stage 15 needs pinned, scrubbed timelines and SplitText; building
+these effects with observers and rewriting them later would duplicate work.
+Installed `gsap@3.15.0` and registered only `ScrollTrigger` and `SplitText`.
+The measured pre-GSAP first-load JS was **110KB per locale** (app code 11.7KB;
+total 112.1KB). The post-build first-load figure will be recorded after A–E;
+the expected increase is roughly 40KB gzipped, within the 90KB budget.
+
 The precedent this sets is worth stating plainly, because it has now held three
 times: on this project the library is measured against the budget before it is
 adopted, not after. The hero image, the font and the animation library were each
