@@ -1,7 +1,11 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useState } from "react";
 import { pad } from "@/lib/utils";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * The `01 / 06` readout, pinned to the corner and tracking the current section.
@@ -30,22 +34,21 @@ export function SectionCounter({ total }: { total: number }) {
 
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>("[data-section-index]");
-    if (sections.length === 0 || typeof IntersectionObserver === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const index = Number((entry.target as HTMLElement).dataset.sectionIndex ?? "1");
-          if (Number.isFinite(index)) setCurrent(index);
-        }
-      },
-      // A one-pixel band across the middle of the viewport.
-      { rootMargin: "-50% 0px -50% 0px", threshold: 0 },
+    if (sections.length === 0) return;
+    const triggers = Array.from(sections).map((section) =>
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 50%",
+        end: "bottom 50%",
+        onEnter: () => setCurrent(Number(section.dataset.sectionIndex ?? "1")),
+        onEnterBack: () => setCurrent(Number(section.dataset.sectionIndex ?? "1")),
+      }),
     );
-
-    for (const section of sections) observer.observe(section);
-    return () => observer.disconnect();
+    return () => {
+      triggers.forEach((trigger) => {
+        trigger.kill();
+      });
+    };
   }, []);
 
   return (
