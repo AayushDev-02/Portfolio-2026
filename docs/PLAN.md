@@ -377,17 +377,21 @@ zero component-level colour edits were needed.
 
 ---
 
-### Stage 12 — Motion pass ★ next
+### Stage 12 — Motion system (GSAP) ★ next
 *Estimate: 1–2 sessions. Brief: `docs/STAGE12-MOTION.md`*
 
-**Probably build this without an animation library.** Stage 13 left the app at
-11.7KB of app code, fully server-rendered, LCP 1.23s, Performance 98 in both
-locales. Every effect below is achievable with `IntersectionObserver`, CSS
-transitions and ~60 lines of vanilla JS in small client leaves. Installing
-`motion` costs ~30KB gz and converts the components that use it into client
-components — the opposite direction from the last three stages. Revisit it only
-when an effect genuinely needs orchestration CSS cannot express; nothing here
-does. If you install it anyway, log the measured before/after in `DECISIONS.md`.
+**Use GSAP.** An earlier version of this brief recommended vanilla JS and no
+library. That is **withdrawn** — see `docs/REFERENCE-B-TEARDOWN.md`. The motion
+target moved to Stage 15's level (pinned scroll sequences, scrubbed timelines,
+per-character splitting), and hand-rolling that is worse in every way than the
+library the whole field already uses. Building vanilla now and rewriting in GSAP
+later is pure waste.
+
+Install **GSAP + ScrollTrigger + SplitText**. GSAP became 100% free including
+every plugin in 2025, so there is no licence cost. Budget: ~23KB + ~11KB + ~5KB
+gz ≈ **40KB**. Against 90KB with app code at 11.7KB that fits, but it spends most
+of the remaining headroom — register only the plugins actually used, and keep
+every animated component a client leaf.
 
 Five effects, in build order:
 
@@ -468,35 +472,62 @@ skim; stage 7's budgets still pass in both themes and both locales.
 
 ---
 
-### Stage 14 — 3D hero
-*Estimate: 2–3 sessions. Brief: `docs/STAGE14-3D-MOTION.md`*
+### Stage 14 — Hero shader portrait
+*Estimate: 2–3 sessions. Briefs: `docs/REFERENCE-B-TEARDOWN.md`, `docs/STAGE14-3D-MOTION.md`*
 
-Runs after Stage 12, and only if Stage 12 did not already fix the complaint.
+**The Three.js framing was wrong.** Reference B's hero — the effect that prompted
+this — contains no Three.js at all. It is one photograph run through a WebGL
+fragment shader (Unicorn.studio), with displacement and noise driven by time and
+cursor. Nothing in it needs a scene graph, a camera or lighting, which means the
+150KB budget conflict that dominated the old brief does not apply.
 
-**Settle the budget conflict before writing scene code.** Three.js core is
-~150KB gz before r3f, drei or a line of scene code, against a 90KB first-load
-budget — and the hero canvas is above the fold, so it cannot simply be deferred
-below the viewport. The workable shape: the poster image stays the LCP element,
-the canvas mounts after `load` and crossfades in, and the budget becomes two
-numbers — first-load under 90KB, deferred 3D under its own ceiling (~200KB gz).
-Four kill switches, any one of which leaves the poster as the final state:
-`prefers-reduced-motion`, `saveData`, `hardwareConcurrency <= 4`, no WebGL.
+Three routes, cheapest first:
 
-What the 3D is actually *for*: the placeholder hero image is mottled noise with
-no focal point, and the wordmark sits over its busiest region. Whatever replaces
-it needs a focal point and a calm zone where the type sits.
+1. **Raw WebGL, one shader** — a fullscreen quad sampling the portrait texture.
+   ~5KB hand-written, no dependency. Most control, most work.
+2. **OGL** (~10KB gz) — minimal WebGL wrapper. Sensible middle ground. *Recommended.*
+3. **Unicorn.studio** — what the reference uses. Fastest, visual editor, but a
+   hosted third-party runtime carrying the most prominent element on the page.
 
-Five concepts in the brief — pick exactly one. Shader-only grain field
-(cheapest, can skip three.js entirely); point-cloud portrait (most striking,
-needs a real photo); ASCII/dither post-process (most native to the type system);
-embedding-space cloud (a picture of vector search — the thing he builds);
-wireframe terrain from real Otaru/Kashiwa elevation data.
+The point-cloud canvas preview already built stays a live alternative — both are
+"photograph plus GPU effect". Pick one after seeing the real photograph in each.
 
-Recommended: the embedding cloud rendered through the dither treatment.
+Unchanged from the old brief: the poster image stays the LCP element, the canvas
+mounts after `load`, and four kill switches (`prefers-reduced-motion`,
+`saveData`, `hardwareConcurrency <= 4`, no WebGL) leave the poster as the final
+state. The hero needs a focal point and a calm zone where the wordmark sits.
 
-**DoD:** first-load JS still under 90KB and LCP still under 1.5s with the canvas
-disabled; deferred 3D under its own ceiling; the hero has a focal point and the
-wordmark sits in a calm zone; the site is complete with every kill switch tripped.
+**DoD:** first-load JS under 90KB and LCP under 1.5s with the canvas disabled;
+hero has a focal point; site complete with every kill switch tripped.
+
+---
+
+### Stage 15 — Advanced motion
+*Estimate: 2–3 sessions. Brief: `docs/REFERENCE-B-TEARDOWN.md`*
+
+The scroll craft that makes reference B feel expensive. All of it is GSAP +
+ScrollTrigger, installed back at Stage 12.
+
+- **Pinned scroll sequences** — a section holds while its content advances.
+  `pin` + `scrub`. Single biggest perceived upgrade on this list.
+- **Per-character and per-line reveals** via SplitText, superseding the
+  hand-rolled scramble. Latin only — `ja` still fades.
+- **Scrubbed hero parallax** — shader displacement driven by scroll position,
+  not only time.
+- **Flip transitions** where a card expands or a layout regroups.
+- **Magnetic cursor** on the bracket controls.
+- **A live Tokyo clock** in the header — small, honest, and pointed at the
+  audience this site is for.
+- **View Transitions API** for locale and theme switches — the framework-native
+  answer to what Barba does for a Webflow site.
+
+Not taken from the reference: Barba (multi-page tool, wrong for App Router) and
+Lenis smooth scroll — *possible, but it reverses the logged "no scroll-jacking"
+decision, so it goes in as a deliberate reversal or not at all.*
+
+**DoD:** every effect disables under reduced motion; nothing animates above the
+fold on first paint; both themes and locales re-checked at 360 and 768; stage 7
+budgets still pass.
 
 ---
 
