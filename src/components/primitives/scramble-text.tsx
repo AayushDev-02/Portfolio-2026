@@ -81,9 +81,10 @@ export function ScrambleText({ text }: { text: string }) {
       start: "top 85%",
       once: true,
       onEnter: () => {
-      timeline = gsap.timeline({ onComplete: () => setReady(true) });
+      const tl = gsap.timeline({ onComplete: () => setReady(true) });
+      timeline = tl;
         chars.forEach((char, index) => {
-          timeline.to(
+          tl.to(
             char,
             {
               duration: DURATION_MS,
