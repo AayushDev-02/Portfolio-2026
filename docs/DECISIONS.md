@@ -768,6 +768,12 @@ both `/en` and `/ja` (**+49KB**). The route remains server-rendered; the extra
 weight is in shared GSAP/runtime chunks. This is above the rough estimate and
 must be investigated with the bundle budget before Stage 12 can be closed.
 
+### 2026-08-31 — Playwright installed for local browser verification
+The Browser plugin executable was unavailable, so Playwright 1.62.1 and its
+Chromium binary were installed as a dev dependency for the requested local
+visual and responsive checks. This is test tooling only and does not ship to
+the application bundle.
+
 The precedent this sets is worth stating plainly, because it has now held three
 times: on this project the library is measured against the budget before it is
 adopted, not after. The hero image, the font and the animation library were each
