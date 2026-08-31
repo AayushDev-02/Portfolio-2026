@@ -82,7 +82,9 @@ export function CursorCrosshair() {
       document.removeEventListener("mouseleave", onLeave);
       cancelled = true;
       window.removeEventListener("load", start);
-      loadMotionModules().then(({ gsap }) => gsap.killTweensOf([horizontal.current, vertical.current]));
+      loadMotionModules().then(({ gsap }) =>
+        gsap.killTweensOf([horizontal.current, vertical.current]),
+      );
     };
   }, [enabled, visible]);
 

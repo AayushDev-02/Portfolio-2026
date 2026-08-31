@@ -86,13 +86,21 @@ export function ScrambleText({ text }: { text: string }) {
             const tl = gsap.timeline({ onComplete: () => setReady(true) });
             timeline = tl;
             chars.forEach((char, index) => {
-              tl.to(char, {
-                duration: DURATION_MS,
-                opacity: 1,
-                onStart: () => { char.textContent = text[index] ?? ""; },
-                onUpdate: () => { if (Math.random() > 0.72) char.textContent = randomGlyph(); },
-                ease: "none",
-              }, index * 0.02);
+              tl.to(
+                char,
+                {
+                  duration: DURATION_MS,
+                  opacity: 1,
+                  onStart: () => {
+                    char.textContent = text[index] ?? "";
+                  },
+                  onUpdate: () => {
+                    if (Math.random() > 0.72) char.textContent = randomGlyph();
+                  },
+                  ease: "none",
+                },
+                index * 0.02,
+              );
             });
           },
         });

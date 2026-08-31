@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { pad } from "@/lib/utils";
 import { loadMotionModules } from "@/lib/gsap-motion";
+import { pad } from "@/lib/utils";
 
 /**
  * The `01 / 06` readout, pinned to the corner and tracking the current section.

@@ -71,7 +71,8 @@ export function CountUp({ text }: { text: string }) {
               value: parsed.value,
               duration: DURATION_MS,
               ease: "power3.out",
-              onUpdate: () => setDisplay(`${parsed.prefix}${format(state.value)}${parsed.suffix}`),
+              onUpdate: () =>
+                setDisplay(`${parsed.prefix}${format(state.value)}${parsed.suffix}`),
               onComplete: () => setDisplay(null),
             });
           },
