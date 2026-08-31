@@ -219,7 +219,6 @@ this long.
 - [ ] Production env vars set
 - [ ] Custom domain + HTTPS + Resend DNS
 - [ ] Safari iOS / Chrome Android / Firefox pass (`100dvh` not `100vh`)
-- [ ] 404 page in-style
 - [ ] URL added to resume, LinkedIn, GitHub, agency profiles
 **DoD:** live on real domain, contact verified in production — [ ]
 
@@ -274,7 +273,7 @@ target to Stage 15's level, and building vanilla now then rewriting in GSAP is w
 - [-] **F** — boot sequence on first load — **recommended against**; see brief §2F
 - [x] Every effect renders its finished state under `prefers-reduced-motion`
 - [ ] `ja` checked at 360/768 — no per-character effect on CJK text
-- [x] First-load JS reported before/after; >5KB movement means something became a client component
+- [x] First-load JS reported before/after; >5KB movement means something became a client component — deferred GSAP restored `/[locale]` to 112KB (114.4KB measured by the gate)
 - [ ] Lighthouse ≥ 95 both locales; LCP still < 1.5s
 **DoD:** all five live; first-load JS essentially unchanged; budgets pass; page complete with motion disabled — [ ]
 
@@ -296,18 +295,24 @@ fragment shader. The 150KB budget conflict does not apply.
 **DoD:** first-load < 90KB and LCP < 1.5s with canvas off; deferred 3D under its own ceiling; site complete with every kill switch tripped — [ ]
 
 ## Stage 15 — Advanced motion
-Brief: `docs/REFERENCE-B-TEARDOWN.md`. All GSAP + ScrollTrigger, installed at Stage 12.
+Brief: `docs/REFERENCE-B-TEARDOWN.md` — **revised 2026-08-31 after measuring the
+reference.** It uses no pinning and no scrubbing; the feel comes from a small
+declarative vocabulary applied densely. GSAP installed at Stage 12.
 
-- [ ] Pinned scroll sequences (`pin` + `scrub`) — biggest perceived upgrade
-- [ ] SplitText per-character / per-line reveals (Latin only; `ja` fades)
-- [ ] Scrubbed hero parallax — shader driven by scroll position
-- [ ] Flip transitions where a card expands or a layout regroups
-- [ ] Magnetic cursor on the bracket controls
+- [ ] Per-section theme alternation (`theme-dark` / `theme-base` at section scope) ← cheapest, biggest
+- [ ] Parallax as trigger/target pairs — wrapper triggers, inner image moves
+- [ ] Word-level split reveals via SplitText + explicit staggers (Latin only; `ja` fades)
+- [ ] Mask reveals with numeric stagger as the general entrance
+- [ ] Magnetic hover on project cards
+- [ ] Animated underlines on links
+- [ ] `BracketButton` gains independently animating inner parts
 - [ ] Live Tokyo clock in the header
 - [ ] View Transitions API for locale + theme switches
-- [-] Barba — wrong tool for App Router, not taken
-- [ ] Lenis smooth scroll — **only as a logged reversal** of the no-scroll-jacking decision, or not at all
-**DoD:** all disable under reduced motion; nothing animates above the fold on first paint; both themes/locales at 360 and 768; stage 7 budgets pass — [ ]
+- [-] Pinning / scrubbing — reference does not use them; most likely to fight AT and trackpads
+- [-] Hover sounds — 27 on the reference via Howler; wrong for recruiters in offices
+- [-] Barba — wrong tool for App Router
+- [ ] Lenis — **only as a logged reversal** of the no-scroll-jacking decision, or not at all
+**DoD:** all disable under reduced motion; nothing animates above the fold on first paint; both themes/locales at 360 and 768; budgets pass — [ ]
 
 ## Stage 13 — Design enhancement
 Brief: `docs/STAGE13-DESIGN.md`. Runs after 10/11/12 — needs real content, both

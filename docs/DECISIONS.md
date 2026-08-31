@@ -774,6 +774,24 @@ Chromium binary were installed as a dev dependency for the requested local
 visual and responsive checks. This is test tooling only and does not ship to
 the application bundle.
 
+### 2026-08-31 — GSAP vendor regression fixed by deferred module loading
+The first GSAP build put `ScrollTrigger` and `SplitText` in the shared route
+chunks: `/[locale]` rose from 110KB to 159KB first-load JS. Direct chunk
+inspection found three GSAP-marked files totalling about 51.5KB gzip. Each
+effect now uses a cached dynamic loader (`src/lib/gsap-motion.ts`) that starts
+after the window `load` event; plugins are still registered exactly once and
+only the loader seam is eager. The rebuilt route is **112KB** in Next's table;
+`check-budget.mjs` measures **114.4KB gzip** total and **13.8KB** app code.
+No section became a client component.
+
+### 2026-08-31 — Two JS budgets are now explicit and enforced
+The original 90KB total was impossible: the framework baseline is 100.8KB
+gzip before application code. The app-code gate remains **15KB** because it
+catches accidental client-boundary and dependency regressions. A second,
+browser-visible total first-load gate is **120KB gzip**: the current 114.4KB
+leaves 5.6KB of headroom while allowing normal Next chunk variation. Both are
+implemented in `scripts/check-budget.mjs` and documented in `docs/PLAN.md`.
+
 The precedent this sets is worth stating plainly, because it has now held three
 times: on this project the library is measured against the budget before it is
 adopted, not after. The hero image, the font and the animation library were each

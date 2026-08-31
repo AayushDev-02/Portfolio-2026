@@ -1,7 +1,7 @@
 "use client";
 
-import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
+import { loadMotionModules } from "@/lib/gsap-motion";
 
 /**
  * A faint full-width and full-height hairline pair tracking the cursor — a CAD
@@ -52,12 +52,22 @@ export function CursorCrosshair() {
   useEffect(() => {
     if (!enabled) return;
 
-    const toX = gsap.quickTo(vertical.current, "x", { duration: 0.18, ease: "power3" });
-    const toY = gsap.quickTo(horizontal.current, "y", { duration: 0.18, ease: "power3" });
+    let cancelled = false;
+    let toX: ((value: number) => void) | undefined;
+    let toY: ((value: number) => void) | undefined;
+    const start = () => {
+      loadMotionModules().then(({ gsap }) => {
+        if (cancelled || !horizontal.current || !vertical.current) return;
+        toX = gsap.quickTo(vertical.current, "x", { duration: 0.18, ease: "power3" });
+        toY = gsap.quickTo(horizontal.current, "y", { duration: 0.18, ease: "power3" });
+      });
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
 
     const onMove = (event: MouseEvent) => {
-      toX(event.clientX);
-      toY(event.clientY);
+      toX?.(event.clientX);
+      toY?.(event.clientY);
       if (!visible) setVisible(true);
     };
 
@@ -70,7 +80,9 @@ export function CursorCrosshair() {
     return () => {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
-      gsap.killTweensOf([horizontal.current, vertical.current]);
+      cancelled = true;
+      window.removeEventListener("load", start);
+      loadMotionModules().then(({ gsap }) => gsap.killTweensOf([horizontal.current, vertical.current]));
     };
   }, [enabled, visible]);
 

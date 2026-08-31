@@ -389,8 +389,10 @@ later is pure waste.
 
 Install **GSAP + ScrollTrigger + SplitText**. GSAP became 100% free including
 every plugin in 2025, so there is no licence cost. Budget: ~23KB + ~11KB + ~5KB
-gz ≈ **40KB**. Against 90KB with app code at 11.7KB that fits, but it spends most
-of the remaining headroom — register only the plugins actually used, and keep
+gz ≈ **40KB**. The browser-visible first-load ceiling is **120KB gzipped**:
+Next 15 + React 19 alone cost about 101KB, leaving roughly 19KB for eager app
+code. GSAP is therefore dynamically loaded after `load`; only its small loader
+seam is in the initial route. Register only the plugins actually used, and keep
 every animated component a client leaf.
 
 Five effects, in build order:
@@ -416,8 +418,9 @@ Ground rules: each effect lives in the smallest possible client leaf; every one
 checks `prefers-reduced-motion` and renders its finished state; `transform` and
 `opacity` only; nothing animates above the fold on first paint.
 
-**DoD:** all five live; first-load JS essentially unchanged; stage 7 budgets
-pass; the page is complete and readable with motion disabled.
+**DoD:** all five live; initial first-load JS remains under the 120KB total gate
+and app code under 15KB; stage 7 budgets pass; the page is complete and
+readable with motion disabled.
 
 ---
 
@@ -497,7 +500,7 @@ mounts after `load`, and four kill switches (`prefers-reduced-motion`,
 `saveData`, `hardwareConcurrency <= 4`, no WebGL) leave the poster as the final
 state. The hero needs a focal point and a calm zone where the wordmark sits.
 
-**DoD:** first-load JS under 90KB and LCP under 1.5s with the canvas disabled;
+**DoD:** first-load JS under 120KB and LCP under 1.5s with the canvas disabled;
 hero has a focal point; site complete with every kill switch tripped.
 
 ---

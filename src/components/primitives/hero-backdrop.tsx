@@ -43,7 +43,7 @@ export function HeroBackdrop() {
           width={mobile.width}
           height={mobile.height}
           fetchPriority="high"
-          decoding="async"
+          decoding="sync"
           className="hero-image absolute inset-0 h-full w-full object-cover"
         />
       </picture>

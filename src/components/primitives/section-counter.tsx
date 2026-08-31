@@ -1,11 +1,8 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useState } from "react";
 import { pad } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadMotionModules } from "@/lib/gsap-motion";
 
 /**
  * The `01 / 06` readout, pinned to the corner and tracking the current section.
@@ -35,16 +32,27 @@ export function SectionCounter({ total }: { total: number }) {
   useEffect(() => {
     const sections = document.querySelectorAll<HTMLElement>("[data-section-index]");
     if (sections.length === 0) return;
-    const triggers = Array.from(sections).map((section) =>
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top 50%",
-        end: "bottom 50%",
-        onEnter: () => setCurrent(Number(section.dataset.sectionIndex ?? "1")),
-        onEnterBack: () => setCurrent(Number(section.dataset.sectionIndex ?? "1")),
-      }),
-    );
+    let cancelled = false;
+    let triggers: import("gsap/ScrollTrigger").ScrollTrigger[] = [];
+    const start = () => {
+      loadMotionModules().then(({ ScrollTrigger }) => {
+        if (cancelled) return;
+        triggers = Array.from(sections).map((section) =>
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top 50%",
+            end: "bottom 50%",
+            onEnter: () => setCurrent(Number(section.dataset.sectionIndex ?? "1")),
+            onEnterBack: () => setCurrent(Number(section.dataset.sectionIndex ?? "1")),
+          }),
+        );
+      });
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     return () => {
+      cancelled = true;
+      window.removeEventListener("load", start);
       triggers.forEach((trigger) => {
         trigger.kill();
       });

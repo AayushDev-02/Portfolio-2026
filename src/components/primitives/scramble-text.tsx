@@ -1,11 +1,7 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
 import { useEffect, useRef, useState } from "react";
-
-gsap.registerPlugin(ScrollTrigger, SplitText);
+import { loadMotionModules } from "@/lib/gsap-motion";
 
 /**
  * Glyphs the scramble cycles through. Uppercase Latin, digits and the symbols
@@ -73,39 +69,43 @@ export function ScrambleText({ text }: { text: string }) {
       setReady(true);
       return;
     }
-    const split = new SplitText(el, { type: "chars" });
-    const chars = split.chars;
-    let timeline: gsap.core.Timeline | undefined;
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: "top 85%",
-      once: true,
-      onEnter: () => {
-      const tl = gsap.timeline({ onComplete: () => setReady(true) });
-      timeline = tl;
-        chars.forEach((char, index) => {
-          tl.to(
-            char,
-            {
-              duration: DURATION_MS,
-              opacity: 1,
-              onStart: () => {
-                char.textContent = text[index] ?? "";
-              },
-              onUpdate: () => {
-                if (Math.random() > 0.72) char.textContent = randomGlyph();
-              },
-              ease: "none",
-            },
-            index * 0.02,
-          );
+    let cancelled = false;
+    let split: import("gsap/SplitText").SplitText | undefined;
+    let timeline: { kill: () => void } | undefined;
+    let trigger: import("gsap/ScrollTrigger").ScrollTrigger | undefined;
+    const start = () => {
+      loadMotionModules().then(({ gsap, ScrollTrigger, SplitText }) => {
+        if (cancelled) return;
+        split = new SplitText(el, { type: "chars" });
+        const chars = split.chars;
+        trigger = ScrollTrigger.create({
+          trigger: el,
+          start: "top 85%",
+          once: true,
+          onEnter: () => {
+            const tl = gsap.timeline({ onComplete: () => setReady(true) });
+            timeline = tl;
+            chars.forEach((char, index) => {
+              tl.to(char, {
+                duration: DURATION_MS,
+                opacity: 1,
+                onStart: () => { char.textContent = text[index] ?? ""; },
+                onUpdate: () => { if (Math.random() > 0.72) char.textContent = randomGlyph(); },
+                ease: "none",
+              }, index * 0.02);
+            });
+          },
         });
-      },
-    });
+      });
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     return () => {
-      trigger.kill();
+      cancelled = true;
+      window.removeEventListener("load", start);
+      trigger?.kill();
       timeline?.kill();
-      split.revert();
+      split?.revert();
     };
   }, [text]);
 

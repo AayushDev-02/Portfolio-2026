@@ -1,10 +1,7 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadMotionModules } from "@/lib/gsap-motion";
 
 const DURATION_MS = 0.8;
 
@@ -59,25 +56,35 @@ export function CountUp({ text }: { text: string }) {
       parsed.grouped ? Math.round(n).toLocaleString("en-US") : String(Math.round(n));
 
     const state = { value: 0 };
-    let tween: gsap.core.Tween | undefined;
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: "top 85%",
-      once: true,
-      onEnter: () => {
-        tween = gsap.to(state, {
-          value: parsed.value,
-          duration: DURATION_MS,
-          ease: "power3.out",
-          onUpdate: () =>
-            setDisplay(`${parsed.prefix}${format(state.value)}${parsed.suffix}`),
-          onComplete: () => setDisplay(null),
+    let cancelled = false;
+    let tween: { kill: () => void } | undefined;
+    let trigger: import("gsap/ScrollTrigger").ScrollTrigger | undefined;
+    const start = () => {
+      loadMotionModules().then(({ gsap, ScrollTrigger }) => {
+        if (cancelled) return;
+        trigger = ScrollTrigger.create({
+          trigger: el,
+          start: "top 85%",
+          once: true,
+          onEnter: () => {
+            tween = gsap.to(state, {
+              value: parsed.value,
+              duration: DURATION_MS,
+              ease: "power3.out",
+              onUpdate: () => setDisplay(`${parsed.prefix}${format(state.value)}${parsed.suffix}`),
+              onComplete: () => setDisplay(null),
+            });
+          },
         });
-      },
-    });
+      });
+    };
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
     return () => {
+      cancelled = true;
+      window.removeEventListener("load", start);
       tween?.kill();
-      trigger.kill();
+      trigger?.kill();
     };
   }, [text]);
 
