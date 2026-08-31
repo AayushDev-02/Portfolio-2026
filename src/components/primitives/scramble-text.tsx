@@ -1,6 +1,11 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import { useEffect, useRef, useState } from "react";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 /**
  * Glyphs the scramble cycles through. Uppercase Latin, digits and the symbols
@@ -10,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+-<>/\\";
 
 /** Total resolve time. Long enough to read as deliberate, short enough to ignore. */
-const DURATION_MS = 620;
+const DURATION_MS = 0.62;
 
 /**
  * True when every character is safe to replace with a random Latin glyph.
@@ -27,7 +32,6 @@ const DURATION_MS = 620;
  * renders immediately instead.
  */
 function isScrambleSafe(text: string): boolean {
-  // biome-ignore lint/suspicious/noControlCharactersInRegex: the range is the printable ASCII block, bounded deliberately rather than by a character class that would admit CJK.
   return /^[\x20-\x7E]*$/.test(text);
 }
 
@@ -57,60 +61,53 @@ function randomGlyph(): string {
  */
 export function ScrambleText({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState<string | null>(null);
-  const frame = useRef(0);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduced || !isScrambleSafe(text) || typeof IntersectionObserver === "undefined") {
+    const ja = document.documentElement.lang.toLowerCase().startsWith("ja");
+    if (reduced || ja || !isScrambleSafe(text)) {
+      setReady(true);
       return;
     }
-
-    let start = 0;
-    const run = (now: number) => {
-      if (!start) start = now;
-      const progress = Math.min((now - start) / DURATION_MS, 1);
-      // Characters settle left to right; each one holds noise until the wave
-      // passes it, so the word appears to resolve rather than simply fade.
-      const settled = progress * text.length;
-      let out = "";
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i] as string;
-        // Spaces never scramble — a heading that changes word shape mid-effect
-        // reads as broken rather than as motion.
-        out += char === " " || i < settled ? char : randomGlyph();
-      }
-      setDisplay(out);
-      if (progress < 1) {
-        frame.current = requestAnimationFrame(run);
-      } else {
-        setDisplay(null);
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          observer.disconnect();
-          frame.current = requestAnimationFrame(run);
-        }
+    const split = new SplitText(el, { type: "chars" });
+    const chars = split.chars;
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: "top 85%",
+      once: true,
+      onEnter: () => {
+        const timeline = gsap.timeline({ onComplete: () => setReady(true) });
+        chars.forEach((char, index) => {
+          timeline.to(
+            char,
+            {
+              duration: DURATION_MS,
+              opacity: 1,
+              onStart: () => {
+                char.textContent = text[index] ?? "";
+              },
+              onUpdate: () => {
+                if (Math.random() > 0.72) char.textContent = randomGlyph();
+              },
+              ease: "none",
+            },
+            index * 0.02,
+          );
+        });
       },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(el);
+    });
     return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame.current);
+      trigger.kill();
+      split.revert();
     };
   }, [text]);
 
   // Resolved, reduced-motion, or non-Latin: the plain string, no extra markup.
-  if (display === null) {
+  if (ready) {
     return <span ref={ref}>{text}</span>;
   }
 
@@ -121,7 +118,7 @@ export function ScrambleText({ text }: { text: string }) {
         {text}
       </span>
       <span aria-hidden="true" className="absolute inset-0 whitespace-pre">
-        {display}
+        {text}
       </span>
       <span className="sr-only">{text}</span>
     </span>
