@@ -187,6 +187,7 @@ export function ContactForm({ copy, locale }: { copy: ContactFormCopy; locale: L
         <button
           type="submit"
           disabled={isPending}
+          data-cursor-label={isPending ? copy.submitting : copy.submit}
           className={cn(
             "inline-flex min-h-11 items-center gap-2 self-start border border-rule px-5 py-3",
             "text-label font-bold uppercase tracking-label text-accent",

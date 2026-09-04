@@ -87,6 +87,19 @@
   --rule-stagger: 40ms;
   --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* --- the cursor pill (stage 16) ---
+     Geometry and timing for `CursorPill`. Note what is NOT here: a pill width.
+     The pill measures its own label, so its size follows the type scale rather
+     than a second number that would drift away from it.
+
+     The component reads none of these in JavaScript. Its resting size is the
+     class it falls back to the moment the inline width is removed, so the dot
+     can be retuned here without touching a component — the same separation the
+     reveal tokens have. */
+  --spacing-cursor-dot: 0.5rem;
+  --radius-cursor: 9999px;
+  --cursor-morph: 220ms;
+
   /* --- the hero photograph's treatment ---
      A token rather than a value in the component, so dark mode can dim the
      photograph without HeroBackdrop knowing a theme exists. */
@@ -334,6 +347,47 @@
     transition: none;
     will-change: auto;
   }
+}
+
+/* ============================================================
+   CURSOR PILL (stage 16)
+
+   `CursorPill` writes a transform, an inline width/height and one data
+   attribute. Everything that eases lives here, so the morph can be retuned
+   without touching the component.
+
+   The dot size is deliberately a CSS class rather than a number the component
+   holds: returning to the dot is `style.removeProperty("width")`, which hands
+   the element back to `w-cursor-dot` and transitions from the measured pixel
+   width to the token. That is why the JavaScript never needs to know how big
+   the dot is.
+
+   ONE duration for the shape and the label together. Two durations would read
+   as two effects — the pill arriving and then the text catching up — rather
+   than one thing changing form.
+
+   Unlayered, like the reveal and dark-mode blocks above: cascade layers beat
+   specificity, so inside @layer these would lose to Tailwind's own utilities.
+
+   No reduced-motion rule is needed. The component renders nothing at all under
+   that preference — it is the one element on the page that moves continuously,
+   which is exactly what the preference is about.
+   ============================================================ */
+
+[data-cursor-pill] {
+  transition:
+    width var(--cursor-morph) var(--reveal-ease),
+    height var(--cursor-morph) var(--reveal-ease),
+    opacity var(--cursor-morph) var(--reveal-ease);
+}
+
+[data-cursor-pill] > span {
+  opacity: 0;
+  transition: opacity var(--cursor-morph) var(--reveal-ease);
+}
+
+[data-cursor-pill="pill"] > span {
+  opacity: 1;
 }
 
 /* ============================================================

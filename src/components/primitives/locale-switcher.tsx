@@ -31,6 +31,7 @@ export function LocaleSwitcher({ current, label }: { current: Locale; label: str
           <Link
             href="/"
             locale={locale}
+            data-cursor-label={LABEL[locale]}
             hrefLang={LANG_OF[locale]}
             lang={LANG_OF[locale]}
             aria-current={locale === current ? "true" : undefined}

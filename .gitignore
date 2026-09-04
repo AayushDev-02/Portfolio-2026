@@ -27,3 +27,6 @@ docs/source/
 # by the design skill's seeder; ~2.5MB of editor payload, not source.
 design-mockups/*.html
 !design-mockups/*.dc.html
+
+# Local verification harnesses. Throwaway, never shipped.
+scratchpad/

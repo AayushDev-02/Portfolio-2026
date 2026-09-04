@@ -32,9 +32,13 @@ function Tags({ items, accent = false }: { items?: string[]; accent?: boolean })
 
 /** One of the five non-featured entries. */
 function ProjectCard({ project, index }: { project: ProjectEntry; index: number }) {
+  const ordinal = String(index).padStart(3, "0");
   return (
-    <article className="flex flex-col gap-2 bg-bg py-6 sm:px-6 lg:first:pl-0">
-      <MicroLabel>{String(index).padStart(3, "0")}</MicroLabel>
+    <article
+      data-cursor-label={ordinal}
+      className="flex flex-col gap-2 bg-bg py-6 sm:px-6 lg:first:pl-0"
+    >
+      <MicroLabel>{ordinal}</MicroLabel>
       <h3 className="text-ui font-bold text-ink">{project.title}</h3>
       {project.org ? <p className="text-label text-prose">{project.org}</p> : null}
       <p className="mt-1 font-sans text-ui leading-6 text-prose">{project.body}</p>
@@ -96,7 +100,7 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
           <>
             <Hairline tone="accent" />
             <Reveal className="grid gap-8 pt-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,720px)] lg:gap-12">
-              <div className="flex flex-col gap-3">
+              <div data-cursor-label="001" className="flex flex-col gap-3">
                 <MicroLabel className="text-accent">001</MicroLabel>
                 <h3 className="text-lede font-bold text-ink">{featured.title}</h3>
                 {featured.org ? (

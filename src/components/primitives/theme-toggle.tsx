@@ -57,6 +57,7 @@ export function ThemeToggle({ label, lightLabel, darkLabel }: Props) {
             ) : null}
             <button
               type="button"
+              data-cursor-label={option.glyph}
               onClick={() => setTheme(option.value)}
               aria-pressed={mounted ? active : undefined}
               title={option.name}

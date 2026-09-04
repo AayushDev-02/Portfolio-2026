@@ -1,6 +1,7 @@
 import {
   BracketButton,
   ContactForm,
+  EXTERNAL_LABEL,
   SectionHead,
   SectionShell,
 } from "@/components/primitives";
@@ -58,6 +59,7 @@ export function ContactSection({
             <DetailRow key={link.label} label={link.label}>
               <a
                 href={link.href}
+                data-cursor-label={EXTERNAL_LABEL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-4 transition-colors duration-150 hover:text-accent"

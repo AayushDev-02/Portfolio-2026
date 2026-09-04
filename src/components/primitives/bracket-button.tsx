@@ -21,6 +21,12 @@ type Props = {
   disabled?: boolean;
 };
 
+/**
+ * The cursor pill's label for anything that leaves the site. A glyph rather
+ * than a word so it needs no translation — see `cursor-pill.tsx`.
+ */
+export const EXTERNAL_LABEL = "↗";
+
 const variants = {
   bare: "text-label font-bold tracking-label uppercase text-accent hover:text-ink",
   boxed:
@@ -66,6 +72,7 @@ export function BracketButton({
       <a
         href={href}
         className={classes}
+        data-cursor-label={offsite ? EXTERNAL_LABEL : undefined}
         download={download || undefined}
         target={offsite ? "_blank" : undefined}
         rel={offsite ? "noopener noreferrer" : undefined}
