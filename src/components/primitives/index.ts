@@ -4,7 +4,6 @@ export { CheckItem, CheckList } from "./check-item";
 export { ContactForm } from "./contact-form";
 export { CornerMarks } from "./corner-marks";
 export { CountUp } from "./count-up";
-export { CursorCrosshair } from "./cursor-crosshair";
 export { Hairline } from "./hairline";
 export { HairlineGrid } from "./hairline-grid";
 export { HeroBackdrop } from "./hero-backdrop";

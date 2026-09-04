@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
-  CursorCrosshair,
   LocaleSwitcher,
   SectionCounter,
   ThemeProvider,
@@ -133,11 +132,6 @@ export default async function LocaleLayout({
               />
               <LocaleSwitcher current={locale as Locale} label={t("switchLanguage")} />
             </header>
-            {/* Sits above the page but below the header controls (z-10 vs
-                z-20) and takes no pointer events, so nothing it crosses
-                becomes unclickable. Renders nothing on touch or under
-                reduced motion. */}
-            <CursorCrosshair />
             {/* Pinned where every section used to paint its own counter, so
                 the corner reads the same but now tracks scroll position. */}
             <div className="pointer-events-none fixed top-0 right-0 z-20 px-gutter py-10 sm:px-gutter-lg sm:py-14">
