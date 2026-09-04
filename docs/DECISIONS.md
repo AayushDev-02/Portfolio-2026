@@ -814,3 +814,85 @@ The earlier reversal entry referred to the old 90KB total fiction; the
 defensible enforced target is the 120KB browser-visible ceiling recorded above
 because the measured framework floor is 100.8KB and the current route is
 114.4KB gzip. The app-code gate remains 15KB.
+
+### 2026-09-04 — The radial hover wash is gone, and so is the cursor crosshair
+Stage 16 replaced two earlier attempts at "the cursor should do something".
+
+The **crosshair** was two lines spanning the viewport. They crossed body copy
+and the hero panel and read as a rendering artefact rather than an effect. The
+**bracket reticle** that replaced it was better — it carried the section frames'
+own CAD vocabulary — but it still only *framed* what was under the pointer. It
+said nothing that was not already visible.
+
+The **radial hover wash** (`[data-hover]`, `--hover-reach` / `--hover-strength`
+/ `--hover-fade`) went with them. It was a tint under the pointer on every card;
+pleasant, and completely uninformative. Keeping it beside the new pill would
+have meant two things reacting to the same pointer for two different reasons.
+
+What replaced all three carries *information*: the pill shows the project's
+index, the locale you would switch to, the theme you would get. That is the only
+justification for a custom cursor, and it is why this attempt is not a fourth
+variation on the same idea.
+
+The delegation rule survived every version and is the part worth keeping: one
+`pointermove` on `window` plus `closest()`, never a listener per element and
+never a client component per card. A label is an attribute on server-rendered
+markup.
+
+### 2026-09-04 — Lenis added behind a flag: a conditional reversal of rule 4
+**What the rule said.** CLAUDE.md rule 4, and a decision entry above it from
+2026-08-28: *"No scroll-jacking. The reference uses natural document scroll.
+Custom scroll hijacking breaks mobile momentum and keyboard nav."*
+
+**Why it is softened.** The objection was never to momentum scrolling as such —
+it was to the two failures it usually brings. Both are now testable rather than
+assumed, and both were tested with the flag on:
+
+- Keyboard navigation: the skip link moves the sequential focus point into
+  `<main>` identically with Lenis on and off; `#skills` lands at exactly 0px;
+  `focus()` on a link four sections down scrolls it into view; the back button
+  restores scroll to the pixel (3000 → 3000).
+- The section counter reads `05 / 06` at `#projects` with Lenis driving, which
+  is the check that matters: `lenis.raf` runs from the **GSAP ticker** and
+  `ScrollTrigger.update` runs on every Lenis scroll, so the pinned counter and
+  the RESULTS count-up share one clock instead of drifting a section behind.
+
+**It ships disabled.** `NEXT_PUBLIC_SMOOTH_SCROLL` is unset everywhere, so
+`FLAGGED` is a build-time `false`, the branch is dead code and no Lenis chunk is
+ever requested — verified against a production build: no `lenis` class on
+`<html>`, no matching script requested, and no occurrence of the string in any
+loaded script. It stays off pending a test on a real trackpad and a real phone,
+which is the only evidence that would settle whether momentum scrolling helps or
+merely feels different in a browser on a desktop.
+
+Never under `prefers-reduced-motion`, and that query is watched rather than
+sampled: retiming the scroll is precisely the kind of motion the preference is
+about, and unlike every other effect here it cannot be avoided by not looking at
+it.
+
+**Dependency:** `lenis@1.3.26`. Required by CLAUDE.md rule 8. Chosen over
+writing it because a scroll implementation that has to be correct on trackpads,
+touch, keyboard, `scroll-behavior` and anchor links is not a thing to hand-roll
+for a portfolio, and it costs nothing while the flag is off.
+
+### 2026-09-04 — `next/dynamic` measured against `React.lazy` and a bare import()
+Two deferral seams were built with `next/dynamic` and then both were changed,
+because the measurement did not agree with the intuition.
+
+| | app code |
+|---|---|
+| both seams on `next/dynamic` | 17.1KB |
+| hover layer on `React.lazy` + `Suspense`, smooth scroll on a bare `import()` | 15.3KB |
+
+`next/dynamic` brings its own loadable machinery, about 1KB gzipped per usage,
+and it survives dead-code elimination even when the flag guarding it is a
+build-time `false`. `lazy` and `Suspense` are already in the React baseline and
+cost nothing extra; a plain `import()` inside a provably-dead branch costs less
+than nothing, because the compiler removes the call entirely.
+
+The rule this leaves: **`next/dynamic` only when SSR actually has to be
+suppressed for markup that would otherwise render.** Neither of these needed it
+— the hover layer's gate starts at `off`, which is what the server renders
+anyway, and the smooth-scroll runtime renders nothing at all and did not need to
+be a component. That is the third time on this project that measuring a library
+before adopting its idiom changed the answer.

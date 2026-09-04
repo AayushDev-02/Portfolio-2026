@@ -454,6 +454,44 @@
 }
 
 /* ============================================================
+   SMOOTH SCROLL (stage 16, off by default)
+
+   Every rule here is scoped to `.lenis`, a class Lenis stamps on <html> only
+   while it is running — so with NEXT_PUBLIC_SMOOTH_SCROLL unset this whole
+   block is inert. Transcribed from `lenis/dist/lenis.css` rather than imported,
+   because importing it would ship the stylesheet to every visitor for a feature
+   that is switched off.
+
+   `scroll-behavior: auto` is the one addition. The base layer sets `smooth` on
+   <html>; leaving it there makes the browser animate a scroll that Lenis is
+   also animating, and an anchor click lands somewhere neither of them intended.
+   Unlayered, so it wins over the @layer base rule without !important.
+   ============================================================ */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis {
+  scroll-behavior: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ============================================================
    JAPANESE TYPOGRAPHY
    Deliberately UNLAYERED. Cascade layers beat specificity, so this block
    sitting in @layer base lost to every Tailwind utility in @layer utilities —

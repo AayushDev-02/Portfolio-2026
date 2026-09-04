@@ -8,6 +8,7 @@ import {
   CursorPill,
   LocaleSwitcher,
   SectionCounter,
+  SmoothScroll,
   ThemeProvider,
   ThemeToggle,
 } from "@/components/primitives";
@@ -133,13 +134,6 @@ export default async function LocaleLayout({
               />
               <LocaleSwitcher current={locale as Locale} label={t("switchLanguage")} />
             </header>
-            {/* Sits above the page but below the header controls (z-10 vs
-                z-20) and takes no pointer events, so nothing it crosses becomes
-                unclickable. Renders nothing on touch or under reduced motion,
-                and one delegated listener covers every [data-cursor-label] on
-                the page — no card, link or button becomes a client component
-                to carry one. */}
-            <CursorPill />
             {/* Pinned where every section used to paint its own counter, so
                 the corner reads the same but now tracks scroll position. */}
             <div className="pointer-events-none fixed top-0 right-0 z-20 px-gutter py-10 sm:px-gutter-lg sm:py-14">
@@ -148,6 +142,22 @@ export default async function LocaleLayout({
             <main id="main" className="bg-bg">
               {children}
             </main>
+            {/* Sits above the page but below the header controls (z-10 vs
+                z-20) and takes no pointer events, so nothing it crosses becomes
+                unclickable. Renders nothing on touch or under reduced motion,
+                and one delegated listener covers every [data-cursor-label] on
+                the page — no card, link or button becomes a client component
+                to carry one.
+
+                AFTER <main> deliberately: the project cover layer is also
+                fixed at z-10 and lives inside the projects section, so at equal
+                z-index document order is what decides, and the pill has to come
+                last to stay on top of a 320px image. */}
+            <CursorPill />
+            {/* Off unless NEXT_PUBLIC_SMOOTH_SCROLL=1. Renders null and loads
+                nothing otherwise — see docs/DECISIONS.md for the rule-4
+                reversal this is behind. */}
+            <SmoothScroll />
             {/*
             Both are cookie-free and collect no personal data, so the site
             needs no consent banner — which is the reason for choosing them

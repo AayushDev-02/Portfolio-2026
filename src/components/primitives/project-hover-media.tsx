@@ -1,6 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { lazy, Suspense } from "react";
 import type { ProjectImage } from "@/content";
 import { usePointerMode } from "@/lib/pointer-mode";
 
@@ -8,15 +8,15 @@ import { usePointerMode } from "@/lib/pointer-mode";
 export type Item = { ordinal: string; image: ProjectImage };
 
 /**
- * The layer, its rAF loop and its six `<img>` tags are all behind this.
+ * The layer, its rAF loop and its five `<img>` tags are all behind this.
  *
- * `ssr: false` is not a convenience here, it is the guarantee: nothing below
- * this line exists in the server HTML, so a device that can never hover
- * downloads neither the covers nor the code that would show them.
+ * `React.lazy` rather than `next/dynamic`: both defer the chunk, but `lazy` and
+ * `Suspense` are already in the React baseline while `next/dynamic` brings its
+ * own loadable machinery on top — measured at about 1KB gzipped of app code.
+ * There is no SSR case for `ssr: false` to handle either: the gate below starts
+ * at `off`, which is exactly what the server renders.
  */
-const ProjectHoverLayer = dynamic(() => import("./project-hover-layer"), {
-  ssr: false,
-});
+const ProjectHoverLayer = lazy(() => import("./project-hover-layer"));
 
 /**
  * Cover art that follows the pointer across the PROJECTS rows.
@@ -29,11 +29,19 @@ const ProjectHoverLayer = dynamic(() => import("./project-hover-layer"), {
  * only once a fine pointer is confirmed.
  *
  * On touch, `usePointerMode` never leaves `off` and the import is never
- * reached. That is what makes "no project image is fetched on a phone" a
+ * reached. That is what makes "no project cover is fetched on a phone" a
  * property of the module graph rather than a promise about CSS.
  */
 export function ProjectHoverMedia({ items }: { items: Item[] }) {
   const mode = usePointerMode();
   if (mode === "off" || items.length === 0) return null;
-  return <ProjectHoverLayer items={items} mode={mode} />;
+
+  return (
+    // No fallback: there is nothing to show while the chunk arrives, and a
+    // placeholder in a fixed layer would be a flash of red where the cover is
+    // about to be.
+    <Suspense fallback={null}>
+      <ProjectHoverLayer items={items} mode={mode} />
+    </Suspense>
+  );
 }

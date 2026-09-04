@@ -21,6 +21,7 @@ export { SectionCounter } from "./section-counter";
 export { SectionHead } from "./section-head";
 export { SectionShell } from "./section-shell";
 export { SkillCard } from "./skill-card";
+export { SmoothScroll } from "./smooth-scroll";
 export { type Status, StatusBadge } from "./status-badge";
 export { TerminalHero } from "./terminal-hero";
 export { ThemeProvider } from "./theme-provider";
