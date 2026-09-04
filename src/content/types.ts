@@ -43,6 +43,38 @@ export type ProjectEntry = {
    * and the architecture diagram; the rest share the asymmetric grid below it.
    */
   featured?: boolean;
+  /**
+   * Cover art for the row's hover preview. Optional on purpose: a project with
+   * no image still renders its row, it simply raises nothing on hover. The
+   * layout must never wait on art that does not exist yet.
+   */
+  image?: ProjectImage;
+};
+
+/**
+ * The cover image behind one project row.
+ *
+ * `src` is a complete path under `/images/projects/`, currently pointing at the
+ * placeholder cards `scripts/make-project-placeholders.mjs` generates. When
+ * real screenshots land they become `.avif` with a `.webp` sibling served
+ * through `<picture>` — the pattern and the reasoning are in
+ * `src/components/primitives/hero-backdrop.tsx` and `src/lib/images.ts` — and
+ * each file stays under 60KB.
+ *
+ * `width` and `height` are the intrinsic dimensions, so the browser can reserve
+ * the box before the bytes arrive.
+ *
+ * **`alt` is never empty, and it is per locale.** This is not decoration the
+ * way the hero photograph was: it is the only picture of the work on the page.
+ * The following layer is `aria-hidden` and drops the alt, because the row it
+ * shadows already carries the project's name; the reduced-motion thumbnail
+ * inside the row is a real image and uses it.
+ */
+export type ProjectImage = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
 };
 
 /**

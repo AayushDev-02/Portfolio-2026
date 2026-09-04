@@ -271,6 +271,12 @@ const projects = {
   items: [
     {
       title: "Production RAG assistant",
+      image: {
+        src: "/images/projects/production-rag-assistant.svg",
+        width: 640,
+        height: 400,
+        alt: "Cover card for project 001, the production RAG assistant, listing its Python, Express, React and Docker stack.",
+      },
       org: "Pacific Consultants 株式会社",
       featured: true,
       tags: [
@@ -288,6 +294,12 @@ const projects = {
     },
     {
       title: "AI presentation generator",
+      image: {
+        src: "/images/projects/ai-presentation-generator.svg",
+        width: 640,
+        height: 400,
+        alt: "Cover card for project 002, the AI presentation generator, listing its Azure Web Apps, Functions and virtual network stack.",
+      },
       org: "MLIT / 国総研",
       tags: ["Azure Web Apps", "Functions", "Application Gateway", "VNet"],
       body: "Staff describe what they need in a chat, and the system assembles an outline, body text and slides. Deck preparation went from days to under an hour. Existing documents are referenced automatically so the substance stays consistent between authors. Azure Web Apps and Functions, with Application Gateway and a virtual network restricting the public route.",
@@ -296,23 +308,47 @@ const projects = {
     },
     {
       title: "MapAI",
+      image: {
+        src: "/images/projects/mapai.svg",
+        width: 640,
+        height: 400,
+        alt: "Cover card for project 003, MapAI, listing its MapLibre, PostGIS, QGIS and Azure stack.",
+      },
       org: "Otaru Canal · Kashiwa City",
       tags: ["MapLibre", "PostGIS", "QGIS", "Azure", "Neon"],
       body: "LLM-driven querying and visualisation of geospatial data, built to address overtourism congestion. Transit, rail, ferry, event, weather and retail data merged and normalised into 250m mesh cells, with congestion forecasting on top. MapLibre for the map, PostGIS on Azure and Neon, QGIS for preparation.",
     },
     {
       title: "Tender PDF extraction pipeline",
+      image: {
+        src: "/images/projects/tender-pdf-extraction-pipeline.svg",
+        width: 640,
+        height: 400,
+        alt: "Cover card for project 004, the tender PDF extraction pipeline, listing its PyMuPDF and multithreaded CSV and Excel stack.",
+      },
       tags: ["PyMuPDF", "Multithreaded", "CSV / Excel"],
       body: "Automated extraction from government tender PDFs into structured CSV and Excel. PyMuPDF for parsing, multithreading for throughput, and region-aware rules for the long tail of format differences between prefectures.",
     },
     {
       title: "ManiKani",
+      image: {
+        src: "/images/projects/manikani.svg",
+        width: 640,
+        height: 400,
+        alt: "Cover card for project 005, ManiKani, listing its Next.js, FastAPI, PostgreSQL, pgvector, Redis and Stripe stack.",
+      },
       org: "Spaced-repetition learning SaaS",
       tags: ["Next.js", "FastAPI", "PostgreSQL", "pgvector", "Redis", "Stripe"],
       body: "A subscription learning app built to production standards: a scheduling engine, RAG-backed generation of personalised mnemonics, and progress tracking. Next.js on the front with a separate FastAPI service doing the AI work, PostgreSQL and pgvector for retrieval, Redis for sessions and rate limiting, Stripe for billing.",
     },
     {
       title: "AI chat assistant",
+      image: {
+        src: "/images/projects/ai-chat-assistant.svg",
+        width: 640,
+        height: 400,
+        alt: "Cover card for project 006, the AI chat assistant, listing its streaming, prompt template and rate limiting stack.",
+      },
       tags: ["Streaming", "Prompt templates", "Rate limiting"],
       body: "Conversational assistant with token-level streaming, persistent multi-session history and per-user rate limiting. Streaming alone cut perceived response time by around 40 percent. A prompt-template layer keeps conversation context inside the model's token budget.",
     },

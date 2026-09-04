@@ -289,6 +289,12 @@ const projects = {
   items: [
     {
       title: "企業向けRAG AIアプリケーション",
+      image: {
+        src: "/images/projects/production-rag-assistant.svg",
+        width: 640,
+        height: 400,
+        alt: "プロジェクト001「企業向けRAG AIアプリケーション」のカバーカード。Python・Express・React・Dockerなどの使用技術を記載。",
+      },
       org: "パシフィックコンサルタンツ株式会社",
       featured: true,
       tags: [
@@ -306,6 +312,12 @@ const projects = {
     },
     {
       title: "生成AIを用いた文書自動起案システム",
+      image: {
+        src: "/images/projects/ai-presentation-generator.svg",
+        width: 640,
+        height: 400,
+        alt: "プロジェクト002「生成AIを用いた文書自動起案システム」のカバーカード。Azure Web Apps・Functions・仮想ネットワークなどの使用技術を記載。",
+      },
       org: "国土交通省 / 国総研",
       tags: ["Azure Web Apps", "Functions", "Application Gateway", "VNet"],
       body: "職員がチャット形式で要件を伝えるだけで、構成案からスライドまでを自動生成するWebアプリケーションを開発。資料作成の工数を削減し、初稿到達までの所要時間を大きく短縮しました。既存文書を自動参照して根拠に反映させる仕組みにより、記載内容のばらつきを解消。Azure Web AppsとAzure Functionsを軸に構成し、Application Gatewayと仮想ネットワークで公開経路を限定しています。",
@@ -314,23 +326,47 @@ const projects = {
     },
     {
       title: "地理情報AIマップアプリケーション（MapAI）",
+      image: {
+        src: "/images/projects/mapai.svg",
+        width: 640,
+        height: 400,
+        alt: "プロジェクト003「地理情報AIマップアプリケーション（MapAI）」のカバーカード。MapLibre・PostGIS・QGIS・Azureなどの使用技術を記載。",
+      },
       org: "小樽運河・柏市",
       tags: ["MapLibre", "PostGIS", "QGIS", "Azure", "Neon"],
       body: "観光過密（オーバーツーリズム）問題の解決を目的とした、地理空間データ活用型AIマップアプリケーション。交通、鉄道、フェリー、イベント、天候、店舗情報など複数のデータを統合し、250mメッシュ単位で整形・格納したうえで、混雑状況の可視化および将来予測を行います。LLMを活用し、自然言語による問い合わせにも対応。MapLibreによる地図可視化、AzureとNeon上のPostGIS、QGISでの前処理という構成です。",
     },
     {
       title: "官公庁向け入札PDFデータ抽出・自動化システム",
+      image: {
+        src: "/images/projects/tender-pdf-extraction-pipeline.svg",
+        width: 640,
+        height: 400,
+        alt: "プロジェクト004「官公庁向け入札PDFデータ抽出・自動化システム」のカバーカード。PyMuPDF・マルチスレッド処理などの使用技術を記載。",
+      },
       tags: ["PyMuPDF", "マルチスレッド", "CSV / Excel"],
       body: "官公庁の入札関連PDFから必要な情報を自動抽出し、構造化データとして整理・出力する業務自動化システム。PyMuPDFによる解析処理とマルチスレッド処理による高速化に加え、地域別の構造化データ抽出ロジックを設計し、CSVおよびExcel形式でのレポート出力に対応しました。",
     },
     {
       title: "ManiKani",
+      image: {
+        src: "/images/projects/manikani.svg",
+        width: 640,
+        height: 400,
+        alt: "プロジェクト005「ManiKani」のカバーカード。Next.js・FastAPI・PostgreSQL・pgvector・Redis・Stripeなどの使用技術を記載。",
+      },
       org: "間隔反復学習SaaS",
       tags: ["Next.js", "FastAPI", "PostgreSQL", "pgvector", "Redis", "Stripe"],
       body: "本番運用を想定して構築したサブスクリプション型の学習アプリケーション。間隔反復のスケジューリングエンジンと、RAGを用いた個別学習用ニーモニックの生成、進捗管理を実装しています。フロントエンドはNext.js、AI処理は独立したPython（FastAPI）サービスとして分離。PostgreSQLとpgvectorで意味検索、Redisでセッションとレート制限、Stripeで課金を処理しています。",
     },
     {
       title: "AIチャットアシスタント",
+      image: {
+        src: "/images/projects/ai-chat-assistant.svg",
+        width: 640,
+        height: 400,
+        alt: "プロジェクト006「AIチャットアシスタント」のカバーカード。ストリーミング・プロンプトテンプレート・レート制限などの使用技術を記載。",
+      },
       tags: ["ストリーミング", "プロンプトテンプレート", "レート制限"],
       body: "トークン単位のストリーミング応答、複数セッションの履歴保持、ユーザー単位のレート制限を備えた対話型アシスタント。ストリーミングの導入だけで体感応答速度を約40%改善しました。プロンプトテンプレート層により、会話コンテキストをモデルのトークン上限内に収めています。",
     },

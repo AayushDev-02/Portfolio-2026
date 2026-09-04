@@ -5,6 +5,7 @@ import type {
   ContactFormCopy,
   PipelineDiagram,
   ProjectEntry,
+  ProjectImage,
   ResultFigure,
   SiteContent,
 } from "./types";
@@ -16,4 +17,11 @@ export function getContent(locale: Locale): SiteContent {
   return content[locale];
 }
 
-export type { ContactFormCopy, PipelineDiagram, ProjectEntry, ResultFigure, SiteContent };
+export type {
+  ContactFormCopy,
+  PipelineDiagram,
+  ProjectEntry,
+  ProjectImage,
+  ResultFigure,
+  SiteContent,
+};

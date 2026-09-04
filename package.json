@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "check": "pnpm typecheck && pnpm lint",
     "budget": "node scripts/check-budget.mjs",
-    "perf": "node scripts/measure-perf.mjs"
+    "perf": "node scripts/measure-perf.mjs",
+    "placeholders": "node --experimental-strip-types scripts/make-project-placeholders.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",

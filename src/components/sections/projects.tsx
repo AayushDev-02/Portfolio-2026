@@ -2,6 +2,7 @@ import {
   Hairline,
   MicroLabel,
   PipelineDiagram,
+  ProjectHoverMedia,
   PullQuote,
   Reveal,
   ScrambleText,
@@ -30,50 +31,102 @@ function Tags({ items, accent = false }: { items?: string[]; accent?: boolean })
   );
 }
 
-/** One of the five non-featured entries. */
-function ProjectCard({ project, index }: { project: ProjectEntry; index: number }) {
-  const ordinal = String(index).padStart(3, "0");
+/**
+ * One non-featured project, as a full-width row.
+ *
+ * This replaces the card grid. Six cards each carrying a paragraph is six
+ * paragraphs nobody reads; a row is scanned in the time a skim actually
+ * lasts, and the body copy it drops was never doing work at that size. What
+ * carries the detail now is the cover art that follows the pointer.
+ *
+ * `data-project-row` is the hover target for `ProjectHoverMedia` and is set
+ * only when the project has art, so a row with no image raises nothing rather
+ * than leaving the previous cover hanging. `data-cursor-label` is the same
+ * ordinal, so the cursor pill names the row you are on.
+ *
+ * `data-project-thumb` is an empty slot, `display: none` until a reduced-motion
+ * visitor has JavaScript, at which point globals.css reserves its box and the
+ * layer portals a static thumbnail in. Keeping the slot empty in the server
+ * markup is what makes "no cover is fetched on a phone" a property of the
+ * markup rather than a hope about how `display: none` treats a lazy image.
+ *
+ * Below `sm` this is two lines: index and title, then organisation and tags on
+ * one truncated line. The organisation is hidden between `sm` and `lg`, where
+ * the row is wide enough for tags but not for a third column.
+ */
+function ProjectRow({ project, ordinal }: { project: ProjectEntry; ordinal: string }) {
   return (
-    <article
-      data-cursor-label={ordinal}
-      className="flex flex-col gap-2 bg-bg py-6 sm:px-6 lg:first:pl-0"
-    >
-      <MicroLabel>{ordinal}</MicroLabel>
-      <h3 className="text-ui font-bold text-ink">{project.title}</h3>
-      {project.org ? <p className="text-label text-prose">{project.org}</p> : null}
-      <p className="mt-1 font-sans text-ui leading-6 text-prose">{project.body}</p>
-      <div className="mt-2">
-        <Tags items={project.tags} />
+    <li className="border-b border-rule">
+      <div
+        data-cursor-label={ordinal}
+        data-project-row={project.image ? ordinal : undefined}
+        className="group flex min-h-24 flex-col justify-center gap-1 py-6 sm:flex-row sm:items-center sm:gap-6"
+      >
+        <div className="flex min-w-0 items-center gap-4 sm:flex-1">
+          <span className="shrink-0 font-display text-lede-lg font-bold tabular-nums text-prose transition-colors duration-150 group-hover:text-accent sm:text-index">
+            {ordinal}
+          </span>
+          <span data-project-thumb={ordinal} className="shrink-0" />
+          <h3 className="min-w-0 truncate text-ui font-bold text-ink sm:text-lede">
+            {project.title}
+          </h3>
+        </div>
+
+        {/* `sm:contents` dissolves this wrapper above the breakpoint, so the
+            two lines become two columns of the row without either string being
+            written twice. */}
+        <div className="flex min-w-0 items-baseline gap-x-3 overflow-hidden pl-14 sm:contents">
+          {project.org ? (
+            <p className="shrink-0 truncate text-label text-prose sm:hidden lg:block lg:w-44 lg:shrink-0">
+              {project.org}
+            </p>
+          ) : null}
+          {project.tags?.length ? (
+            <p className="truncate text-badge text-prose sm:shrink-0 sm:overflow-visible sm:text-right sm:whitespace-normal">
+              {project.tags.join(" · ")}
+            </p>
+          ) : null}
+        </div>
       </div>
-    </article>
+    </li>
   );
 }
 
 /**
- * PROJECTS, rebuilt for stage 13 §A and §B.
- *
- * Two changes from the accordion this replaces.
+ * PROJECTS.
  *
  * **Evidence.** The featured entry shows its architecture. The brief called
  * this the highest-value item on the list, because a portfolio belonging to
  * someone who builds retrieval systems previously contained no diagram, image
  * or screenshot at all — nothing a reader could judge the engineering by.
  *
- * **Asymmetry.** The rest sit in a 1.35/1/1 grid and then a 1/1.35, rather than
- * a uniform stack. Combined with the section running taller than its
- * neighbours, this is where the page stops being six identical frames.
+ * **The rest are a list, not a grid.** Stage 16 replaced the asymmetric card
+ * grid with full-width rows separated by hairlines. The cards were competing
+ * with the featured entry for the same kind of attention and losing; a rail of
+ * rows reads as an index, which is what five supporting projects are.
  *
- * The accordion is gone deliberately: content behind a disclosure is content a
- * fifteen-second skim never sees, and this is the section that most needs to be
- * seen. The pull quotes it used to hide are kept on the featured entry only.
+ * The accordion these all replaced is gone deliberately: content behind a
+ * disclosure is content a fifteen-second skim never sees, and this is the
+ * section that most needs to be seen. The pull quotes it used to hide are kept
+ * on the featured entry only.
  */
 export function ProjectsSection({ content }: { content: SiteContent }) {
   const { projects } = content;
 
   const featured = projects.items.find((item) => item.featured);
+  const ordinalOf = (item: ProjectEntry) =>
+    String(projects.items.indexOf(item) + 1).padStart(3, "0");
   const rest = projects.items.filter((item) => !item.featured);
-  const firstRow = rest.slice(0, 3);
-  const secondRow = rest.slice(3);
+
+  // The rows only. The featured entry is deliberately not a hover target: it
+  // already shows its architecture, and a cover sliding over a diagram is noise
+  // rather than evidence.
+  const media = rest
+    .filter((item) => item.image)
+    .map((item) => ({
+      ordinal: ordinalOf(item),
+      image: item.image as NonNullable<ProjectEntry["image"]>,
+    }));
 
   return (
     <SectionShell
@@ -88,7 +141,7 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
         {/* Heading beside the lede rather than stacked and centred — the first
             visible break from the frame every other section uses. */}
         <Reveal className="grid gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:items-end lg:gap-16">
-          <h2 className="font-display text-head sm:text-head-lg font-bold uppercase leading-none tracking-tight text-ink">
+          <h2 className="font-display text-head font-bold uppercase leading-none tracking-tight text-ink sm:text-head-lg">
             <ScrambleText text={projects.heading} />
           </h2>
           <p className="max-w-xl font-sans text-lede leading-6 text-prose">
@@ -100,8 +153,11 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
           <>
             <Hairline tone="accent" />
             <Reveal className="grid gap-8 pt-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,720px)] lg:gap-12">
-              <div data-cursor-label="001" className="flex flex-col gap-3">
-                <MicroLabel className="text-accent">001</MicroLabel>
+              <div
+                data-cursor-label={ordinalOf(featured)}
+                className="flex flex-col gap-3"
+              >
+                <MicroLabel className="text-accent">{ordinalOf(featured)}</MicroLabel>
                 <h3 className="text-lede font-bold text-ink">{featured.title}</h3>
                 {featured.org ? (
                   <p className="text-label text-prose">{featured.org}</p>
@@ -126,27 +182,21 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
         ) : null}
 
         <Reveal stagger>
-          <div className="grid grid-cols-1 gap-px border-y border-rule bg-rule sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr]">
-            {firstRow.map((project, i) => (
-              <ProjectCard key={project.title} project={project} index={i + 2} />
+          <ul className="border-t border-rule">
+            {rest.map((project) => (
+              <ProjectRow
+                key={project.title}
+                project={project}
+                ordinal={ordinalOf(project)}
+              />
             ))}
-          </div>
+          </ul>
         </Reveal>
-
-        {secondRow.length > 0 ? (
-          <Reveal stagger>
-            <div className="grid grid-cols-1 gap-px border-b border-rule bg-rule sm:grid-cols-2 lg:grid-cols-[1fr_1.35fr]">
-              {secondRow.map((project, i) => (
-                <ProjectCard
-                  key={project.title}
-                  project={project}
-                  index={i + 2 + firstRow.length}
-                />
-              ))}
-            </div>
-          </Reveal>
-        ) : null}
       </div>
+
+      {/* Mounted once for the whole section, not once per row. Renders nothing
+          at all on touch, so no cover is ever fetched there. */}
+      <ProjectHoverMedia items={media} />
     </SectionShell>
   );
 }

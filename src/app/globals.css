@@ -100,6 +100,17 @@
   --radius-cursor: 9999px;
   --cursor-morph: 220ms;
 
+  /* --- the project hover preview (stage 16) ---
+     The displayed size and the source aspect ratio, so the following layer
+     reserves the right box without the component holding either number. The
+     ratio matches the 640x400 cards `make-project-placeholders.mjs` emits and
+     must keep matching whatever replaces them. */
+  --spacing-project-media: 20rem;
+  --aspect-project-media: 8 / 5;
+  --project-media-fade: 260ms;
+  /* The reduced-motion fallback: a static thumbnail in the row itself. */
+  --spacing-project-thumb: 3.5rem;
+
   /* --- the hero photograph's treatment ---
      A token rather than a value in the component, so dark mode can dim the
      photograph without HeroBackdrop knowing a theme exists. */
@@ -388,6 +399,58 @@
 
 [data-cursor-pill="pill"] > span {
   opacity: 1;
+}
+
+/* ============================================================
+   PROJECT HOVER PREVIEW (stage 16)
+
+   `ProjectHoverMedia` writes a transform and an opacity per frame. The fade
+   between one project's cover and the next lives here, for the same reason the
+   cursor pill's morph does: the component should hold behaviour, not timing.
+
+   Every cover is rendered at once and stacked, with only the hovered one
+   raised. Swapping opacity on an already-decoded image is instant; fetching one
+   on hover is not, and a preview that arrives after you have moved on is worse
+   than no preview.
+
+   No reduced-motion rule here either — under that preference the component
+   renders no following layer at all and portals a static thumbnail into each
+   row instead.
+   ============================================================ */
+
+[data-project-media] {
+  opacity: 0;
+  transition: opacity var(--project-media-fade) var(--reveal-ease);
+}
+
+[data-project-layer] {
+  transition: opacity var(--project-media-fade) var(--reveal-ease);
+}
+
+/* The reduced-motion fallback's slot.
+
+   Hidden by default and NEVER filled from the server: the row renders an empty
+   span, and only the reduced-motion branch portals a thumbnail into it. That is
+   what makes "a phone fetches no cover" a fact about the markup rather than a
+   hope about how `display: none` interacts with a lazy image.
+
+   The box is reserved by CSS *before* the portal fills it, so the row does not
+   jump sideways when the thumbnail arrives. Reserving it is the whole reason
+   this lives here rather than as a class on the span.
+
+   Scoped to [data-js] like the reveal states above: with no JavaScript nothing
+   will ever portal anything in, so reserving space would leave a gap in every
+   row for no reason. */
+[data-project-thumb] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-js] [data-project-thumb] {
+    display: block;
+    height: var(--spacing-project-thumb);
+    aspect-ratio: var(--aspect-project-media);
+  }
 }
 
 /* ============================================================

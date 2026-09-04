@@ -12,6 +12,7 @@ export { Eyebrow, MicroLabel, Sigil } from "./labels";
 export { LocaleSwitcher } from "./locale-switcher";
 export { NumberedItem, NumberedList } from "./numbered-item";
 export { PipelineDiagram } from "./pipeline-diagram";
+export { ProjectHoverMedia } from "./project-hover-media";
 export { PullQuote } from "./pull-quote";
 export { RankBar, RankList } from "./rank-bar";
 export { Reveal } from "./reveal";

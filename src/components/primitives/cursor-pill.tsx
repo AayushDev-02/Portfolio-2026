@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { usePointerMode } from "@/lib/pointer-mode";
 
 /** The opt-in. Its value is the text the pill shows. */
 const LABEL_ATTR = "data-cursor-label";
@@ -30,9 +31,9 @@ const EPSILON = 0.25;
  * - **The pointer has actually moved.** Otherwise the dot paints in the
  *   top-left corner on load, which looks like a bug rather than an effect.
  *
- * Both media queries are *watched* rather than sampled once: a hybrid laptop
- * can gain or lose a fine pointer, and reduced-motion can be toggled with the
- * page already open.
+ * The first two are `usePointerMode`, which watches both queries rather than
+ * sampling them once — a hybrid laptop can gain or lose a fine pointer, and
+ * reduced-motion can be toggled with the page already open.
  *
  * ## One listener, one frame, for the whole document
  *
@@ -71,22 +72,9 @@ const EPSILON = 0.25;
 export function CursorPill() {
   const root = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLSpanElement>(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    const fine = window.matchMedia?.("(pointer: fine)");
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    if (!fine || !reduced) return;
-
-    const sync = () => setEnabled(fine.matches && !reduced.matches);
-    sync();
-    fine.addEventListener("change", sync);
-    reduced.addEventListener("change", sync);
-    return () => {
-      fine.removeEventListener("change", sync);
-      reduced.removeEventListener("change", sync);
-    };
-  }, []);
+  // `full` is the only mode a continuously-moving cursor may run in — see
+  // lib/pointer-mode.ts for why both queries are watched rather than sampled.
+  const enabled = usePointerMode() === "full";
 
   useEffect(() => {
     if (!enabled) return;

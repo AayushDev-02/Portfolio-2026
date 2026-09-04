@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" role="img">
+  <rect width="640" height="400" fill="#0a0a0a"/>
+  <rect x="0.5" y="0.5" width="639" height="399" fill="none" stroke="rgba(237,237,237,0.18)"/>
+  <path d="M42 24 H24 V42" fill="none" stroke="#ef4444" stroke-width="1"/>
+  <path d="M598 24 H616 V42" fill="none" stroke="#ef4444" stroke-width="1"/>
+  <path d="M42 376 H24 V358" fill="none" stroke="#ef4444" stroke-width="1"/>
+  <path d="M598 376 H616 V358" fill="none" stroke="#ef4444" stroke-width="1"/>
+  <text x="48" y="74" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="bold" fill="#ef4444" xml:space="preserve">PROJECT</text>
+  <text x="48" y="148" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="84" font-weight="bold" fill="#ededed" xml:space="preserve">003</text>
+  <line x1="48" y1="168" x2="592" y2="168" stroke="rgba(237,237,237,0.18)"/>
+  <text x="48" y="196" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="30" font-weight="bold" fill="#ededed" xml:space="preserve">MapAI</text>
+  <text x="48" y="262" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="normal" fill="#9ca3af" xml:space="preserve">MapLibre · PostGIS · QGIS · Azure · Neon</text>
+</svg>
