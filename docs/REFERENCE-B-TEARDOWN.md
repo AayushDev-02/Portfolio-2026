@@ -132,22 +132,67 @@ nothing here needs a scene graph, a camera or lighting.
 The point-cloud preview already built stays a live alternative. Both are
 "photograph plus GPU effect"; pick one after seeing the real photo in each.
 
-### Stage 15 — Advanced motion — *new*
-The scroll craft that makes the reference feel expensive:
+### Stage 15 — Advanced motion — *revised after measuring, 2026-08-31*
 
-- **Pinned scroll sequences** — a section holds while its content advances.
-  ScrollTrigger `pin` + `scrub`. This is the single biggest perceived upgrade.
-- **Per-character and per-line reveals** on headings via SplitText, replacing
-  the hand-rolled scramble if it is already built.
-- **Scrubbed hero parallax** — the shader's displacement driven by scroll
-  position, not just time.
-- **Flip transitions** where a card expands or a layout regroups.
-- **Magnetic cursor** on the bracket controls — the button pulls slightly
-  toward the pointer.
-- **A live Tokyo clock** in the header.
-- **View Transitions API** for locale and theme switches — the framework-native
-  answer to what Barba does for them.
+**Correction to the first version of this brief.** It said pinned scroll
+sequences were "the single biggest perceived upgrade". They are not what this
+site does. Measured on the live page: **six ScrollTriggers total, every one of
+them `pin: false`, `scrub: false`, `top bottom → bottom top`.** Those six are the
+parallax pairs. There is no pinning and no scrubbing anywhere on it.
 
-Guardrails, unchanged: everything disables under `prefers-reduced-motion`;
-nothing animates above the fold on first paint; both themes, both locales,
-re-checked at 360 and 768; Stage 7's budget re-run after each addition.
+What actually produces the expensive feel is a **small declarative vocabulary
+applied densely and consistently**. Counted from the live DOM:
+
+| Attribute | Count | What it does |
+|---|---|---|
+| `data-enter-reveal` | 27 | Entrance reveal. Value is `mask` or `split` |
+| `data-sound-hover` | 27 | Hover sound (Howler) |
+| `data-text` | 23 | Text treatment hook |
+| `data-parallax` | 22 | Used as **trigger/target pairs** — a wrapper marked `trigger`, the image inside it marked `target` |
+| `data-btn` + `-inner` + `-text` + `-bg-icon` | ~18 each | One layered button component, animated in parts |
+| `data-hover-follow` + `-follower` + `-inner` | 20 / 10 / 10 | Magnetic follower, applied to the **case cards**, not buttons |
+| `data-mask-reveal-delay` | 13 | Explicit numeric stagger — observed values 0.2, 0.28, 0.64, 0.66, 0.72, 0.76 |
+| `data-split` | 7 | **Value is `words`, not characters** |
+| `data-underline` | 7 | Animated underline on links |
+| `data-jump-to` | 9 | Anchor navigation |
+
+Two things follow from this, and both change the plan:
+
+1. **The feel is a system, not a trick.** Every element that can reveal, reveals.
+   Every card is magnetic. Every image parallaxes inside its frame. Build a small
+   set of reusable declarative wrappers and apply them broadly — that is the
+   whole method. Chasing one showy mechanic instead would miss it.
+2. **Split by words, not characters.** Calmer, and far safer on a bilingual site.
+   Japanese has no word spaces, so word-splitting JA is as wrong as
+   character-splitting it — `ja` still fades.
+
+Sections also carry `theme-dark` / `theme-base` classes, alternating the ground
+per section. This portfolio already has semantic tokens and a working dark mode,
+so **per-section theme inversion is nearly free here** and is the single
+cheapest visual upgrade on this list.
+
+### Revised Stage 15 list
+
+- **Per-section theme alternation.** Reuse the dark-mode token block at section
+  scope. Near-zero cost, large perceived change, and it breaks the uniform field
+  Stage 13 §A was still trying to solve.
+- **Parallax as trigger/target pairs.** Wrapper is the trigger, the image inside
+  moves. Apply to the hero backdrop and every project image.
+- **Word-level split reveals** on headings via SplitText, with explicit stagger
+  delays. Latin only; `ja` fades.
+- **Mask reveals** with numeric stagger, as the general-purpose entrance.
+- **Magnetic hover** on the project cards.
+- **Animated underlines** on links.
+- **A layered button component** — the existing `BracketButton` gains inner
+  elements that animate independently.
+- **Live Tokyo clock** in the header.
+- **View Transitions API** for locale and theme switches.
+
+### Not taken
+- **Pinning and scrubbing** — the reference does not use them, and they are the
+  most likely of any technique here to fight a screen reader or a trackpad.
+- **Hover sounds.** They use Howler for 27 of them. Recruiters open portfolios in
+  offices, often with sound on by accident. Divisive at best, embarrassing at
+  worst, and it costs a dependency.
+- **Barba** — multi-page tool, wrong for App Router.
+- **Lenis** — only as a logged reversal of the no-scroll-jacking decision.

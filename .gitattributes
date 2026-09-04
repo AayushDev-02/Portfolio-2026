@@ -1,0 +1,12 @@
+# The repository stores LF. `core.autocrlf=true` on a Windows checkout hands
+# the working tree CRLF, which Biome's formatter (LF, and not configurable per
+# platform without breaking Linux CI) reports as a format error on every file —
+# so `pnpm check` failed on a clean checkout with nothing wrong in the code.
+# Pinning the working tree to LF makes the two agree everywhere.
+* text=auto eol=lf
+
+# Binary art: never touched.
+*.avif binary
+*.webp binary
+*.png  binary
+*.pdf  binary

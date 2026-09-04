@@ -3,14 +3,13 @@
 **Read this first at the start of every session.**
 Update it before the end of every session. This file is the project's memory.
 
-- **Current stage:** **Stage 13 §B and §C are DONE** — the retrieval diagram and the RESULTS band are live. §A turned out not to be a separate workstream: the band's ~416px height against neighbours of 900–1676px *is* the rhythm break. Remaining: EXPERIENCE dense (last of §A), optional §D/§E/§F, **Stage 9** (launch, needs a domain) and optional Stage 10. Both locales score Performance 98 / Accessibility 100 / Best Practices 100 / SEO 100, all four now hard-asserted in CI. Next is Stage 9 (launch). Stage 5 is still open on two human items.
-- **Next action:** **Enable Web Analytics and Speed Insights in the Vercel dashboard** — the code is deployed and the component mounts, but nothing is recorded until the products are switched on, and that is a toggle only you have. Then Stage 9. Plus the Stage 5 items you alone can close (read the Japanese; hand-redact the two PDFs). Plus three checks that have queued up behind the automated work:
-  1. **Stage 2R's side-by-side** against https://www.project-uncensored.site/ at 1440 / 768 / 390. Still not done, and it is the exact check whose absence let a fully inverted palette pass review — do not let measurements stand in for it again.
-  2. **Stage 3 on a real phone.** Emulation misses iOS Safari's toolbar (the reason for `min-h-dvh`), real touch, and font fallback.
-  3. **Read the Japanese.** It typechecks and fits the layout; whether it reads naturally is not something I can verify.
+- **Current stage:** Stage 12 essentially done — the +49KB GSAP regression is fixed (deferred behind first scroll, back to 114KB total), and the budget contradiction is resolved with an honest 120KB browser-visible gate beside the 15KB app-code gate. One item left: the Lighthouse CI assertion.
+- **Next action:** **Stage 9 — launch.** Buy a domain and attach it in Vercel; that is the only thing standing between this and a real launch. In parallel, paste the exact Lighthouse assertion from the failing Actions run so CI can go green — the log is permission-gated and only Aayush can read it. Then Stage 14 (hero), which is blocked on one photograph.
+- **Cleared 2026-08-31:** Vercel Analytics + Speed Insights enabled · real-phone check done, no issues · PDF phone number kept by decision (see Stage 5).
+- **Still open for Aayush:** domain purchase · the hero photograph · Lighthouse log · read the Japanese · Stage 2R side-by-side.
 - **Live URL:** https://aayush-yadav-portfolio-nine.vercel.app
 - **Repo:** https://github.com/AayushDev-02/Portfolio-2026
-- **Last updated:** 2026-08-29
+- **Last updated:** 2026-08-31
 
 Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped (log why in DECISIONS.md)
 
@@ -77,7 +76,7 @@ loosest fit, ~130px over. No horizontal scroll (scrollWidth 1265 < 1280).
 - [x] Touch targets ≥ 44px — CTA and delete link were 19px tall; `min-h-11` on the bare `BracketButton`, invisible on a text-only control
 - [x] Keyboard nav + focus rings + skip link — verified with real dispatched Tab keys, not programmatic `.focus()` (which never matches `:focus-visible`). Skip link is first; ring is 2px accent at 3px offset
 - [x] `prefers-reduced-motion` honoured — under emulation the panel transition is 0.01ms, the caret animation is `none`, and the prompt renders filled rather than typing
-- [ ] Tested on real phone  ← **only you can do this** — emulation is not a phone; it misses iOS Safari's toolbar, real touch, and font fallback
+- [x] Tested on real phone — Aayush checked on iPhone 2026-08-31, no issues found
 **DoD:** no horizontal scroll anywhere; keyboard-operable end to end — [ ] *(automated audit passes at all 11 widths; holding the tick for the real-device check)*
 
 ## Stage 4 — Internationalisation ★ CURRENT
@@ -197,7 +196,7 @@ Three fixes, in order of what they bought:
 - [x] Dynamic OG images per locale — Noto Sans JP subset to the exact glyphs at build, because satori has no font fallback and the Japanese card would otherwise be blank boxes. Both cards rendered and eyeballed
 - [x] axe pass, WCAG 2.1 AA, contrast check — **one real AA failure found**, in both locales: the terminal panel's status line at 2.94:1. `--color-accent` is tuned for white (4.83:1) and is only 4.10:1 on the dark panel *even at full opacity*, so added `--color-terminal-accent` (5.26:1). Now 0 violations across 29 rules, both locales
 - [x] Favicon — **did not exist.** Every page load 404'd `/favicon.ico` and every tab was blank. Adding `icon.tsx` was not enough: next-intl's matcher only excludes paths with a file extension, so `/icon` was being rewritten to `/en/icon`
-- [~] Vercel Analytics + Speed Insights — **code deployed and verified mounting** (`window.va` / `window.vaq` initialise, no console errors). **Nothing is recorded until you enable both products in the Vercel dashboard** — that toggle is yours
+- [x] Vercel Analytics + Speed Insights — **code deployed and verified mounting** (`window.va` / `window.vaq` initialise, no console errors). **Nothing is recorded until you enable both products in the Vercel dashboard** — that toggle is yours — **enabled in the dashboard by Aayush 2026-08-31**, now recording
 **DoD:** Lighthouse ≥ 95 on all four categories, both locales — [x]
 
 Measured on the production build, mobile, both locales:
