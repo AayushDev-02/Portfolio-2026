@@ -29,6 +29,8 @@ const about = {
   eyebrow: "ABOUT",
   heading: "About",
   lead: "AI-focused software engineer in Tokyo. Two years building RAG and LLM systems for Japanese public-sector and construction clients.",
+  portraitAlt:
+    "A black-and-white abstract study in soft focus: pale, cloud-like forms breaking against deep shadow. Placeholder art, standing in for a photograph.",
   rows: [
     {
       question: "What I work on",

@@ -896,3 +896,60 @@ suppressed for markup that would otherwise render.** Neither of these needed it
 anyway, and the smooth-scroll runtime renders nothing at all and did not need to
 be a component. That is the third time on this project that measuring a library
 before adopting its idiom changed the answer.
+
+### 2026-09-04 — Plain 2D canvas over Three.js for the hero, with the measured reason
+PLAN.md had reserved stage 10 for react-three-fiber and `<CanvasSlot>` was built
+in stage 1 so 3D could arrive without touching layout. It is not arriving, and
+not because of a hunch.
+
+r3f plus three is roughly **90KB gzipped**. The enforced browser-visible gate is
+**120KB total first-load** and the measured framework floor is **100.8KB**, so
+r3f alone exceeds the entire remaining headroom by an order of magnitude — it
+could not ship even if every line of application code were deleted.
+
+The effect does not want a scene graph either. It is several hundred points,
+straight lines to a cursor, and a nearest-neighbour scan. No camera, no
+materials, no lighting, no geometry buffers. `lib/embedding-field.ts` does all of
+it in **1.26KB gzipped**, in its own chunk, loaded after the `load` event.
+
+This is the fourth time on this project that measuring a library before adopting
+it changed the answer — after the hero image, the font, and the animation
+library. The rule holds: on this project the library is weighed against the
+budget first.
+
+### 2026-09-04 — The hero photograph moved to ABOUT, and it is not a portrait
+Stage 17 replaced the hero image with the embedding field. The image itself was
+kept, per the brief, and moved into ABOUT as a framed figure beside the copy
+with the existing hairline treatment.
+
+**One correction to the brief, which assumed a portrait.** The file in
+`public/images/` is not a photograph of Aayush. It is an abstract black-and-white
+study — soft pale forms against deep shadow, with black bars baked into the crop.
+There is no photograph of him in the repo; PROGRESS.md has listed "the hero
+photograph" as an outstanding item for him since stage 14.
+
+So `about.portraitAlt` describes **what is actually on screen**, in both locales,
+rather than claiming a likeness that does not exist. Inventing alt text for a
+person who is not in the image would be a fabrication in a hiring artifact, and a
+screen reader user would be told about a portrait they are not being shown.
+
+The structure is nevertheless the one a real photograph needs: the alt string is
+a content key, so replacing the file and rewriting two strings is the whole
+change. **Both must happen together** — a real portrait with this alt text would
+be as wrong as the reverse.
+
+What did change for real: as a full-bleed backdrop the image was decoration and
+correctly had `alt=""`; in a frame beside the copy it is content, so the alt is
+not empty. It is also `loading="lazy"` now, because the entire point of the swap
+was that this file used to be the LCP element.
+
+**Measured, same machine, same harness, median of 3 under mobile emulation at
+Slow 4G and 4x CPU:**
+
+| | LCP | LCP element |
+|---|---|---|
+| hero photograph | 0.81s | `img.hero-image` |
+| embedding field | **0.64s** | `h1` — "Aayush Yadav" |
+
+A 21% improvement, and more to the point the largest paint no longer waits on a
+network fetch at all.

@@ -197,6 +197,17 @@ export type SiteContent = {
     eyebrow: string;
     heading: string;
     lead: string;
+    /**
+     * Alt text for the framed image beside the copy, which moved here from the
+     * hero in stage 17. Not empty, because it is no longer decoration.
+     *
+     * NOTE: the file behind it is still the abstract placeholder study the hero
+     * shipped with — there is no photograph of Aayush in the repo yet. This
+     * string describes what is actually on screen, and must be rewritten in
+     * both locales at the same time as the file is replaced. See
+     * docs/PROGRESS.md.
+     */
+    portraitAlt: string;
     rows: AccordionRowContent[];
     caption: string;
     sigil: string;

@@ -116,12 +116,28 @@ for (let run = 0; run < RUNS; run++) {
 
   const metrics = await ev(`
   new Promise((resolve) => {
-    const out = { lcp: 0, cls: 0, fcp: 0 };
+    const out = { lcp: 0, cls: 0, fcp: 0, lcpEl: '' };
     for (const e of performance.getEntriesByType('paint'))
       if (e.name === 'first-contentful-paint') out.fcp = e.startTime;
+    // Which element the LCP actually is. Stage 17 replaced the hero photograph
+    // with a canvas, so this is the line that says whether the wordmark took
+    // over as intended rather than something unexpected further down.
+    const describe = (el) => {
+      if (!el) return '(none)';
+      const id = el.id ? '#' + el.id : '';
+      const cls = typeof el.className === 'string' && el.className
+        ? '.' + el.className.trim().split(' ').filter(Boolean).slice(0, 2).join('.')
+        : '';
+      const text = (el.textContent || '').trim().slice(0, 40);
+      return el.tagName.toLowerCase() + id + cls + (text ? ' — "' + text + '"' : '');
+    };
     try {
       new PerformanceObserver((l) => {
-        for (const e of l.getEntries()) out.lcp = Math.max(out.lcp, e.startTime);
+        for (const e of l.getEntries()) {
+          if (e.startTime < out.lcp) continue;
+          out.lcp = e.startTime;
+          out.lcpEl = describe(e.element);
+        }
       }).observe({ type: 'largest-contentful-paint', buffered: true });
       new PerformanceObserver((l) => {
         for (const e of l.getEntries()) if (!e.hadRecentInput) out.cls += e.value;
@@ -145,6 +161,7 @@ for (let run = 0; run < RUNS; run++) {
   console.log(
     `run ${run + 1}: LCP ${(metrics.lcp / 1000).toFixed(2)}s  CLS ${metrics.cls.toFixed(4)}  FCP ${(metrics.fcp / 1000).toFixed(2)}s`,
   );
+  console.log(`        LCP element: ${metrics.lcpEl}`);
 }
 
 const med = (arr) => arr.slice().sort((a, b) => a - b)[Math.floor(arr.length / 2)];
@@ -160,6 +177,8 @@ const row = (label, val, target, pass) =>
 row("LCP", `${(lcp / 1000).toFixed(2)} s`, "< 1.5 s", lcp < 1500);
 row("CLS", cls.toFixed(4), "< 0.05", cls < 0.05);
 row("FCP", `${(fcp / 1000).toFixed(2)} s`, "—", true);
+console.log(`
+  LCP element: ${results[results.length - 1].lcpEl}`);
 
 const agg = {};
 for (const r of results)

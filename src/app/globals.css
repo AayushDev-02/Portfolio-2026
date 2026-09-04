@@ -111,6 +111,18 @@
   /* The reduced-motion fallback: a static thumbnail in the row itself. */
   --spacing-project-thumb: 3.5rem;
 
+  /* --- the hero embedding field (stage 17) ---
+     Opacity for the drifting points, the neighbourhood the pointer lights, and
+     the lines between them. Tokens rather than constants in the canvas for the
+     usual reason — no component owns a visual value — and for one specific to
+     this effect: the same alpha that reads as a faint texture on white reads as
+     nearly invisible on the dark ground, so the dark block below lifts the
+     drift. The canvas reads these and stays entirely theme-blind, exactly as
+     --hero-image-filter kept HeroBackdrop theme-blind. */
+  --field-drift-alpha: 0.3;
+  --field-lit-alpha: 0.95;
+  --field-line-alpha: 0.5;
+
   /* --- the hero photograph's treatment ---
      A token rather than a value in the component, so dark mode can dim the
      photograph without HeroBackdrop knowing a theme exists. */
@@ -197,6 +209,7 @@
     --color-terminal-fg: #ededed;
     --color-terminal-accent: #ef4444;
     --hero-image-filter: brightness(0.62) contrast(1.08) saturate(0.92);
+    --field-drift-alpha: 0.55;
   }
 }
 
@@ -220,6 +233,9 @@
      A filter rather than a second asset: it costs no bytes, and the art is
      still placeholder. */
   --hero-image-filter: brightness(0.62) contrast(1.08) saturate(0.92);
+  /* Ink on the dark ground needs more alpha to read as the same faint texture
+     it is on white. */
+  --field-drift-alpha: 0.55;
 }
 
 /* The photograph, dimmed by the token above. Light mode sets `none`, so this
