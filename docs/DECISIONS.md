@@ -998,3 +998,71 @@ width characters advance about one em, the mono face's Latin about 0.6.
 Cost: **0KB of client JavaScript** — app code is unchanged at 15.6KB, because
 the whole thing is server-rendered markup. Section height 1676px → **900px**,
 which is the `min-h-dvh` floor: the content is now shorter than the frame.
+
+### 2026-09-12 — The app-code gate moved 15KB to 18KB, after the optimisations
+Stages 16 and 17 added four interactive leaves that did not exist before: the
+morphing cursor pill, the project cover layer's gate, the hero field's gate and
+the EXPERIENCE tablist. App code moved **14.1KB to 16.6KB**, which does not fit
+the 15KB gate.
+
+The gate was raised rather than the work cut, and the order matters: the 2.5KB
+is what was left **after** the optimisations, not instead of them.
+
+| | app code |
+|---|---|
+| stage 15 baseline | 14.1KB |
+| first working version of stages 16 + 17 | ~19KB |
+| after the four deferral seams | 17.4KB |
+| after the timeline panels moved server-side | **16.6KB** |
+
+What was done first:
+
+- Every effect that can be deferred is behind a bare `import()` into an async
+  chunk the route manifest never sees — the project cover layer, the hero field
+  and Lenis. On touch the cover layer's chunk is not even fetched.
+- `next/dynamic` was measured against `React.lazy` and dropped: about 1KB
+  gzipped per usage, and it survives dead-code elimination behind a build-time
+  `false`. That swap alone was 1.8KB.
+- The EXPERIENCE panels are server-rendered and passed into the rail as props,
+  the same trick `Reveal` uses, so no checklist or badge markup reaches the
+  browser. 0.8KB.
+- `SkillLayer` and the whole stack diagram cost **0KB**: it is server-rendered
+  markup, and it *removed* `SkillCard`.
+
+What is left is genuinely four new interactive features, and nearly half the
+total is fixed cost that is not application logic at all: about 4.7KB of
+next-intl client runtime and 3.5KB of Vercel Analytics + Speed Insights, both
+unchanged since stage 12 and both identifiable by unchanged chunk hashes.
+
+**18KB leaves about 1.4KB of headroom** — enough for normal Next chunk
+variation, tight enough that the gate still does its actual job, which is
+catching an accidental client boundary or a dependency that wandered into one.
+The brief's own threshold for "something became a client component that should
+not have" was 5KB of movement; this is 2.5KB.
+
+The number that really binds is unchanged: **120KB browser-visible total**, and
+the build sits at 117.1KB. That is the gate a visitor can feel.
+
+### 2026-09-12 — The mobile rendering of a diagram is a second rendering, not a smaller one
+Both stage-17 sections hit the same wall, and both took the same way out.
+
+SVG text does not wrap, and it scales with the viewBox. The stack diagram is
+authored at 720 units wide; in a 312px phone column that is 9px labels rendered
+at under 4px. The EXPERIENCE rail is a 32-month axis, which at the same width is
+about 10px per month. Scaling either down produces a picture of a diagram rather
+than a diagram.
+
+So below `sm` each is **replaced, not resized**: the stack becomes HTML bands
+that the browser wraps (and Japanese wraps correctly, which the width estimator
+above `sm` can only approximate), and the rail becomes a vertical spine with all
+five entries expanded. `display: none` keeps exactly one of the two in the
+accessibility tree at any viewport, so nothing is announced twice.
+
+Both mobile renderings are **Server Components**, so the second rendering costs
+markup and zero client JavaScript. That is what makes "render it twice"
+affordable here and worth remembering: the expensive thing about a component is
+rarely its markup.
+
+One consequence worth stating: `pipeline-diagram.tsx` has had this problem since
+stage 13 and still has it. It is unchanged in this stage, and its labels are
+under 4px on a phone. Fixing it is the same shape of work.

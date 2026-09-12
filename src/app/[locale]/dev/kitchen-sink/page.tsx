@@ -9,6 +9,7 @@ import {
   RankList,
   StatusBadge,
   TerminalHero,
+  TimelinePanel,
   TimelineRail,
   TimelineSpine,
 } from "@/components/primitives";
@@ -179,7 +180,12 @@ export default function KitchenSink() {
           width on the real page; here they are stacked so the breakpoint
           handover can be checked by resizing. */}
       <Bay name="Timeline rail (sm and up) / spine (below sm)">
-        <TimelineRail entries={TIMELINE} />
+        <TimelineRail
+          entries={TIMELINE}
+          panels={TIMELINE.map((entry) => (
+            <TimelinePanel key={entry.title} entry={entry} />
+          ))}
+        />
         <TimelineSpine entries={TIMELINE} />
       </Bay>
 

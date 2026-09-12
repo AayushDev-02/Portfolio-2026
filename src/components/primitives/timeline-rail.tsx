@@ -4,8 +4,6 @@ import { useId, useRef, useState } from "react";
 import type { TimelineEntry } from "@/content";
 import { layOutRail } from "@/lib/timeline";
 import { pad } from "@/lib/utils";
-import { CheckItem, CheckList } from "./check-item";
-import { StatusBadge } from "./status-badge";
 
 /**
  * EXPERIENCE as a dated rail. `sm` and up; below that `TimelineSpine` takes
@@ -36,8 +34,24 @@ import { StatusBadge } from "./status-badge";
  * roles, Home/End to jump to either end. `aria-selected` and `aria-controls`
  * point at the panel, which is a real `tabpanel` and is itself focusable, so
  * Tab moves rail -> panel -> on, and nothing is reachable only by mouse.
+ *
+ * The panels themselves are server-rendered and passed in — see `panels`.
  */
-export function TimelineRail({ entries }: { entries: TimelineEntry[] }) {
+export function TimelineRail({
+  entries,
+  panels,
+}: {
+  entries: TimelineEntry[];
+  /**
+   * One server-rendered `TimelinePanel` per entry, in the same order.
+   *
+   * Passed in rather than rendered here so the checklists, badges and their
+   * markup stay out of the client bundle — the rail owns only the `tabpanel`
+   * wrapper, whose attributes actually depend on state. Measured at about 1KB
+   * gzipped of app code.
+   */
+  panels: React.ReactNode[];
+}) {
   const { placed, ticks, currentIndex } = layOutRail(entries);
   const [selected, setSelected] = useState(currentIndex);
   const base = useId();
@@ -198,26 +212,7 @@ export function TimelineRail({ entries }: { entries: TimelineEntry[] }) {
           data-timeline-panel=""
           className="border-t border-rule pt-5"
         >
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <h3 className="text-ui font-bold text-ink">{item.entry.title}</h3>
-            <div className="flex items-center gap-4">
-              <span className="text-micro tracking-label text-prose">
-                {item.entry.period}
-              </span>
-              <StatusBadge status={item.entry.status} />
-            </div>
-          </div>
-          {item.entry.items ? (
-            <div className="mt-4">
-              <CheckList columns={2}>
-                {item.entry.items.map((entry) => (
-                  <CheckItem key={entry.label} checked={entry.checked}>
-                    {entry.label}
-                  </CheckItem>
-                ))}
-              </CheckList>
-            </div>
-          ) : null}
+          {panels[i]}
         </div>
       ))}
     </div>

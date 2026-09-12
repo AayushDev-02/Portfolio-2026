@@ -1,6 +1,7 @@
 import {
   SectionHead,
   SectionShell,
+  TimelinePanel,
   TimelineRail,
   TimelineSpine,
 } from "@/components/primitives";
@@ -34,7 +35,14 @@ export function ExperienceSection({ content }: { content: SiteContent }) {
       <div className="flex flex-col items-center gap-10">
         <SectionHead heading={experience.heading} lede={experience.lead} />
 
-        <TimelineRail entries={experience.entries} />
+        {/* The panels are built here and handed to the rail, so everything
+            inside them stays server-rendered. */}
+        <TimelineRail
+          entries={experience.entries}
+          panels={experience.entries.map((entry) => (
+            <TimelinePanel key={entry.title} entry={entry} />
+          ))}
+        />
         <TimelineSpine entries={experience.entries} />
       </div>
     </SectionShell>

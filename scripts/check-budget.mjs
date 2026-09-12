@@ -18,8 +18,31 @@ import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
 const BUDGETS = {
-  /** Chunks this route needs beyond the framework baseline. */
-  appCodeKb: 15,
+  /**
+   * Chunks this route needs beyond the framework baseline.
+   *
+   * Raised from 15 to 18 in stage 17, after the work was done rather than
+   * before it. Stages 16 and 17 added four interactive leaves that did not
+   * exist — the morphing cursor pill, the project cover layer's gate, the hero
+   * field's gate and the EXPERIENCE tablist — and app code moved 14.1 -> 16.6KB.
+   *
+   * The 2.5KB is what was left *after* the optimisations, not instead of them:
+   * every effect that can be deferred is behind a bare `import()` into an async
+   * chunk (the cover layer, the hero field, Lenis), `next/dynamic` was measured
+   * against `React.lazy` and dropped for costing ~1KB per usage, and the
+   * timeline panels are server-rendered and passed in as props so no checklist
+   * or badge markup reaches the browser.
+   *
+   * Two fixed costs make up nearly half the figure and are not application
+   * logic: ~4.7KB of next-intl client runtime and 3.5KB of Vercel Analytics +
+   * Speed Insights. Both are unchanged since stage 12.
+   *
+   * 18 leaves ~1.4KB of headroom — enough for normal Next chunk variation,
+   * tight enough that the gate still does its actual job, which is catching an
+   * accidental client boundary or a dependency that wandered into one. The
+   * browser-visible number that really binds is `totalKb` below.
+   */
+  appCodeKb: 18,
   /** Everything the route loads, baseline included. */
   totalKb: 120,
 };
