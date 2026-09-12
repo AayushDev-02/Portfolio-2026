@@ -1,4 +1,5 @@
 import {
+  FieldExhibit,
   Hairline,
   MicroLabel,
   PipelineDiagram,
@@ -152,7 +153,12 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
         {featured ? (
           <>
             <Hairline tone="accent" />
-            <Reveal className="grid gap-8 pt-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,720px)] lg:gap-12">
+            {/* `items-start`, not the grid's default stretch. Stretch made the
+                diagram's bordered box as tall as the whole row — and the row is
+                as tall as the text column beside it — so the panel ran on for
+                300px of empty frame below the drawing. A border around nothing
+                reads as a rendering failure. */}
+            <Reveal className="grid gap-8 pt-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,720px)] lg:items-start lg:gap-12">
               <div
                 data-cursor-label={ordinalOf(featured)}
                 className="flex flex-col gap-3"
@@ -169,9 +175,30 @@ export function ProjectsSection({ content }: { content: SiteContent }) {
                 <div className="mt-2">
                   <Tags items={featured.tags} accent />
                 </div>
+
+                {/* The nearest-neighbour exhibit, moved here from the hero in
+                    stage 18 — as a full-bleed backdrop it read as page texture
+                    rather than as a picture of retrieval. See `FieldExhibit`.
+
+                    It sits in the TEXT column, not beside the pipeline diagram,
+                    and the reason is the layout: the diagram column runs about
+                    900px tall while this one ended at the tags, so stacking the
+                    two drawings together left half the section empty and made
+                    the right column twice the height of the left. Here the two
+                    columns finish within a line of each other, and the exhibit
+                    is directly under the prose that says what the retrieval
+                    work was. */}
+                <div className="mt-6">
+                  <FieldExhibit
+                    label={projects.field.label}
+                    caption={projects.field.caption}
+                    title={projects.field.title}
+                    desc={projects.field.desc}
+                  />
+                </div>
               </div>
 
-              <figure className="m-0 border border-rule p-5 sm:p-6">
+              <figure className="m-0 border border-rule p-5 sm:p-6 lg:sticky lg:top-24">
                 <figcaption className="mb-4 flex items-baseline justify-between">
                   <MicroLabel>{projects.diagramLabel}</MicroLabel>
                 </figcaption>

@@ -3,14 +3,14 @@
 **Read this first at the start of every session.**
 Update it before the end of every session. This file is the project's memory.
 
-- **Current stage:** **Stages 16 and 17 are DONE** — the morphing cursor, the project cover layer, Lenis behind a flag, the hero embedding field, SKILLS as a stack diagram and EXPERIENCE as a dated rail. The page is **1189px shorter** and LCP improved to **0.67s** with the wordmark as the LCP element. The Stage 16 / 17 block below carries the measured before/after.
+- **Current stage:** **Stage 18 is DONE** — the hero's dark terminal panel is replaced by a positioning line, a four-fact scan strip and two CTAs; the hero ground is a Three.js grainy gradient that drifts and follows the pointer; EXPERIENCE is a compact chart plus a clean list with three components deleted; the point field moved to PROJECTS as a captioned exhibit. Two regressions were caught by measurement on the way — CLS 0.078 and a 4.01:1 call to action — and both are fixed. LCP **0.57s**, CLS **0.0068**, app code **15.6KB**. See the Stage 18 block below.
 - **Previously:** Stage 12 essentially done — the +49KB GSAP regression is fixed (deferred behind first scroll, back to 114KB total), and the budget contradiction is resolved with an honest 120KB browser-visible gate beside the 15KB app-code gate. One item left: the Lighthouse CI assertion.
-- **Next action:** **Stage 9 — launch.** Buy a domain and attach it in Vercel; that is the only thing standing between this and a real launch. In parallel, paste the exact Lighthouse assertion from the failing Actions run so CI can go green — the log is permission-gated and only Aayush can read it. Stage 14's hero is done — it is a canvas now, not a photograph — but the ABOUT image still needs a real one.
+- **Next action:** **Stage 9 — launch.** Buy a domain and attach it in Vercel; that is still the only thing between this and a real launch. Then paste the exact Lighthouse assertion from the failing Actions run so CI can go green — the log is permission-gated and only Aayush can read it. Stage 18 left three things on the table, listed at the end of its block: the Japanese design elements (ideas only, nothing built), `StatusBadge` rendering English on the Japanese page, and the pipeline diagram's sub-4px phone labels.
 - **Cleared 2026-08-31:** Vercel Analytics + Speed Insights enabled · real-phone check done, no issues · PDF phone number kept by decision (see Stage 5).
 - **Still open for Aayush:** domain purchase · **a real photograph** (the ABOUT image is abstract placeholder art and its alt text says so — replace both together) · the Lenis trackpad/phone call · Lighthouse log · read the Japanese, including the new SKILLS layer names · Stage 2R side-by-side.
 - **Live URL:** https://aayush-yadav-portfolio-nine.vercel.app
 - **Repo:** https://github.com/AayushDev-02/Portfolio-2026
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-09-12 (stage 18)
 
 Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped (log why in DECISIONS.md)
 
@@ -498,3 +498,63 @@ runtime and 3.5KB of Vercel Analytics, both unchanged since stage 12.
 | 2026-08-29 | 3 | Stage 3 audited with headless Chrome over CDP (Node built-ins, no dependency). Two genuine DoD failures found and fixed. **Hero wordmark overflowed at 360 and 390** — a flat 48px pixel face on one long string pushed the document 25px past the viewport, i.e. the page scrolled sideways on a phone, which is exactly what the DoD forbids; both hero steps are now fluid `clamp()` in the token layer, continuous at the sm boundary so there is no visible jump at 640. **CTA and delete link were 19px tall** against the 44px minimum; `min-h-11` on the bare `BracketButton` variant fixes it invisibly, since a text-only control has no box for the padding to show in. Re-ran clean: no overflow at any of 11 widths 320→1920, no target under 44px. Focus verified by dispatching **real Tab keydown/keyup** rather than programmatic `.focus()` — the first attempt used `.focus()` and reported `outline-style: none`, which was a measurement artefact, not a missing ring: `.focus()` never matches `:focus-visible`. With real keys the ring is 2px accent at 3px offset and the skip link is first in order. Reduced-motion confirmed under emulation: panel transition 0.01ms, caret animation `none`, prompt rendered filled instead of typing. Geometry barely moved (doc 6044→6062, results 800→818), all bands still pass. Stage 2R's side-by-side is **still outstanding** — I briefly recorded it as signed off after a "looks fine", then reverted that when Aayush clarified they had not actually checked yet. |
 | 2026-08-29 | 2R | Worked FIXES-STAGE2.md §§1–8, one commit each. Tokens re-based to semantic role names (bg / ink / ink-deep / prose / accent / rule + terminal-bg/fg scoped to the hero panel) so stage 11's dark mode is a token-override block with no component edits. **Renamed the 16px lede size token to `--text-lede` rather than the `--text-prose` the fixes doc specified** — `--color-prose` and `--text-prose` both generate a `.text-prose` utility in Tailwind v4, so the colour and the size would have silently collided. Hero built: two-crop backdrop through `next/image` (paths behind one constant in `lib/images.ts` since the art is placeholder), gradient fade, red pixel wordmark, dark terminal panel. `TerminalHero` became a server component with the typewriter split into a `TerminalPrompt` client leaf. Extracted `SectionHead` instead of repeating the centred heading/lede across five sections. Accordion got the grid-rows 0fr→1fr reveal (no motion dependency, per the constraint) plus `inert` when collapsed; **the two-column rule had to go on `CheckList`, not the panel wrapper** — the list is a single grid child, so columns on the wrapper would never have split it, and it's opt-in because timeline cards reuse `CheckList` at a width that can't take two. Timeline switched to the `gap-px` shared-hairline grid. `BracketButton`'s `tone` prop became `variant` (bare/boxed) since it now picks a shape, not just a colour. Kitchen sink re-based in the same pass — leaving the stage-1 acceptance surface pointed at deleted tokens would have made it useless for the check it exists for. Measured at 1280×800 with headless Chrome over CDP driven by Node built-ins (no dependency added): first pass put section 01 at 1086 against its 1190–1400 band, so I checked the reference's delivered HTML and found 2 of its 11 accordions ship `aria-expanded="true"` — one per group. Opening the first row of each put section 01 at 1226 and the document at 6044, and all three acceptance bands pass. `pnpm check` clean, `pnpm build` clean. **Stage 2R deliberately NOT marked done** — its DoD is the visual side-by-side, which is the check whose absence let the inverted palette through in the first place. |
 | 2026-08-29 | 2 | Fetched and transcribed the reference site's actual copy for all six sections (see DESIGN-SPEC.md §6 mapping) into `src/content/reference.ts`, typed. Built `IntroSection`/`PhilosophySection`/`StatusSection`/`ResultsSection`/`FeedbackSection`/`HistorySection` in `src/components/sections/`, each reading only from that content file and rendering existing primitives, per the project rule. Added two primitives not in the original stage-1 inventory — `PullQuote` and `NumberedItem`/`NumberedList` — needed for FEEDBACK's quotes and plain ranked takeaways; reasoning logged in DECISIONS.md, including the judgment call to render FEEDBACK's five themes as accordions (text-only site extraction couldn't confirm the reference's actual disclosure behavior there). `page.tsx` now composes all six in order. `pnpm check` clean, `pnpm build` succeeds (107kB first-load JS — over the stage-7 90KB budget, but that's stage 7's problem, not stage 2's). Hit one operational snag verifying in dev: ran `pnpm build` while `pnpm dev` was still running in the background, and both processes fighting over `.next/` corrupted the dev server's manifest (ENOENT errors, 500s) — not a code bug. Fixed by stopping the dev task, deleting `.next`, restarting; confirmed clean afterward. Grepped the rendered homepage for content markers from every section — all present. **Not yet committed or pushed** — that's next, then the real DoD (side-by-side visual comparison at 1440/768/390 against the live reference) is on the user. |
+
+## Stage 18 — hero, EXPERIENCE, exhibit ✅ DONE
+Three changes asked for by Aayush, plus two budget regressions found and fixed
+on the way. Full reasoning in DECISIONS.md under "Stage 18".
+
+- [x] **The hero's dark terminal panel is gone.** It typed "What have you
+      actually shipped?" — a rhetorical question asked of the recruiter, on the
+      page that exists to answer it, teasing an answer five sections below the
+      fold. `HeroIntro` replaces it with wordmark, role, one sentence on what he
+      builds and for whom, a hairline strip of four facts, and two calls to
+      action. `TerminalHero` and `TerminalPrompt` deleted; `promptLine` gone
+      from the content type, `statement` / `facts` / `actions` in, both locales
+      rewritten
+- [x] **The hero ground moves.** `HeroGradient` is the grainy grey study the
+      hero shipped with through stage 16, rebuilt as a Three.js fragment shader
+      — drifting, grainy, bent by the pointer, and reading both themes from
+      tokens. Every visitor gets a still CSS version with tiled SVG grain; the
+      canvas is laid over it only where it is worth the frames
+- [x] **EXPERIENCE rebuilt as a chart plus a list.** Five bars on one axis at
+      the top, roles listed cleanly below with no gridlines through the text.
+      `TimelineRail`, `TimelineSpine` and `TimelinePanel` collapse into one
+      Server Component — the section's only client JavaScript is gone
+- [x] **The point field is an exhibit now**, in PROJECTS beside the retrieval
+      pipeline, bordered and captioned, with a still server-rendered SVG
+      underneath that says the same thing without JavaScript
+- [x] **CLS regression found and fixed** — 0.078 against a 0.05 budget, caused
+      by two font-swap reflows. Now 0.0068
+- [x] **Contrast regression found and fixed** — the hero CTA measured 4.01:1
+      over the moving ground. Now 4.63:1, all twelve pairs passing
+- [x] axe: 0 violations, 47 rules, both locales, both themes
+- [x] No horizontal overflow at 11 widths x 2 locales
+
+Measured on the production build, mobile emulation at Slow 4G and 4x CPU,
+median of 5:
+
+| | stage 17 | stage 18 | budget |
+|---|---|---|---|
+| LCP | 0.67s | **0.57s** | < 1.5s |
+| CLS | 0.0017 | **0.0068** | < 0.05 |
+| app code | 16.6KB | **15.6KB** | < 18KB |
+| total first-load | 117.1KB | **116.2KB** | < 120KB |
+
+The LCP element is the statement paragraph now, not the wordmark.
+
+**Three.js costs 82.7KB gzipped and none of it is on the first-load budget** —
+it is behind a bare `import()` after the `load` event, in an async chunk the
+route manifest never sees. Verified per device profile with
+`scratchpad/gate.mjs`: iPhone 14, Pixel 7 and a reduced-motion desktop download
+**none** of it; only a desktop with a fine pointer and no motion preference
+does. It is still 348KB of parse for a background, where hand-written WebGL
+would be about 2KB — **flagged for Aayush as worth revisiting**, not a blocker.
+
+### Open, and deliberately not done here
+- **Japanese design elements.** Aayush asked for ideas rather than an
+  implementation; the shortlist is the hanko sigil, vertical tategaki section
+  labels, and ruby (furigana) on the Japanese wordmark. None are built yet
+- `StatusBadge` still renders `[DONE]` / `[IN PROGRESS]` in English on the
+  Japanese page. Pre-existing, visible in the new list, worth a fix
+- `pipeline-diagram.tsx` still renders sub-4px labels on a phone — the same
+  problem stage 17 fixed in two other diagrams, still unfixed here

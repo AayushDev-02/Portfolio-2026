@@ -5,13 +5,11 @@ import {
   BracketButton,
   CheckItem,
   CheckList,
+  HeroIntro,
   RankBar,
   RankList,
   StatusBadge,
-  TerminalHero,
-  TimelinePanel,
-  TimelineRail,
-  TimelineSpine,
+  TimelineLedger,
 } from "@/components/primitives";
 import { CanvasSlot } from "@/components/three/canvas-slot";
 
@@ -118,12 +116,22 @@ export default function KitchenSink() {
         </div>
       </Bay>
 
-      <Bay name="Terminal hero">
+      <Bay name="Hero">
         <div className="w-full">
-          <TerminalHero
-            status="System ready"
+          <HeroIntro
             title="Wordmark"
-            lines={["A line that types itself out at the prompt"]}
+            status="Role line — city"
+            statement="One sentence saying what gets built and for whom."
+            facts={[
+              { label: "Based", value: "Tokyo, Japan" },
+              { label: "Focus", value: "RAG · LLM" },
+              { label: "Japanese", value: "JLPT N3" },
+              { label: "Available", value: "December 2026" },
+            ]}
+            actions={[
+              { label: "Primary", href: "#intro" },
+              { label: "Secondary", href: "#intro" },
+            ]}
           />
         </div>
       </Bay>
@@ -179,14 +187,8 @@ export default function KitchenSink() {
       {/* Both renderings, side by side. Only one is ever visible at a given
           width on the real page; here they are stacked so the breakpoint
           handover can be checked by resizing. */}
-      <Bay name="Timeline rail (sm and up) / spine (below sm)">
-        <TimelineRail
-          entries={TIMELINE}
-          panels={TIMELINE.map((entry) => (
-            <TimelinePanel key={entry.title} entry={entry} />
-          ))}
-        />
-        <TimelineSpine entries={TIMELINE} />
+      <Bay name="Timeline ledger">
+        <TimelineLedger entries={TIMELINE} />
       </Bay>
 
       <Bay name="Rank bars">

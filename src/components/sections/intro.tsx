@@ -1,15 +1,27 @@
-import { HeroField, SectionShell, TerminalHero } from "@/components/primitives";
+import { HeroGradient, HeroIntro, SectionShell } from "@/components/primitives";
 import type { SiteContent } from "@/content";
 
 /**
- * The hero shows retrieval instead of describing it: `HeroField` is a drift of
- * points that the pointer queries, lighting its nearest neighbours and leaving
- * the rest alone. It replaces the photograph, which moved into ABOUT — see
- * `Portrait` and docs/DECISIONS.md.
+ * INTRO, rebuilt in stage 18. Two changes, and they are separate decisions that
+ * happen to land in the same section.
  *
- * A consequence worth stating rather than discovering: the LCP element is now
- * the wordmark rather than an image, so the hero's largest paint no longer waits
- * on a network fetch.
+ * **The ground moves.** `HeroGradient` is the grainy grey field the hero shipped
+ * with through stage 16 — `public/images/hero-bg.*` — brought back as a WebGL
+ * shader rather than a 99KB photograph, so it drifts and the pointer bends it.
+ * Every visitor gets a still CSS version of the same field; the canvas is laid
+ * over it only where it is worth the frames. See the component.
+ *
+ * **The dark terminal panel is gone.** It typed "What have you actually
+ * shipped?" at a prompt — a rhetorical question, asked of the recruiter, on the
+ * page that exists to answer it. `HeroIntro` answers it instead. See that
+ * component and docs/DECISIONS.md.
+ *
+ * The point field that briefly lived here has moved to PROJECTS, where it sits
+ * beside the retrieval pipeline diagram as a captioned exhibit rather than as
+ * texture behind a wordmark.
+ *
+ * The LCP element is unchanged: the wordmark, not an image, so the hero's
+ * largest paint still waits on no network fetch.
  */
 export function IntroSection({ content }: { content: SiteContent }) {
   const { intro } = content;
@@ -22,12 +34,14 @@ export function IntroSection({ content }: { content: SiteContent }) {
       caption={intro.caption}
       sigil={intro.sigil}
       tone="ink"
-      backdrop={<HeroField />}
+      backdrop={<HeroGradient />}
     >
-      <TerminalHero
-        status={intro.status}
+      <HeroIntro
         title={intro.title}
-        lines={[intro.promptLine]}
+        status={intro.status}
+        statement={intro.statement}
+        facts={intro.facts}
+        actions={intro.actions}
       />
     </SectionShell>
   );

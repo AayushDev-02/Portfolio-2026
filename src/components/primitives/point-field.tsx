@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePointerMode } from "@/lib/pointer-mode";
 
 /**
- * The hero backdrop: a drifting field of points that the pointer queries.
+ * A drifting field of points that the pointer queries, and the gate in front of
+ * it.
  *
  * This file is the gate. The field itself is `lib/embedding-field.ts`, reached
  * by a bare `import()` after the `load` event — the same seam
@@ -39,11 +40,21 @@ import { usePointerMode } from "@/lib/pointer-mode";
  * exactly the paint being measured. Waiting costs the visitor nothing — the
  * field is ambient, and nobody is looking for it in the first 200ms.
  *
- * `aria-hidden`, `absolute inset-0`, no pointer events: it sits behind the hero
- * content and is invisible to assistive technology, which is correct — it is an
- * illustration of an idea the copy already states.
+ * ## It is an exhibit now, not a backdrop
+ *
+ * Through stage 17 this was full-bleed behind the hero wordmark, and at that
+ * size it read as dust on the page rather than as a picture of anything — the
+ * lit neighbourhood was a few hundred pixels of detail in a 1400px field nobody
+ * was looking at. Stage 18 puts it inside a bordered, captioned panel beside
+ * the retrieval pipeline diagram in PROJECTS, where the caption says what it is
+ * and the frame is small enough that the query is the biggest thing in it.
+ *
+ * The component takes a `className` rather than positioning itself, so the
+ * panel owns the box. `aria-hidden` and no pointer events: `FieldExhibit`
+ * renders a static SVG of the same picture underneath, and that is what carries
+ * the meaning for anyone who never sees this move.
  */
-export function HeroField() {
+export function PointField({ className }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const mode = usePointerMode();
   const [loaded, setLoaded] = useState(false);
@@ -96,10 +107,6 @@ export function HeroField() {
 
   return (
     // biome-ignore lint/a11y/noAriaHiddenOnFocusable: a <canvas> is not in the tab order without a tabindex, and this one has none. The rule treats every canvas as interactive; this one takes no pointer events either.
-    <canvas
-      ref={ref}
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 h-full w-full"
-    />
+    <canvas ref={ref} aria-hidden="true" className={className} />
   );
 }

@@ -1,13 +1,24 @@
 /**
  * The hero's embedding field: a drift of points, and a pointer that queries it.
  *
- * The page belongs to someone who builds retrieval systems, so the hero shows
+ * The page belongs to someone who builds retrieval systems, so it shows
  * retrieval rather than describing it. The pointer is the query vector; each
  * frame the nearest handful of points light up and connect to it, and every
  * other point keeps drifting untouched. **That contrast is the whole idea.** If
  * the entire field reacted it would read as a screensaver; a lit neighbourhood
  * in an indifferent field reads as nearest-neighbour search, which is what it
  * is.
+ *
+ * ## There is always a query
+ *
+ * When the pointer is away the query does not switch off — it eases back to the
+ * middle of the panel and keeps returning results. That is a stage-18 change and
+ * it is the difference between a picture of retrieval and a scattering of dots:
+ * as a full-bleed hero backdrop the resting state was *supposed* to be inert
+ * texture, but in `FieldExhibit`, captioned and framed, a resting state with no
+ * query showed nothing of what the caption claims. It also means the live canvas
+ * and the still SVG underneath it draw the same picture, so the swap between
+ * them is invisible.
  *
  * ## Plain 2D canvas, deliberately
  *
@@ -50,6 +61,12 @@ const REACH = 260;
 /** CSS px per second. Slow enough to read as drift rather than motion. */
 const SPEED = 7;
 
+/** How fast the query catches up, per second. Eased, never snapped. */
+const QUERY_EASE = 4.5;
+
+/** Radius of the open ring drawn at the query. Matches the still SVG's. */
+const QUERY_RING = 4;
+
 const DOT = 0.9;
 const DOT_LIT = 2.1;
 
@@ -85,6 +102,12 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
   let width = 0;
   let height = 0;
   let points: Point[] = [];
+  /**
+   * Where the query is, and where it is heading. Separate because the query
+   * eases: snapping a lit neighbourhood to the cursor reads as a hover effect,
+   * and lagging it by a few frames reads as a lookup.
+   */
+  const query = { x: 0, y: 0 };
   const pointer = { x: 0, y: 0, on: false };
   let raf = 0;
   let last = 0;
@@ -120,6 +143,7 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
   const size = () => {
     const rect = canvas.getBoundingClientRect();
     if (rect.width < 1 || rect.height < 1) return false;
+    const first = width === 0;
     const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
     width = rect.width;
     height = rect.height;
@@ -127,6 +151,12 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
     canvas.height = Math.round(height * dpr);
     // Draw in CSS pixels; the transform absorbs the device ratio.
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // The resting query sits in the middle, so the very first frame already
+    // shows a result rather than waiting for a pointer that may never arrive.
+    if (first) {
+      query.x = width / 2;
+      query.y = height / 2;
+    }
     seed();
     return true;
   };
@@ -147,6 +177,14 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
 
     ctx.clearRect(0, 0, width, height);
 
+    // Toward the pointer while it is over the canvas, back to the middle when
+    // it is not. Exponential easing, so it is frame-rate independent.
+    const toX = pointer.on ? pointer.x : width / 2;
+    const toY = pointer.on ? pointer.y : height / 2;
+    const k = 1 - Math.exp(-QUERY_EASE * dt);
+    query.x += (toX - query.x) * k;
+    query.y += (toY - query.y) * k;
+
     nearest.length = 0;
     for (const p of points) {
       p.x += p.vx * dt;
@@ -158,9 +196,8 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
       if (p.y < 0) p.y += height;
       else if (p.y > height) p.y -= height;
 
-      if (!pointer.on) continue;
-      const dx = p.x - pointer.x;
-      const dy = p.y - pointer.y;
+      const dx = p.x - query.x;
+      const dy = p.y - query.y;
       const d = Math.hypot(dx, dy);
       if (d > REACH) continue;
       if (nearest.length < NEIGHBOURS) {
@@ -182,16 +219,17 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
     }
     ctx.fill();
 
-    if (nearest.length === 0) return;
+    // The neighbourhood the query found. `nearest` is empty only when every
+    // point has drifted further away than REACH, which the ring below still
+    // has to survive — so this is a branch, not an early return.
 
-    // The neighbourhood the query found.
     ctx.strokeStyle = accent;
     ctx.lineWidth = 1;
     for (const hit of nearest) {
       const fade = 1 - hit.d / REACH;
       ctx.globalAlpha = alphaLine * fade;
       ctx.beginPath();
-      ctx.moveTo(pointer.x, pointer.y);
+      ctx.moveTo(query.x, query.y);
       ctx.lineTo(hit.point.x, hit.point.y);
       ctx.stroke();
     }
@@ -204,6 +242,16 @@ export function startEmbeddingField(canvas: HTMLCanvasElement): (() => void) | n
       ctx.arc(hit.point.x, hit.point.y, DOT + (DOT_LIT - DOT) * fade, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    // The query itself: an open ring, so it reads as the thing asking rather
+    // than as the strongest result. The still SVG in `FieldExhibit` draws the
+    // same mark, which is what makes the canvas fading in over it invisible.
+    ctx.globalAlpha = alphaLit;
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(query.x, query.y, QUERY_RING, 0, Math.PI * 2);
+    ctx.stroke();
   };
 
   const run = () => {

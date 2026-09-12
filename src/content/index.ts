@@ -3,6 +3,9 @@ import { en } from "./en";
 import { ja } from "./ja";
 import type {
   ContactFormCopy,
+  FieldExhibitCopy,
+  HeroAction,
+  HeroFact,
   PipelineDiagram,
   ProjectEntry,
   ProjectImage,
@@ -22,6 +25,9 @@ export function getContent(locale: Locale): SiteContent {
 
 export type {
   ContactFormCopy,
+  FieldExhibitCopy,
+  HeroAction,
+  HeroFact,
   PipelineDiagram,
   ProjectEntry,
   ProjectImage,

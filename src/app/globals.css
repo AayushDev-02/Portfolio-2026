@@ -127,6 +127,40 @@
      A token rather than a value in the component, so dark mode can dim the
      photograph without HeroBackdrop knowing a theme exists. */
   --hero-image-filter: none;
+
+  /* --- the animated hero gradient (stage 18) ---
+     Every value the WebGL shader uses, including its two colours. The scene in
+     `lib/hero-gradient.ts` reads these at start and re-reads them when
+     `data-theme` changes, so it follows both themes without containing a single
+     colour of its own — the same contract `--field-*` gives the point field and
+     `--hero-image-filter` gave the photograph.
+
+     `low` is deliberately the page background. The field's centre resolves to
+     exactly `--color-bg`, so the canvas has no visible edge against the page
+     and the wordmark keeps the contrast it was measured at.
+
+     `high` is where the field goes at its darkest. Gray-600 rather than the
+     near-black of the reference photograph: the same shape at full black put
+     4.4:1 text against a moving ground, and a contrast ratio that changes from
+     frame to frame is not a contrast ratio.
+
+     `contrast` is the half-width of the smoothstep that turns soft noise into
+     the reference's torn-edged blobs — smaller is harder-edged. `grain` is the
+     amplitude of the per-pixel dither, which is the difference between this and
+     a CSS gradient. `scale` is noise units per screen height: larger means more,
+     smaller blobs. */
+  --hero-gradient-low: #ffffff;
+  --hero-gradient-high: #4b5563;
+  --hero-gradient-contrast: 0.3;
+  --hero-gradient-grain: 0.055;
+  --hero-gradient-scale: 1.15;
+  /* Opacity of the tiled grain on the static layer. Not the same number as
+     `--hero-gradient-grain`, which is a shader amplitude added to a colour;
+     this is an alpha over a painted gradient. */
+  --hero-grain-static: 0.42;
+  /* How far the pointer bends the field, 0 = inert. The one value that is not
+     about appearance: it is the whole interaction. */
+  --hero-gradient-grip: 0.45;
 }
 
 /* ============================================================
@@ -210,6 +244,15 @@
     --color-terminal-accent: #ef4444;
     --hero-image-filter: brightness(0.62) contrast(1.08) saturate(0.92);
     --field-drift-alpha: 0.55;
+    /* The field runs the other way here: the centre is the page, and the frame
+       falls away to black. `low` stays the page background so the canvas still
+       has no visible edge. */
+    --hero-gradient-low: #1a1a1a;
+    --hero-gradient-high: #000000;
+    --hero-gradient-grain: 0.045;
+    --hero-gradient-contrast: 0.34;
+    /* Grey noise reads louder on a dark ground than on white. */
+    --hero-grain-static: 0.3;
   }
 }
 
@@ -236,6 +279,15 @@
   /* Ink on the dark ground needs more alpha to read as the same faint texture
      it is on white. */
   --field-drift-alpha: 0.55;
+  /* The field runs the other way here: the centre is the page, and the frame
+     falls away to black. `low` stays the page background so the canvas still
+     has no visible edge against it. */
+  --hero-gradient-low: #1a1a1a;
+  --hero-gradient-high: #000000;
+  --hero-gradient-grain: 0.045;
+  --hero-gradient-contrast: 0.34;
+  /* Grey noise reads louder on a dark ground than on white. */
+  --hero-grain-static: 0.3;
 }
 
 /* The photograph, dimmed by the token above. Light mode sets `none`, so this
@@ -557,6 +609,103 @@ html.lenis {
   [data-timeline-current],
   [data-timeline-panel] {
     animation: none;
+  }
+}
+
+/* ============================================================
+   THE HERO GRADIENT (stage 18)
+
+   Two layers, and the static one is not a placeholder.
+
+   `.hero-gradient-static` is a plain CSS radial gradient in the same two
+   tokens the shader uses. It renders for EVERY visitor and it is what a phone,
+   a reduced-motion visitor, a save-data visitor and a browser with no WebGL
+   actually see — a still frame of the same field, costing zero bytes and zero
+   JavaScript. The canvas is an enhancement laid over it, not a requirement.
+
+   That ordering is why the hero can never be blank: the gate in
+   `hero-gradient.tsx` has five ways to render nothing, and none of them take
+   the background with them.
+
+   `.hero-gradient-canvas` fades in over the top once the scene has produced its
+   first frame, so the swap from still to moving is not a flash. The component
+   flips `data-ready`; the timing lives here, like every other effect on this
+   page.
+   ============================================================ */
+
+.hero-gradient-static {
+  position: absolute;
+  background-image: radial-gradient(
+    115% 78% at 50% 42%,
+    var(--hero-gradient-low) 0%,
+    var(--hero-gradient-low) 24%,
+    color-mix(in srgb, var(--hero-gradient-high) 45%, var(--hero-gradient-low)) 68%,
+    var(--hero-gradient-high) 100%
+  );
+}
+
+/* The grain, for the visitors who never get the shader.
+
+   A gradient without grain is a gradient; the grain is what makes the
+   reference a photographic study rather than a CSS effect, and on a phone the
+   CSS layer above is the *only* rendering there is. So it gets the texture too.
+
+   A 160px SVG tile rather than one viewport-sized noise field: `stitchTiles`
+   makes the edges join, so the browser rasterises a small filter once and
+   repeats it on the GPU. A full-bleed feTurbulence at phone DPR is three
+   megapixels of Perlin noise on the critical path of the section that holds the
+   LCP element, and this hero has been through that argument once already. */
+.hero-gradient-static::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: var(--hero-grain-static);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+.hero-gradient-canvas {
+  opacity: 0;
+  transition: opacity 600ms var(--reveal-ease);
+}
+
+.hero-gradient-canvas[data-ready] {
+  opacity: 1;
+}
+
+/* The hero's lower edge resolves to the page colour so the section boundary is
+   a hairline rather than a change of ground. Both layers sit under it. */
+.hero-gradient-fade {
+  background-image: linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%);
+}
+
+/* ============================================================
+   THE NEAREST-NEIGHBOUR EXHIBIT (stage 18)
+
+   `FieldExhibit` draws a still SVG of the query and its five neighbours, and
+   `PointField` lays a live canvas over it when its gates open. The canvas takes
+   the page colour so it covers the still frame instead of doubling every point,
+   and fades in so the swap is not a blink.
+
+   Covering rather than replacing is what keeps the SVG in the accessibility
+   tree and keeps it reserving the panel's box — the canvas arrives after the
+   `load` event, and a box that appears then is a layout shift.
+
+   No reduced-motion rule: under that preference `PointField` renders no canvas
+   at all, and the still frame is simply never covered.
+   ============================================================ */
+
+.field-canvas {
+  background-color: var(--color-bg);
+  animation: canvas-in 500ms var(--reveal-ease) both;
+}
+
+@keyframes canvas-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

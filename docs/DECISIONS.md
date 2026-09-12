@@ -1066,3 +1066,207 @@ rarely its markup.
 One consequence worth stating: `pipeline-diagram.tsx` has had this problem since
 stage 13 and still has it. It is unchanged in this stage, and its labels are
 under 4px on a phone. Fixing it is the same shape of work.
+
+## Stage 18 — the moving hero, the ledger, and the exhibit
+
+### 2026-09-12 — The hero terminal panel is gone
+It typed "What have you actually shipped?" at a `>` prompt, inside the only dark
+box on the site. It was the most striking element on the page and it worked
+against the page in three ways.
+
+It **asked the recruiter a rhetorical question** on the page that exists to
+answer it. It **spent the hero's one paragraph of attention saying nothing** —
+after reading it you knew his name, his title and his city, all of which were
+already on screen. And the answer it teased was five sections down, so the
+fifteen-second skim this whole project is built around ended on the question.
+
+`HeroIntro` replaces it with what a first pass is actually looking for, in the
+order it looks: wordmark, role, one sentence on what he builds and for whom, a
+hairline strip of four facts (based / focus / Japanese / available), and two
+calls to action. Nothing types, nothing is revealed on a timer, nothing is
+behind a click.
+
+`--color-terminal-*` survives and is still used by the pipeline diagram and by
+the stack diagram's emphasised band. What changed is that the darkest element on
+the page now carries information rather than *being* the information.
+
+`TerminalHero` and `TerminalPrompt` are deleted. `promptLine` is gone from
+`SiteContent`; `statement`, `facts` and `actions` replace it, `HeroFact` and
+`HeroAction` are new, and both locales were rewritten rather than translated.
+
+### 2026-09-12 — Three.js is in, behind the same seam everything else uses
+The hero's ground is `public/images/hero-bg.*` brought back as a shader: the
+same grainy grey study, drifting, with the pointer bending it. Three.js was
+asked for by name.
+
+**The measured cost is 82.7KB gzipped (348KB raw), and it is entirely deferred.**
+`lib/hero-gradient.ts` is reached only through a bare `import()` from the client
+gate, after the `load` event, so it lands in an async chunk the route manifest
+never sees. App code is **15.6KB** (down from 16.6 — the EXPERIENCE tablist went
+away) and total first-load is **116.2KB**. Neither gate moved.
+
+This does not contradict `lib/embedding-field.ts`'s argument that a field of
+points has no use for a scene graph. That is still true, and the point field is
+still a 2D canvas. The gradient is the opposite case: one fullscreen quad and
+one shader, where Three supplies context loss and restore, DPR-aware drawing
+buffer sizing, uniform plumbing, and a GLSL preamble that compiles under both
+WebGL1 and WebGL2.
+
+It is still 348KB of parse for a background, and hand-written WebGL would do the
+same job in about 2KB. That trade was made deliberately and is worth revisiting.
+
+**Who actually downloads it**, verified with `scratchpad/gate.mjs`:
+
+| profile | chunk bytes | three.js |
+|---|---|---|
+| iPhone 14 | 387KB | no |
+| Pixel 7 | 387KB | no |
+| desktop, reduced motion | 390KB | no |
+| desktop, default | 939KB | yes |
+
+The five kill switches are the ones `HeroField` established, with one change
+that matters: **every gate closing still leaves a designed background.**
+`.hero-gradient-static` is a CSS radial gradient in the same two tokens, plus a
+160px tiled SVG grain, always server-rendered. The point field used to render
+`null` when gated off, which left a phone with a blank white hero.
+
+### 2026-09-12 — Two shader bugs found by looking, and one by measuring
+**Backticks inside a GLSL comment terminate the template literal.** A comment
+naming a CSS variable in backticks broke the build with a JavaScript syntax
+error pointing at the top of the shader. The rule is simply that no backtick may
+appear in either shader source.
+
+**The usual `fract(sin(dot(...)))` hash is not white noise.** It has strong
+diagonal structure, and driving it per frame by *adding* a value to the
+coordinate translated that structure across the screen — visible as faint lines
+sliding left to right, which is the exact opposite of what a grain is for.
+Replaced with Dave Hoskins' `hash12`, reseeded per frame rather than offset.
+
+**Grain at full amplitude breaks the contrast budget.** It moves the ground by
+about seven levels either way, and the two tightest pairs on this site have no
+seven levels to give: red-600 on white is 4.83:1 and red-500 on the dark ground
+is 4.63:1. Measured with `scratchpad/hero-contrast.mjs`, which hides the hero
+content, samples the worst background pixel inside every text box across six
+frames, and computes the real ratio — the hero call to action came out at
+**4.01:1**.
+
+The fix is in the shader, not in the palette: grain is scaled by the same
+falloff as the field, so the centre — where all the text is — keeps a fifth of
+the amplitude, with a floor of 0.004 that is pure dither against 8-bit banding.
+All twelve pairs now pass, the tightest at 4.58:1.
+
+### 2026-09-12 — adjustFontFallback false on the pixel face, and it is a CLS fix
+CLS went **0.0017 to 0.078** against a 0.05 budget. `scratchpad/fontdiff.mjs`
+diffs the hero's geometry with and without webfonts and found two reflows:
+
+- The **h1 wrapped to two lines** before the swap and one after, dropping 33px.
+  next/font synthesises a Silkscreen fallback with `size-adjust` derived from
+  Silkscreen's own metrics. That works for a text face and fails for a pixel
+  face, whose advance widths are nothing like a system monospace — the computed
+  adjustment rendered the fallback large enough to wrap. Unadjusted, both fit on
+  one line, and the swap changes glyphs without moving anything.
+- The **CTA row wrapped to two rows** before the swap and one after, dropping
+  52px. Fixed by removing the option: stacked below `sm`, side by side above it.
+  A layout that cannot wrap cannot shift, and two full-width targets is the
+  better phone layout anyway.
+
+`display: "swap"` survives on both faces. `display: "optional"` would also have
+fixed it and was rejected: it would leave a slow first load showing the wordmark
+in plain monospace for the whole visit, on the one element a recruiter sees
+first.
+
+Result: **CLS 0.0068, LCP 0.57s** (from 0.67s), median of 5 on mobile at Slow 4G
+and 4x CPU. The LCP element is now the statement paragraph.
+
+### 2026-09-12 — EXPERIENCE: one chart of when, one list of what
+Three versions of this section were cluttered for the same reason — each tried
+to make one element carry both the dates and the work.
+
+Stage 17's rail put a title at the left edge of a row and its bar at 62% of the
+same row, with nothing between them, and no gridline for four of the five bars
+to sit against, and hid four roles behind tabs. The first stage-18 attempt fixed
+the hiding and the missing scale by giving every row its own lane and running
+the year gridlines down the full height of the list — which put four vertical
+rules through every line of every checklist. **A gridline is only useful where
+something is measured against it; everywhere else it is a line through text.**
+
+`TimelineLedger` separates the jobs. The **chart** is five bars on one axis,
+about 140px tall, and it is the only place gridlines appear. The **list** below
+has no axis, no bars and no gridlines. Shared ordinals join them, so 003 in one
+is 003 in the other and no legend is needed.
+
+The chart is `aria-hidden` on purpose: every period it draws is printed in words
+in the list below, so exposing it would read five durations twice, the second
+time as unlabelled geometry. The drawings in PROJECTS and SKILLS are *not*
+hidden, because they carry argument the prose does not — that is what the
+difference turns on, not whether it is a picture.
+
+**Most recent first.** A first pass looks for the current role, so it is 001 and
+it is at the top of both. Axis positions are untouched: they still come from
+`start` and `end` through `lib/timeline.ts` and are never hand-placed, so the
+bars run left to right in real time order while the rows run in reading order.
+
+`TimelineRail`, `TimelineSpine` and `TimelinePanel` are deleted — three
+components and the stage-17 two-renderings split collapse into one Server
+Component. Stage 17 needed two renderings because a 32-month axis carrying year
+*labels* is unreadable at 312px; here the labels are drawn once on the chart's
+own axis and the bars carry no text, so the same markup works at 360 and at
+1920.
+
+The tablist was this section's only client JavaScript. EXPERIENCE now ships
+none.
+
+### 2026-09-12 — The point field became an exhibit, and grew a resting query
+Moved out of the hero and into PROJECTS as a bordered, captioned panel. As a
+full-bleed backdrop the lit neighbourhood was a few hundred pixels of detail in
+a 1400px field nobody was reading, so an effect meant to say "this person builds
+retrieval systems" said "there is some texture on this page".
+
+Two changes made it work in the new frame:
+
+**There is always a query.** When the pointer is away it eases back to the
+middle of the panel and keeps returning results, instead of switching off. As a
+hero backdrop the resting state was *supposed* to be inert texture; captioned
+and framed, a resting state with no query showed nothing of what the caption
+claims.
+
+**The still SVG is the real picture.** `FieldExhibit` server-renders forty
+points, one query and its five nearest neighbours from a fixed seed, and that is
+what phones, reduced-motion visitors and visitors without JavaScript see. The
+canvas covers it — it takes the page colour and fades in — rather than replacing
+it, so the SVG keeps reserving the box and the canvas arriving after `load`
+costs no CLS. Both draw the same picture, which is what makes the swap
+invisible.
+
+It sits in the **text** column, not beside the pipeline diagram. Stacked with
+the diagram it made the right column twice the height of the left; under the
+prose describing the retrieval work, the two columns finish within a line of
+each other.
+
+Related: the featured grid is `lg:items-start` now. The grid's default stretch
+made the diagram's bordered box as tall as the text column beside it, so the
+panel ran on for about 300px of empty frame below the drawing, and a border
+around nothing reads as a rendering failure.
+
+### 2026-09-12 — scratchpad/ is excluded from typecheck
+It was already in `.gitignore` and in `biome.json`'s ignore list; `tsc` was the
+one tool still reading it, so a stale scratch file from an earlier session
+failed `pnpm check` for referencing components this stage deleted. Now excluded
+in `tsconfig.json` as well, which is what the other two already said.
+
+### 2026-09-12 — Three dependencies added, and what each one is for
+Rule 8 says no dependency lands without a line here. Three did.
+
+- **`three` (runtime, 82.7KB gzipped).** The hero gradient. Fully deferred
+  behind a bare `import()` after the `load` event, so it is on no first-load
+  budget and no phone downloads it — the per-device table is in the Three.js
+  entry above. Asked for by name; the cheaper alternative and its cost are
+  recorded there too.
+- **`@types/three` (dev).** Types for the above. Three ships none of its own.
+- **`pngjs` (dev).** Decodes screenshots for `scratchpad/hero-contrast.mjs`,
+  which is the probe that caught the hero call to action sitting at 4.01:1 over
+  the moving ground. Same justification as `playwright`, which is already a
+  devDependency for exactly this kind of audit: axe cannot compute contrast
+  against a canvas, so the only way to know the real ratio is to sample the
+  rendered pixels. Nothing in `src/` imports it and it is absent from every
+  build.

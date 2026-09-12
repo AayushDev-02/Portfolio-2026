@@ -7,7 +7,7 @@ type Props = {
   onClick?: () => void;
   type?: "button" | "submit";
   /** The reference's section CTA is bare text. `boxed` is for form controls. */
-  variant?: "bare" | "boxed";
+  variant?: keyof typeof variants;
   /**
    * Renders a plain <a> instead of the locale-aware Link. Required for
    * anything that is not an app route — mailto:, external profiles, and static
@@ -29,6 +29,14 @@ export const EXTERNAL_LABEL = "↗";
 
 const variants = {
   bare: "text-label font-bold tracking-label uppercase text-accent hover:text-ink",
+  /**
+   * The same control, one step quieter — for a second action standing beside a
+   * primary one, as in the hero. A variant rather than a `className` override
+   * on `bare`, because `cn` joins in source order while Tailwind emits its
+   * utilities in its own: `text-prose` written after `text-accent` is not
+   * reliably the one that wins.
+   */
+  "bare-muted": "text-label font-bold tracking-label uppercase text-prose hover:text-ink",
   boxed:
     "border border-rule px-5 py-3 text-label font-bold tracking-label uppercase text-accent hover:bg-accent hover:text-bg",
 } as const;

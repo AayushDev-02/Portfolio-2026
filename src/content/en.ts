@@ -8,6 +8,9 @@
 
 import type {
   AccordionRowContent,
+  FieldExhibitCopy,
+  HeroAction,
+  HeroFact,
   PipelineDiagram,
   ProjectEntry,
   ResultFigure,
@@ -21,8 +24,22 @@ const intro = {
   eyebrow: "INTRO",
   title: "Aayush Yadav",
   status: "Software engineer — Tokyo, Japan",
-  promptLine: "What have you actually shipped?",
-  caption: "[+] Available from December 2026",
+  statement:
+    "I build retrieval and LLM systems that reach production — for public-sector and construction clients in Japan, in Japanese and English.",
+  // Four, because they lay out as one row above `sm` and two below it. The
+  // order is the order these get checked in: where, what, can he work here,
+  // and when.
+  facts: [
+    { label: "Based", value: "Tokyo, Japan" },
+    { label: "Focus", value: "RAG · LLM · full-stack" },
+    { label: "Japanese", value: "JLPT N3" },
+    { label: "Available", value: "December 2026" },
+  ] satisfies HeroFact[],
+  actions: [
+    { label: "See the work", href: "#projects" },
+    { label: "Get in touch", href: "#contact" },
+  ] satisfies HeroAction[],
+  caption: "[+] OPEN TO IN-HOUSE ENGINEERING ROLES IN TOKYO",
   sigil: "AY",
 };
 
@@ -82,7 +99,8 @@ const checked = (label: string) => ({ label, checked: true });
 const experience = {
   eyebrow: "EXPERIENCE",
   heading: "Experience",
-  lead: "From a remote internship to on-site delivery for Japanese public-sector clients, in about three years.",
+  // Most recent first, because that is the order a first pass reads in.
+  lead: "Five roles in about three years, most recent first — from a remote internship to on-site delivery for Japanese public-sector clients.",
   entries: [
     {
       status: "done",
@@ -382,6 +400,12 @@ const projects = {
     },
   ] satisfies ProjectEntry[],
   diagramLabel: "Retrieval pipeline",
+  field: {
+    label: "Nearest-neighbour search",
+    caption: "Move the pointer to run a query",
+    title: "A nearest-neighbour search over a field of embeddings",
+    desc: "Forty-four points scattered across two dimensions stand in for document embeddings. One query vector sits among them, joined by lines to the five nearest points it found. Every other point is left untouched, because a retriever returns a neighbourhood rather than the whole index.",
+  } satisfies FieldExhibitCopy,
   diagram: {
     title: "Retrieval-augmented generation pipeline",
     desc: "Construction and tender documents are chunked, embedded and stored in a vector index. A question is embedded and rewritten, matched against that index by hybrid search with a reranking pass, and the retrieved passages are passed with the question to a large language model, which returns an answer citing the source documents.",

@@ -19,6 +19,9 @@
 
 import type {
   AccordionRowContent,
+  FieldExhibitCopy,
+  HeroAction,
+  HeroFact,
   PipelineDiagram,
   ProjectEntry,
   ResultFigure,
@@ -36,8 +39,19 @@ const intro = {
   // the brief, but worth a look before launch.
   title: "ヤダフ アーユシュ",
   status: "ソフトウェアエンジニア — 東京",
-  promptLine: "これまで何を作ってきたのか？",
-  caption: "[+] 2026年12月より就業可能",
+  statement:
+    "本番環境で実際に動く検索・LLMシステムを開発しています。日本の公共・建設分野のクライアント向けに、日本語と英語で。",
+  facts: [
+    { label: "拠点", value: "東京" },
+    { label: "専門領域", value: "RAG・LLM・フルスタック" },
+    { label: "日本語", value: "JLPT N3" },
+    { label: "就業可能時期", value: "2026年12月" },
+  ] satisfies HeroFact[],
+  actions: [
+    { label: "実績を見る", href: "#projects" },
+    { label: "お問い合わせ", href: "#contact" },
+  ] satisfies HeroAction[],
+  caption: "[+] 東京での社内エンジニア職を希望しています",
   sigil: "AY",
 };
 
@@ -97,7 +111,7 @@ const checked = (label: string) => ({ label, checked: true });
 const experience = {
   eyebrow: "EXPERIENCE",
   heading: "職務経歴",
-  lead: "リモートでのインターンから、日本の公共・建設分野の案件を常駐で担当するまで、約3年の歩みです。",
+  lead: "約3年間で5つのロール。直近のものから順に、リモートでのインターンから日本の公共・建設分野の案件を常駐で担当するまで。",
   entries: [
     {
       status: "done",
@@ -400,6 +414,12 @@ const projects = {
     },
   ] satisfies ProjectEntry[],
   diagramLabel: "検索パイプライン",
+  field: {
+    label: "近傍探索",
+    caption: "カーソルを動かすとクエリが実行されます",
+    title: "埋め込みベクトル空間における近傍探索",
+    desc: "2次元に散らばる44個の点は、文書の埋め込みベクトルを表しています。その中にクエリベクトルが1つあり、最も近い5点と線で結ばれています。それ以外の点は変化しません。リトリーバが返すのはインデックス全体ではなく、近傍だけだからです。",
+  } satisfies FieldExhibitCopy,
   diagram: {
     title: "検索拡張生成（RAG）のパイプライン",
     desc: "建設・入札関連の文書を分割し、ベクトル化して索引に格納します。質問文もベクトル化・書き換えのうえ、ハイブリッド検索と再ランキングで該当箇所を取得し、質問とあわせて大規模言語モデルに渡すことで、出典を明示した回答を返します。",

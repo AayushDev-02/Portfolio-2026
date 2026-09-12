@@ -14,6 +14,36 @@ export type AccordionRowContent = {
   items: string[];
 };
 
+/**
+ * One fact in the hero's scan strip.
+ *
+ * The hero used to end in a dark terminal panel typing "What have you actually
+ * shipped?" — a rhetorical question asked of the reader, on a page whose entire
+ * job is answering it. These are the four things a recruiter checks before
+ * anything else, set flat on the page where they can be read in one pass.
+ *
+ * Four, and the number is load-bearing: they lay out as one row above `sm` and
+ * two below it, and a fifth breaks both.
+ */
+export type HeroFact = {
+  /** Micro-label, e.g. "BASED". Uppercase in English; plain in Japanese. */
+  label: string;
+  value: string;
+};
+
+/**
+ * One call to action under the hero.
+ *
+ * `href` is an in-page anchor (`#projects`), never a route. It is rendered
+ * through `BracketButton external`, because the locale-aware `Link` would
+ * rewrite a bare hash into `/en#projects` and reload the page to reach an
+ * element already on it.
+ */
+export type HeroAction = {
+  label: string;
+  href: string;
+};
+
 /** One role on the EXPERIENCE rail. */
 export type TimelineEntry = {
   status: Status;
@@ -179,6 +209,22 @@ export type PipelineDiagram = {
   returnLabel: string;
 };
 
+/**
+ * Labels for the nearest-neighbour exhibit in PROJECTS.
+ *
+ * Separate from `PipelineDiagram` rather than folded into it: they are two
+ * drawings with two accessible descriptions, and merging them would make a
+ * screen reader announce one picture where there are two.
+ */
+export type FieldExhibitCopy = {
+  /** Micro-label above the panel, e.g. "NEAREST-NEIGHBOUR SEARCH". */
+  label: string;
+  /** One line saying what the pointer does. Sentence case, not a heading. */
+  caption: string;
+  title: string;
+  desc: string;
+};
+
 /** An external profile or mail link. CONTACT. */
 export type ContactLink = {
   label: string;
@@ -241,8 +287,18 @@ export type SiteContent = {
   intro: {
     eyebrow: string;
     title: string;
+    /**
+     * The role line, under the wordmark. Also the subtitle on the OG card —
+     * see app/[locale]/opengraph-image.tsx — so it has to stand alone.
+     */
     status: string;
-    promptLine: string;
+    /**
+     * One sentence saying what he builds and for whom. The thing the hero
+     * previously did not say.
+     */
+    statement: string;
+    facts: HeroFact[];
+    actions: HeroAction[];
     caption: string;
     sigil: string;
   };
@@ -307,6 +363,16 @@ export type SiteContent = {
     /** Small heading above the diagram, e.g. "Retrieval pipeline". */
     diagramLabel: string;
     diagram: PipelineDiagram;
+    /**
+     * The live nearest-neighbour exhibit that sits under the pipeline diagram.
+     *
+     * It moved here from the hero in stage 18, where it was a full-bleed
+     * backdrop and read as page texture rather than as a picture of retrieval.
+     * `title` and `desc` are what a screen reader is given *instead of* the
+     * drawing, the same contract `PipelineDiagram` has — so they carry the
+     * argument rather than captioning it.
+     */
+    field: FieldExhibitCopy;
     caption: string;
     sigil: string;
   };
