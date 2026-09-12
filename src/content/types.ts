@@ -22,10 +22,47 @@ export type TimelineEntry = {
   items?: { label: string; checked: boolean }[];
 };
 
-/** One category in the skills grid. SKILLS. */
-export type SkillGroup = {
+/**
+ * One horizontal band of the SKILLS stack diagram.
+ *
+ * This replaced `SkillGroup` in stage 17. Nine flat categories made SKILLS the
+ * tallest section on the page at ~1676px, and nine bulleted lists say nothing
+ * about how the pieces relate — a reader had to already know which of them sit
+ * on top of which. Five layers in build order say it without a sentence.
+ *
+ * Nothing was invented and nothing dropped in the move: every entry from the
+ * old nine lists sits in one of the five, and the only merges are where the
+ * lists repeated each other (the old AI and Search categories both claimed
+ * vector search).
+ */
+export type SkillLayer = {
+  /** Layer name, e.g. "AI & Retrieval". */
   name: string;
+  /** One short line saying what this layer does. */
+  note: string;
   items: string[];
+  /**
+   * Exactly one layer sets this, and it is AI & Retrieval: it is what the whole
+   * page argues for, so the diagram draws it on the terminal ground the way the
+   * pipeline diagram marks where the answer is produced.
+   *
+   * Required rather than optional on purpose. Optional would let one locale
+   * quietly emphasise a different band; required makes a mismatch a compile
+   * error, which is the guarantee the rest of this file exists for.
+   */
+  emphasis: boolean;
+};
+
+/**
+ * The stack diagram's accessible name and description.
+ *
+ * Not decoration: these are what a screen reader is given *instead of* the
+ * drawing, so they carry the argument rather than captioning it. Same contract
+ * as `PipelineDiagram["title"]` / `["desc"]`.
+ */
+export type StackDiagram = {
+  title: string;
+  desc: string;
 };
 
 /** One project write-up. PROJECTS. */
@@ -224,7 +261,12 @@ export type SiteContent = {
     eyebrow: string;
     heading: string;
     lead: string;
-    groups: SkillGroup[];
+    layers: SkillLayer[];
+    diagram: StackDiagram;
+    /** Heading for the block under the diagram, e.g. "Certifications". */
+    certificationsLabel: string;
+    /** Not a layer of anything, so deliberately not one of the five. */
+    certifications: string[];
     caption: string;
     sigil: string;
   };

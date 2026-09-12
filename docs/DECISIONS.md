@@ -953,3 +953,48 @@ Slow 4G and 4x CPU:**
 
 A 21% improvement, and more to the point the largest paint no longer waits on a
 network fetch at all.
+
+### 2026-09-12 — `SkillGroup` became `SkillLayer`, and SKILLS became a diagram
+SKILLS was nine `SkillGroup`s rendered as nine bulleted lists, and it was the
+tallest section on the page — about 1676px against neighbours of 900 to 1400.
+
+Height was the symptom. The real problem is that nine flat categories say
+nothing about how the pieces relate: a reader had to already know which of them
+sit on top of which, which is exactly the knowledge a portfolio is trying to
+demonstrate. Five bands in build order — Frontend, API & Services, AI &
+Retrieval, Data, Cloud & Delivery — say it without a sentence.
+
+`SkillLayer` adds `note` (one line on what the layer does) and `emphasis`.
+**`emphasis` is required rather than optional**, so a locale cannot quietly
+emphasise a different band; a mismatch is a compile error, which is the
+guarantee the whole content-type layer exists for. Exactly one layer sets it,
+and it is AI & Retrieval — it is what the rest of the page argues for, so the
+diagram draws it on the terminal ground the way `pipeline-diagram.tsx` marks
+where the answer is produced.
+
+**Nothing was invented and nothing dropped.** Every item from the old nine lists
+is in one of the five, including the language list, which is now distributed to
+the layer each language is actually used in rather than floating as a category
+of its own. The only merge is where the old lists repeated each other: AI and
+Search both claimed vector search, so "Vector search" and "Semantic and hybrid
+search" became one entry. The two locales were redistributed **separately**,
+because `ja.ts` was never a translation of `en.ts` and carries items English
+does not (PyTorch, Hugging Face Transformers, Pinecone, FAISS, Matplotlib,
+Jupyter Notebook).
+
+**Certifications are not a layer.** Nothing is built on top of a certificate, so
+putting them in a band would have been the one place the diagram lied. They sit
+in a small block beneath it.
+
+**Two renderings, one source.** SVG text does not wrap and it scales with the
+drawing, so the 720-unit viewBox at 312px renders 9px labels at under 4px.
+Scaling down was explicitly not the answer, so below `sm` the same five bands
+render as HTML — the browser wraps them, Japanese wraps the way Japanese wraps,
+and no width arithmetic is involved. `display: none` keeps exactly one of the
+two in the accessibility tree at any viewport. Above `sm` the SVG needs to break
+its own lines, and a Server Component cannot measure text, so it estimates: full
+width characters advance about one em, the mono face's Latin about 0.6.
+
+Cost: **0KB of client JavaScript** — app code is unchanged at 15.6KB, because
+the whole thing is server-rendered markup. Section height 1676px → **900px**,
+which is the `min-h-dvh` floor: the content is now shorter than the frame.

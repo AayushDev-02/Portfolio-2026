@@ -8,6 +8,8 @@ import type {
   ProjectImage,
   ResultFigure,
   SiteContent,
+  SkillLayer,
+  StackDiagram,
 } from "./types";
 
 const content: Record<Locale, SiteContent> = { en, ja };
@@ -24,4 +26,6 @@ export type {
   ProjectImage,
   ResultFigure,
   SiteContent,
+  SkillLayer,
+  StackDiagram,
 };
