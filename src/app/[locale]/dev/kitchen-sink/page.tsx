@@ -125,7 +125,7 @@ export default function KitchenSink() {
             facts={[
               { label: "Based", value: "Tokyo, Japan" },
               { label: "Focus", value: "RAG · LLM" },
-              { label: "Japanese", value: "JLPT N3" },
+              { label: "Japanese", value: "JLPT N2" },
               { label: "Available", value: "December 2026" },
             ]}
             actions={[

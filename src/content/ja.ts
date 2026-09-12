@@ -44,7 +44,7 @@ const intro = {
   facts: [
     { label: "拠点", value: "東京" },
     { label: "専門領域", value: "RAG・LLM・フルスタック" },
-    { label: "日本語", value: "JLPT N3" },
+    { label: "日本語", value: "JLPT N2" },
     { label: "就業可能時期", value: "2026年12月" },
   ] satisfies HeroFact[],
   actions: [
@@ -87,7 +87,7 @@ const about = {
       items: [
         "英語 — ネイティブ",
         "ヒンディー語 — ネイティブ",
-        "日本語 — ビジネスレベル（JLPT N3、2025年12月取得）",
+        "日本語 — ビジネスレベル（JLPT N2、2025年12月取得）",
         "日本語・英語での円滑な仕様調整",
         "多文化チームでのプロジェクト推進経験",
       ],

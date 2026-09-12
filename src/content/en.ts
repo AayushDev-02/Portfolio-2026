@@ -32,7 +32,7 @@ const intro = {
   facts: [
     { label: "Based", value: "Tokyo, Japan" },
     { label: "Focus", value: "RAG · LLM · full-stack" },
-    { label: "Japanese", value: "JLPT N3" },
+    { label: "Japanese", value: "JLPT N2" },
     { label: "Available", value: "December 2026" },
   ] satisfies HeroFact[],
   actions: [
@@ -75,7 +75,7 @@ const about = {
       items: [
         "English — native",
         "Hindi — native",
-        "Japanese — professional working proficiency (JLPT N3, Dec 2025)",
+        "Japanese — professional working proficiency (JLPT N2, Dec 2025)",
         "Spec discussions run in both English and Japanese",
         "Multicultural teams, on-site with Japanese clients",
       ],
@@ -137,7 +137,7 @@ const experience = {
       items: [
         checked("Run in parallel with the internship, remote from India"),
         checked("Relocated to Japan on a work visa"),
-        checked("JLPT N3 (Dec 2025)"),
+        checked("JLPT N2 (Dec 2025)"),
       ],
     },
     {
@@ -274,7 +274,7 @@ const skills = {
   certificationsLabel: "Certifications",
   certifications: [
     "AWS Certified Cloud Practitioner (2023)",
-    "JLPT N3 (2025)",
+    "JLPT N2 (2025)",
     "Ethnus MERN Full Stack (2023)",
   ],
   caption: "EVIDENCE IS IN THE PROJECTS, NOT A PERCENTAGE",

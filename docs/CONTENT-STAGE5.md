@@ -69,7 +69,7 @@ Four rows, each expanding to a checklist. Draw from the 職務経歴書's
 2. **How I work** — requirements definition through design, build, test, release
    and maintenance; full-stack when the project needs it.
 3. **Languages and context** — English and Hindi native, Japanese professional
-   working proficiency (JLPT N3, Dec 2025); has run spec discussions in both
+   working proficiency (JLPT N2, Dec 2025); has run spec discussions in both
    English and Japanese on multicultural teams.
 4. **What I'm looking for** — permanent in-house engineering role in Tokyo;
    full-stack, applied AI, or cloud. Available from December 2026.
@@ -95,7 +95,7 @@ block and the 職務経歴書's 技術スキル table — they agree.
 AI & ML · Search & Retrieval · Languages · Backend · Frontend · Data ·
 Cloud & DevOps · Databases · Certifications
 
-Certifications: AWS Certified Cloud Practitioner (2023), JLPT N3 (2025),
+Certifications: AWS Certified Cloud Practitioner (2023), JLPT N2 (2025),
 Ethnus MERN Full Stack (2023).
 
 ### 04 — PROJECTS (accordion rows + pull quotes)
