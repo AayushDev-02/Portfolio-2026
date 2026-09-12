@@ -14,11 +14,27 @@ export type AccordionRowContent = {
   items: string[];
 };
 
-/** One numbered milestone card. EXPERIENCE. */
+/** One role on the EXPERIENCE rail. */
 export type TimelineEntry = {
   status: Status;
   title: string;
+  /**
+   * The display string, e.g. "JUN 2025 – PRESENT" or 「2025年6月〜現在」.
+   * Translatable, and the only date a reader ever sees.
+   */
   period: string;
+  /**
+   * ISO year-month, e.g. "2025-06". Not shown to anyone — this is what places
+   * the marker on the rail.
+   *
+   * Deliberately separate from `period`: a position computed from a localised
+   * display string would either break on the Japanese one or force both locales
+   * into an English date format. Keeping them apart means positions are
+   * identical in both locales and hand-placing a marker is impossible.
+   */
+  start: string;
+  /** Same format. `null` means the role is current and the bar runs open. */
+  end: string | null;
   items?: { label: string; checked: boolean }[];
 };
 

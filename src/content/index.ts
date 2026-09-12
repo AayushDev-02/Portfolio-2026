@@ -10,6 +10,7 @@ import type {
   SiteContent,
   SkillLayer,
   StackDiagram,
+  TimelineEntry,
 } from "./types";
 
 const content: Record<Locale, SiteContent> = { en, ja };
@@ -28,4 +29,5 @@ export type {
   SiteContent,
   SkillLayer,
   StackDiagram,
+  TimelineEntry,
 };

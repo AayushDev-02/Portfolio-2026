@@ -88,6 +88,8 @@ const experience = {
       status: "done",
       title: "Hevonic.AI — Software Developer Intern",
       period: "JUL 2023 – JAN 2024",
+      start: "2023-07",
+      end: "2024-01",
       items: [
         checked("AI interview preparation platform, used at NYU"),
         checked("Built the cover letter and resume generator end to end"),
@@ -99,6 +101,8 @@ const experience = {
       status: "done",
       title: "Human Resocia — Software Engineer Intern",
       period: "JAN – JUN 2024",
+      start: "2024-01",
+      end: "2024-06",
       items: [
         checked("Xreport invoice and reporting package, feature extension"),
         checked("Frontend ~60%: plan management, dashboards, auth"),
@@ -110,6 +114,8 @@ const experience = {
       status: "done",
       title: "Japanese language training → relocation to Japan",
       period: "JAN 2024 – JAN 2025",
+      start: "2024-01",
+      end: "2025-01",
       items: [
         checked("Run in parallel with the internship, remote from India"),
         checked("Relocated to Japan on a work visa"),
@@ -120,6 +126,8 @@ const experience = {
       status: "done",
       title: "Suntec — Frontend Engineer",
       period: "FEB – MAY 2025",
+      start: "2025-02",
+      end: "2025-05",
       items: [
         checked("Fleet and vehicle data platform, on-site Nagoya"),
         checked("Driver and operator modules, auth flows, dashboards"),
@@ -131,6 +139,8 @@ const experience = {
       status: "current",
       title: "Pacific Consultants — Software Engineer",
       period: "JUN 2025 – PRESENT",
+      start: "2025-06",
+      end: null,
       items: [
         checked("DX projects for construction and public infrastructure"),
         checked("Built the team's first production RAG assistant"),

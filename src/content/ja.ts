@@ -103,6 +103,8 @@ const experience = {
       status: "done",
       title: "ヘボニックAI株式会社 — ソフトウェア開発インターン",
       period: "2023年7月〜2024年1月",
+      start: "2023-07",
+      end: "2024-01",
       items: [
         checked("AIを活用した面接練習・履歴書生成Webアプリの新規開発"),
         checked("フロントエンド開発（担当比率 約70%）"),
@@ -114,6 +116,8 @@ const experience = {
       status: "done",
       title: "ヒューマンリソシア株式会社 — ソフトウェアエンジニアインターン",
       period: "2024年1月〜6月",
+      start: "2024-01",
+      end: "2024-06",
       items: [
         checked("Web帳票発行パッケージ（Xreport）の拡張機能開発"),
         checked("フロントエンド開発（担当比率 約60%）"),
@@ -125,6 +129,8 @@ const experience = {
       status: "done",
       title: "日本語研修 → 来日",
       period: "2024年1月〜2025年1月",
+      start: "2024-01",
+      end: "2025-01",
       items: [
         checked("インターン業務と並行、インドよりリモートで受講"),
         checked("就労可能な在留資格を取得し来日"),
@@ -135,6 +141,8 @@ const experience = {
       status: "done",
       title: "株式会社サンテック — フロントエンドエンジニア",
       period: "2025年2月〜5月",
+      start: "2025-02",
+      end: "2025-05",
       items: [
         checked("ドライバーサービス管理システムの新規開発（名古屋・常駐）"),
         checked("フロントエンド開発（担当比率 100%）"),
@@ -146,6 +154,8 @@ const experience = {
       status: "current",
       title: "パシフィックコンサルタンツ株式会社 — ソフトウェアエンジニア",
       period: "2025年6月〜現在",
+      start: "2025-06",
+      end: null,
       items: [
         checked("建設・公共分野のDX案件を担当（東京・常駐）"),
         checked("社内初となる本番運用のRAG AIアシスタントを構築"),

@@ -9,8 +9,8 @@ import {
   RankList,
   StatusBadge,
   TerminalHero,
-  TimelineCard,
-  TimelineGrid,
+  TimelineRail,
+  TimelineSpine,
 } from "@/components/primitives";
 import { CanvasSlot } from "@/components/three/canvas-slot";
 
@@ -18,6 +18,33 @@ export const metadata: Metadata = {
   title: "Kitchen sink",
   robots: { index: false, follow: false },
 };
+
+/** Fixture with the two shapes that matter: an overlap, and an open end. */
+const TIMELINE = [
+  {
+    status: "done" as const,
+    title: "Foundation",
+    period: "JUL 2023 – JAN 2024",
+    start: "2023-07",
+    end: "2024-01",
+    items: [{ label: "Scaffold", checked: true }],
+  },
+  {
+    status: "done" as const,
+    title: "Design system",
+    period: "JAN 2024 – JAN 2025",
+    start: "2024-01",
+    end: "2025-01",
+    items: [{ label: "Tokens", checked: true }],
+  },
+  {
+    status: "current" as const,
+    title: "Clone",
+    period: "FEB 2025 – PRESENT",
+    start: "2025-02",
+    end: null,
+  },
+];
 
 function Bay({ name, children }: { name: string; children: React.ReactNode }) {
   return (
@@ -148,18 +175,12 @@ export default function KitchenSink() {
         </AccordionGroup>
       </Bay>
 
-      <Bay name="Timeline cards">
-        <TimelineGrid>
-          <TimelineCard index={1} status="done" title="Foundation" period="AUG 28">
-            <CheckItem>Scaffold</CheckItem>
-            <CheckItem>Vercel connected</CheckItem>
-          </TimelineCard>
-          <TimelineCard index={2} status="current" title="Design system" period="AUG 29">
-            <CheckItem>Tokens</CheckItem>
-            <CheckItem checked={false}>Fonts subset</CheckItem>
-          </TimelineCard>
-          <TimelineCard index={3} status="upcoming" title="Clone" period="SEPTEMBER" />
-        </TimelineGrid>
+      {/* Both renderings, side by side. Only one is ever visible at a given
+          width on the real page; here they are stacked so the breakpoint
+          handover can be checked by resizing. */}
+      <Bay name="Timeline rail (sm and up) / spine (below sm)">
+        <TimelineRail entries={TIMELINE} />
+        <TimelineSpine entries={TIMELINE} />
       </Bay>
 
       <Bay name="Rank bars">

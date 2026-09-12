@@ -28,4 +28,5 @@ export { type Status, StatusBadge } from "./status-badge";
 export { TerminalHero } from "./terminal-hero";
 export { ThemeProvider } from "./theme-provider";
 export { ThemeToggle } from "./theme-toggle";
-export { TimelineCard, TimelineGrid } from "./timeline-card";
+export { TimelineRail } from "./timeline-rail";
+export { TimelineSpine } from "./timeline-spine";

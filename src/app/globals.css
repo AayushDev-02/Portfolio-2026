@@ -508,6 +508,59 @@ html.lenis {
 }
 
 /* ============================================================
+   EXPERIENCE RAIL (stage 17)
+
+   Two effects, both of which must stop under `prefers-reduced-motion`.
+
+   The current role's marker breathes, because on a hiring page "where is he
+   now" is the first question and the rail should answer it before the reader
+   has finished reading the titles. The global reduced-motion block below would
+   already collapse it to 0.01ms, but that leaves an animation running at an
+   imperceptible duration rather than not running; `animation: none` is the
+   honest version of what the preference asked for.
+
+   The panel fades between roles so the swap reads as one panel changing rather
+   than two panels flickering. Under reduced motion it is instant.
+
+   Unlayered, like the blocks above: inside @layer these would lose to
+   Tailwind's own utilities.
+   ============================================================ */
+
+[data-timeline-current] {
+  animation: timeline-pulse 2.4s var(--reveal-ease) infinite;
+}
+
+[data-timeline-panel] {
+  animation: timeline-panel var(--reveal-duration) var(--reveal-ease);
+}
+
+@keyframes timeline-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes timeline-panel {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-timeline-current],
+  [data-timeline-panel] {
+    animation: none;
+  }
+}
+
+/* ============================================================
    JAPANESE TYPOGRAPHY
    Deliberately UNLAYERED. Cascade layers beat specificity, so this block
    sitting in @layer base lost to every Tailwind utility in @layer utilities —
